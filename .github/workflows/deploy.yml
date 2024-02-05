@@ -34,7 +34,7 @@ jobs:
                   path: dist/
                   remote_path: /var/www/html/admin
                   remote_host: ${{ secrets.DEPLOY_HOST }}
-                  remote_user: deploy
+                  remote_user: ${{ vars.DEPLOY_USER }}
                   remote_key: ${{ secrets.DEPLOY_KEY }}
 
     send-failure-notification:
