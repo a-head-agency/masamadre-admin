@@ -1,0 +1,55 @@
+@layer tailwind-base, primevue, tailwind-utilities;
+
+@layer tailwind-base {
+    @tailwind base;
+}
+
+@layer tailwind-utilities {
+    @tailwind components;
+    @tailwind utilities;
+}
+
+.p-datatable .p-datatable-tbody > tr.p-highlight-contextmenu {
+    outline: none;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+
+.p-datatable .p-paginator-bottom {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    border: 0;
+}
+
+.p-toolbar .p-toolbar-group-center {
+    width: 100%;
+}
+
+.p-column-title,
+.p-datatable-tbody td {
+    @apply whitespace-nowrap;
+}
+
+img:before {
+    content: ' ';
+    display: block;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-image: url(/noimage.svg);
+    background-size: cover;
+    background-position: center;
+}
+
+input {
+    @apply min-w-0;
+}
