@@ -31,13 +31,13 @@ const newUsersCount = computed(() => stats.value?.stats.map((v) => v.new_users) 
 </script>
 
 <template>
-    <main class="flex flex-col items-stretch px-4">
+    <main class="flex flex-col items-stretch px-4 pb-12">
         <h1 class="mb-4 mt-12 text-center text-3xl font-semibold leading-none">
             Дашборд
         </h1>
 
         <div class="mb-4 flex items-center justify-between gap-4">
-            <div class="flex flex-1 justify-center">
+            <div class="flex justify-center">
                 <Calendar
                     showButtonBar
                     class="w-full"
@@ -46,36 +46,33 @@ const newUsersCount = computed(() => stats.value?.stats.map((v) => v.new_users) 
                     :manualInput="false"
                 />
             </div>
-            <div class="flex-1"></div>
-
-            <div class="flex-1"></div>
-            <div class="flex flex-1 justify-end">
+            <div class="flex justify-end">
                 <Button severity="primary" icon="pi pi-refresh" @click="refreshStats" />
             </div>
         </div>
-        <div class="mb-16 flex items-stretch gap-4">
-            <div class="flex-1 rounded-lg border bg-white/5 border-white/10 p-8">
-                <div class="mb-4 flex items-start justify-between">
-                    <div>
+        <div class="mb-16 flex flex-wrap items-stretch gap-4 text-white">
+            <div class="flex-1 rounded-lg bg-white/10 p-8">
+                <div class="mb-4 flex items-start justify-between gap-4">
+                    <div class="shrink-0">
                         <div class="mb-2 font-medium">Заказы</div>
                         <div class="text-lg font-bold">{{ stats?.orders }}</div>
                     </div>
                     <div
-                        class="flex aspect-square h-10 items-center justify-center rounded-lg bg-orange-600"
+                        class="flex aspect-square h-10 shrink-0 items-center justify-center rounded-lg bg-orange-100 text-black"
                     >
                         <i class="pi pi-fw pi-shopping-cart" />
                     </div>
                 </div>
             </div>
 
-            <div class="flex-1 rounded-lg border bg-white/5 border-white/10 p-8">
-                <div class="mb-4 flex items-start justify-between">
-                    <div>
+            <div class="flex-1 rounded-lg bg-white/10 p-8">
+                <div class="mb-4 flex items-start justify-between gap-4">
+                    <div class="shrink-0">
                         <div class="mb-2 font-medium">Доход</div>
                         <div class="text-lg font-bold">{{ stats?.price }}</div>
                     </div>
                     <div
-                        class="flex aspect-square h-10 items-center justify-center rounded-lg bg-green-600"
+                        class="flex aspect-square h-10 shrink-0 items-center justify-center rounded-lg bg-green-100 text-black"
                     >
                         <i class="pi pi-fw pi-money-bill" />
                     </div>
@@ -86,14 +83,14 @@ const newUsersCount = computed(() => stats.value?.stats.map((v) => v.new_users) 
                 </div>
             </div>
 
-            <div class="flex-1 rounded-lg border bg-white/5 border-white/10 p-8">
-                <div class="mb-4 flex items-start justify-between">
-                    <div>
+            <div class="flex-1 rounded-lg bg-white/10 p-8">
+                <div class="mb-4 flex items-start justify-between gap-4">
+                    <div class="shrink-0">
                         <div class="mb-2 font-medium">Клиенты</div>
                         <div class="text-lg font-bold">{{ stats?.clients_count }}</div>
                     </div>
                     <div
-                        class="flex aspect-square h-10 items-center justify-center rounded-lg bg-red-600"
+                        class="flex aspect-square h-10 shrink-0 items-center justify-center rounded-lg bg-red-100 text-black"
                     >
                         <i class="pi pi-fw pi-user" />
                     </div>
@@ -104,14 +101,14 @@ const newUsersCount = computed(() => stats.value?.stats.map((v) => v.new_users) 
                 </div>
             </div>
 
-            <div class="flex-1 rounded-lg border bg-white/5 border-white/10 p-8">
-                <div class="mb-4 flex items-start justify-between">
-                    <div>
+            <div class="flex-1 rounded-lg bg-white/10 p-8">
+                <div class="mb-4 flex items-start justify-between gap-4">
+                    <div class="shrink-0">
                         <div class="mb-2 font-medium">Отзывы</div>
                         <div class="text-lg font-bold">{{ stats?.new_reviews }} новых</div>
                     </div>
                     <div
-                        class="flex aspect-square h-10 items-center justify-center rounded-lg bg-purple-600"
+                        class="flex aspect-square h-10 shrink-0 items-center justify-center rounded-lg bg-purple-100 text-black"
                     >
                         <i class="pi pi-fw pi-comments" />
                     </div>
@@ -119,14 +116,14 @@ const newUsersCount = computed(() => stats.value?.stats.map((v) => v.new_users) 
             </div>
         </div>
 
-        <div class="flex gap-8">
+        <div class="flex flex-col gap-8 xl:flex-row">
             <div class="flex-1">
                 <h2 class="mb-2 text-center text-lg font-bold">Клиенты</h2>
                 <Chart
                     class="mb-8 w-full"
                     type="line"
                     :options="{
-                        aspectRatio: 3 / 1
+                        aspectRatio: 1.5
                     }"
                     :data="{
                         labels: labels,
@@ -190,7 +187,7 @@ const newUsersCount = computed(() => stats.value?.stats.map((v) => v.new_users) 
                     class="w-full"
                     type="line"
                     :options="{
-                        aspectRatio: 3 / 1
+                        aspectRatio: 1.5
                     }"
                     :data="{
                         labels: labels,

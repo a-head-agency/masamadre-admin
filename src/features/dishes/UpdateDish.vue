@@ -4,7 +4,7 @@
             <MyInputNumber name="id" label="ID" disabled />
             <MyInputText name="name" label="Название" />
             <MyInputText name="description" label="Описание" />
-            <MyInputText label="IIKO ID" name="iiko_id" />
+            <MyInputText label="RKeeper ID" name="rkeeper_id" />
             <MyInputNumber label="Вес" name="weight" />
             <MyInputNumber label="Количество кусочков" name="count" />
             <MyInputNumber label="Цена" name="price" />
@@ -71,7 +71,7 @@
 
             <MyMultiSelect
                 class="w-full"
-                name="category"
+                name="categories"
                 label="Категории"
                 placeholder="Выберите"
                 :options="possibleCategories || []"
@@ -95,6 +95,15 @@
                     upload-route="admin/upload"
                 />
             </div>
+        </div>
+
+        <h2 class="mb-6 text-lg font-bold">SEO</h2>
+        <div class="mb-6 grid grid-flow-row grid-cols-2 gap-x-4">
+            <MyInputText name="alt" label="Альтернативный текст" />
+            <MyInputText name="link" label="Ссылка" />
+            <MyInputText name="description_seo" label="Описание" />
+            <MyInputText name="title" label="Title" />
+            <MyInputText class="col-span-full" name="keywords" label="Ключевые слова" />
         </div>
 
         <h2 class="mb-6 text-lg font-bold">Время показа</h2>
@@ -164,7 +173,7 @@
 </template>
 
 <script setup lang="ts">
-import { inject, ref, watch, toRaw, computed } from 'vue'
+import { inject, ref, watch, computed } from 'vue'
 import MyUploadImage from '@/components/MyUploadImage.vue'
 import { useFieldArray, useFieldValue, useForm } from 'vee-validate'
 import * as yup from 'yup'
@@ -196,8 +205,7 @@ const possibleCardColors = ref([
 const { data: dishData } = useDish(dish.id, (v) => {
     const vals = {
         ...v,
-        tags: v.tags.map((t) => t.id),
-        category: v.category.map((c) => c.id)
+        tags: v.tags.map((t) => t.id)
     }
     return vals
 })
@@ -208,7 +216,7 @@ const { handleSubmit } = useForm({
         name: yup.string().required().label('Название'),
         img: yup.string().required().label('Изображение'),
         price: yup.number().required().label('Цена'),
-        category: yup.array().required().label('Категория'),
+        categories: yup.array().required().label('Категория'),
         color: yup.string().required().label('Цвет карточки'),
         belki: yup.number().required().label('Количество белков'),
         pich_cen: yup.number().required().label('Пищевая ценность'),
@@ -219,13 +227,18 @@ const { handleSubmit } = useForm({
         count: yup.number().required().label('Количество кусочков'),
         size: yup.number().required().label('Размер карточки'),
         description: yup.string().label('Описание'),
-        iiko_id: yup.string().required().label('IIKO ID'),
+        rkeeper_id: yup.string().required().label('RKeeper ID'),
         tags: yup.array().label('Теги'),
         active: yup.boolean().label('Активно'),
         can_deliver: yup.boolean().label('Можно доставить'),
         have: yup.boolean().label('В наличии'),
         from_hour: yup.number().required().label('Доступно С'),
         to_hour: yup.number().required().label('Доступно ДО'),
+        link: yup.string().required().label('Ссылка'),
+        keywords: yup.string().label('Ключевые слова'),
+        description_seo: yup.string().label('Описание'),
+        title: yup.string().label('Title'),
+
         vars: yup.array().of(
             yup.object({
                 rest_id: yup.number().required().label('ID ресторана'),
@@ -323,6 +336,9 @@ watch(
 )
 
 const onSubmit = handleSubmit((vals) => {
-    mutate(vals)
+    mutate({
+        category: -1,
+        ...vals
+    })
 })
 </script>

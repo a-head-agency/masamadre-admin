@@ -24,10 +24,6 @@ export const useRestaurants = <SData>(
     return useQuery({
         queryKey: ['rests', { offset, limit, search }] as any,
         queryFn: async ({ queryKey }) => {
-            return {
-                list: [],
-                total: 0
-            } satisfies GetRestaurantsResponse
             const response = await axiosPrivate.get<GetRestaurantsResponse>('admin/rests', {
                 params: {
                     offset: (queryKey[1] as any).offset as number,

@@ -16,27 +16,33 @@ interface QueryConfig {
     offset: MaybeRef<number>
     limit: MaybeRef<number>
     search: MaybeRef<string>
+    categoryID: MaybeRef<number>
 }
 
 export const useDishes = <SData>(
     queryConfig: QueryConfig,
     selector?: (response: GetDishesResponse) => SData
 ) => {
-    const { offset, limit, search } = queryConfig
+    const { offset, limit, search, categoryID } = queryConfig
     return useQuery({
-        queryKey: ['dishes', { offset, limit, search }] as any,
+        queryKey: ['dishes', { offset, limit, search, categoryID }] as [
+            string,
+            { offset: number; limit: number; search: string; categoryID: number }
+        ],
         queryFn: async ({ queryKey }) => {
-            return {
-                list: [],
-                total: 0
-            } satisfies GetDishesResponse
             const response = await axiosPrivate.get<GetDishesResponse>('admin/dishes', {
                 params: {
-                    offset: (queryKey[1] as any).offset as number,
-                    limit: (queryKey[1] as any).limit as number,
-                    search: (queryKey[1] as any).search as string
+                    offset: queryKey[1].offset,
+                    limit: queryKey[1].limit,
+                    search: queryKey[1].search,
+                    id: queryKey[1].categoryID
                 }
             })
+            if (queryKey[1].categoryID) {
+                // total либо отсутсвует либо не соответсвует данным,
+                // поэтому просто выставляем total равным длинне массива list
+                response.data.total = response.data.list.length
+            }
             return response.data
         },
         select: selector,
@@ -48,7 +54,7 @@ interface GetDishResponse {
     active: boolean
     belki: number
     can_deliver: boolean
-    category: ICategory[]
+    categories: ICategory[]
     color: number
     count: number
     created_at: string
@@ -69,6 +75,12 @@ interface GetDishResponse {
     updated_at: string
     weight: number
     ziri: number
+    alt: string | undefined
+    link: string | undefined
+    keywords: string | undefined
+    description_seo: string | undefined
+    title: string | undefined
+    iiko_sale_id: string | undefined
 
     tags: ITag[]
 
@@ -103,7 +115,7 @@ export const useDish = <SData>(id: MaybeRef<number>, selector?: (response: IDish
 
             const rests = restaurants.value!
 
-            let vars: IVariation[] = []
+            const vars: IVariation[] = []
             for (const v of response.data.vars) {
                 const rest = rests.list.find((r) => r.id === v.rest_id)
 
@@ -184,6 +196,43 @@ export const useUpdateDish = () => {
                 severity: 'error',
                 life: 3000,
                 summary: 'Не удалось обновить блюдо',
+                detail: error
+            })
+        }
+    })
+}
+
+export interface SaveDishesOrderingMutation {
+    positions: {
+        id: number
+        position: number
+    }[]
+    category_id: number
+}
+
+export const useSaveDishesOrdering = () => {
+    const queryClient = useQueryClient()
+    const toast = useToast()
+
+    return useMutation({
+        mutationFn: async (vals: SaveDishesOrderingMutation) => {
+            const response = await axiosPrivate.post('admin/dishes/positions', vals)
+            return response.data
+        },
+        onSuccess() {
+            toast.add({
+                severity: 'success',
+                life: 3000,
+                summary: 'Успешно',
+                detail: `Порядок блюд сохранён.`
+            })
+            queryClient.invalidateQueries(['dishes'])
+        },
+        onError(error: any) {
+            toast.add({
+                severity: 'error',
+                life: 3000,
+                summary: 'Не удалось сохранить порядок',
                 detail: error
             })
         }

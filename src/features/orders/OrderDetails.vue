@@ -119,7 +119,7 @@
 
         <MySkeleton :show-body="isSuccess" :skeleton="{}">
             <div class="flex items-end leading-none">
-                <div>Количество позиций в заказе</div>
+                <div>Количество позиций</div>
                 <div
                     class="mx-2 grow border-b-2 border-dotted border-black border-opacity-50"
                 ></div>
@@ -183,6 +183,21 @@
                 </div>
             </div>
         </MySkeleton>
+
+        <MySkeleton :show-body="isSuccess" :skeleton="{}">
+            <div class="flex items-end leading-none">
+                <div>Дата создания</div>
+                <div
+                    class="mx-2 grow border-b-2 border-dotted border-black border-opacity-50"
+                ></div>
+                <div>
+                    <template v-if="data.created_at != undefined">
+                        {{ dateformat(data.created_at) }}
+                    </template>
+                    <template v-else>Нет данных</template>
+                </div>
+            </div>
+        </MySkeleton>
     </div>
 </template>
 
@@ -193,6 +208,7 @@ import { useOrder } from './composables'
 import MySkeleton from '@/components/MySkeleton.vue'
 import OrderStatusBadge from './OrderStatusBadge.vue'
 import PaymentStatusBadge from './PaymentStatusBadge.vue'
+import dateformat from '@/dateformat'
 
 const dialogRef = inject('dialogRef') as any
 console.log(dialogRef.value.data)

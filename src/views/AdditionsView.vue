@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import type { DataTablePageEvent } from 'primevue/datatable'
 
-import dateFormat from 'dateformat'
+import dateFormat from '@/dateformat'
 import { useDebounce } from '@vueuse/core'
 
 import {
@@ -42,7 +42,8 @@ const beginCreateAdditionInteraction = () => {
         props: {
             class: 'w-full max-w-5xl',
             modal: true,
-            header: 'Новая добавка'
+            header: 'Новая добавка',
+            dismissableMask: true
         } as any
     })
 }
@@ -51,7 +52,8 @@ const beginUpdateAdditionInteraction = (addition: IAddition) => {
         props: {
             class: 'w-full max-w-5xl',
             modal: true,
-            header: 'Изменить добавку'
+            header: 'Изменить добавку',
+            dismissableMask: true
         } as any,
         onClose: () => {
             selected.value = undefined
@@ -67,7 +69,8 @@ const beginDeleteAdditionInteraction = (addition: IAddition) => {
         props: {
             class: 'w-full max-w-xl',
             modal: true,
-            header: 'Удалить добавку'
+            header: 'Удалить добавку',
+            dismissableMask: true
         } as any,
         onClose: () => {
             selected.value = undefined
@@ -121,11 +124,11 @@ onMounted(() => {
 
 <template>
     <main class="flex h-screen flex-col items-stretch px-4" ref="root">
-        <h1 class="my-12 text-center text-3xl font-semibold leading-none">Добавки</h1>
+        <h1 class="my-12 text-center text-3xl font-semibold leading-none text-white">Добавки</h1>
 
         <ContextMenu ref="cm" :model="menuModel" @hide="selected = undefined" />
 
-        <Toolbar class="border-white/10">
+        <Toolbar>
             <template #center>
                 <div class="flex w-full">
                     <div class="flex flex-1 justify-start gap-2">
@@ -133,12 +136,10 @@ onMounted(() => {
                         <Button icon="pi pi-plus" @click="beginCreateAdditionInteraction()" />
                     </div>
 
-                    <div class="flex flex-1 justify-center">
-                        <span class="p-input-icon-left">
-                            <i class="pi pi-search" />
-                            <InputText placeholder="Поиск" v-model="searchTerm" />
-                        </span>
-                    </div>
+                    <IconField iconPosition="left" class="grow max-lg:order-1 max-lg:w-full">
+                        <InputIcon class="pi pi-search"></InputIcon>
+                        <InputText v-model="searchTerm" placeholder="Поиск" class="w-full" />
+                    </IconField>
 
                     <div class="flex flex-1 justify-end gap-2">
                         <Button
@@ -182,6 +183,14 @@ onMounted(() => {
                 tableStyle="min-width: 50rem"
                 @page="onPage($event)"
                 :totalRecords="data?.total"
+                :page-link-size="5"
+                :paginator-template="{
+                    '640px': 'PrevPageLink CurrentPageReport NextPageLink',
+                    '960px':
+                        'FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink',
+                    '1300px': 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink'
+                }"
+                current-page-report-template="{currentPage} из {totalPages}"
             >
                 <Column selectionMode="single" headerStyle="width: 3rem" />
                 <Column field="id" header="ID" />

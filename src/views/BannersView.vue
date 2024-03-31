@@ -11,7 +11,7 @@ import {
 } from '@/features/banners'
 import { useDialog } from 'primevue/usedialog'
 import { useDebounce } from '@vueuse/core'
-import dateFormat from 'dateformat'
+import dateFormat from '@/dateformat'
 
 const rowsPerPage = ref(20)
 
@@ -40,9 +40,10 @@ const dialog = useDialog()
 const beginCreateBannerInteraction = () => {
     dialog.open(CreateBanner, {
         props: {
-            class: 'max-w-4xl w-full',
+            class: 'max-w-4xl w-full mx-4',
             modal: true,
-            header: 'Новый баннер'
+            header: 'Новый баннер',
+            dismissableMask: true
         } as any,
         onClose: () => (selected.value = undefined)
     })
@@ -51,9 +52,10 @@ const beginCreateBannerInteraction = () => {
 const beginEditBannerInteraction = (banner: IBanner) => {
     dialog.open(EditBanner, {
         props: {
-            class: 'max-w-4xl w-full',
+            class: 'max-w-4xl w-full mx-4',
             modal: true,
-            header: 'Изменить баннер'
+            header: 'Изменить баннер',
+            dismissableMask: true
         } as any,
         onClose: () => (selected.value = undefined),
         data: {
@@ -65,9 +67,10 @@ const beginEditBannerInteraction = (banner: IBanner) => {
 const beginDeleteBannerInteraction = (banner: IBanner) => {
     dialog.open(DeleteBanner, {
         props: {
-            class: 'max-w-xl w-full',
+            class: 'max-w-xl w-full mx-4',
             modal: true,
-            header: 'Удалить баннер'
+            header: 'Удалить баннер',
+            dismissableMask: true
         } as any,
         onClose: () => {
             selected.value = undefined
@@ -121,38 +124,41 @@ onMounted(() => {
 
 <template>
     <main class="flex h-screen flex-col items-stretch px-4" ref="root">
-        <h1 class="my-12 text-center text-3xl font-semibold leading-none">Баннеры</h1>
+        <h1 class="my-12 text-center text-3xl font-semibold leading-none text-white">Баннеры</h1>
 
         <ContextMenu ref="cm" :model="menuModel" @hide="selected = undefined" />
 
-        <Toolbar class="border-white/10">
+        <Toolbar>
             <template #center>
-                <div class="flex w-full">
-                    <div class="flex flex-1 justify-start gap-2">
-                        <Button icon="pi pi-refresh" :disabled="isFetching" @click="refresh()" />
-                        <Button icon="pi pi-plus" @click="beginCreateBannerInteraction()" />
-                    </div>
-
-                    <div class="flex flex-1 justify-center">
-                        <span class="p-input-icon-left">
-                            <i class="pi pi-search" />
-                            <InputText placeholder="Поиск" />
-                        </span>
-                    </div>
-
-                    <div class="flex flex-1 justify-end gap-2">
-                        <Button
-                            :disabled="!selected"
-                            icon="pi pi-pencil"
-                            @click="beginEditBannerInteraction(selected!)"
-                        />
-                        <Button
-                            :disabled="!selected"
-                            icon="pi pi-times"
-                            severity="danger"
-                            @click="beginDeleteBannerInteraction(selected!)"
-                        />
-                    </div>
+                <div class="flex w-full flex-wrap gap-2">
+                    <Button
+                        class="shrink-0 max-md:grow"
+                        icon="pi pi-refresh"
+                        :disabled="isFetching"
+                        @click="refresh()"
+                    />
+                    <Button
+                        class="shrink-0 max-md:grow"
+                        icon="pi pi-plus"
+                        @click="beginCreateBannerInteraction()"
+                    />
+                    <IconField iconPosition="left" class="grow max-lg:order-1 max-lg:w-full">
+                        <InputIcon class="pi pi-search"></InputIcon>
+                        <InputText v-model="search" placeholder="Поиск" class="w-full" />
+                    </IconField>
+                    <Button
+                        class="shrink-0 max-md:grow"
+                        icon="pi pi-pencil"
+                        :disabled="!selected"
+                        @click="beginEditBannerInteraction(selected!)"
+                    />
+                    <Button
+                        class="shrink-0 max-md:grow"
+                        :disabled="!selected"
+                        icon="pi pi-times"
+                        severity="danger"
+                        @click="beginDeleteBannerInteraction(selected!)"
+                    />
                 </div>
             </template>
         </Toolbar>
@@ -182,6 +188,14 @@ onMounted(() => {
                 tableStyle="min-width: 50rem"
                 @page="onPage($event)"
                 :totalRecords="data?.total"
+                :page-link-size="5"
+                :paginator-template="{
+                    '640px': 'PrevPageLink CurrentPageReport NextPageLink',
+                    '960px':
+                        'FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink',
+                    '1300px': 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink'
+                }"
+                current-page-report-template="{currentPage} из {totalPages}"
             >
                 <Column selectionMode="single" headerStyle="width: 3rem" />
                 <Column field="id" header="ID" />

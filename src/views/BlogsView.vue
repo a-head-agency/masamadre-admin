@@ -10,7 +10,7 @@ import {
     useArticles
 } from '@/features/blogs'
 import { useDialog } from 'primevue/usedialog'
-import dateFormat from 'dateformat'
+import dateFormat from '@/dateformat'
 
 const initialRowsPerPage = 20
 
@@ -31,9 +31,10 @@ const dialog = useDialog()
 const beginCreateArticleInteraction = () => {
     dialog.open(CreateArticle, {
         props: {
-            class: 'max-w-6xl w-full',
+            class: 'max-w-6xl w-full mx-4',
             modal: true,
-            header: 'Новая статья'
+            header: 'Новая статья',
+            dismissableMask: true
         } as any
     })
 }
@@ -41,9 +42,10 @@ const beginCreateArticleInteraction = () => {
 const beginDeleteArticleInteraction = (article: IBlog) => {
     dialog.open(DeleteArticle, {
         props: {
-            class: 'max-w-xl w-full',
+            class: 'max-w-xl w-full mx-4',
             modal: true,
-            header: 'Подтвердите удаление'
+            header: 'Подтвердите удаление',
+            dismissableMask: true
         } as any,
         onClose: () => {
             selected.value = undefined
@@ -57,9 +59,10 @@ const beginDeleteArticleInteraction = (article: IBlog) => {
 const beginUpdateArticleInteraction = (article: IBlog) => {
     dialog.open(UpdateArticle, {
         props: {
-            class: 'max-w-6xl w-full',
+            class: 'max-w-6xl w-full mx-4',
             modal: true,
-            header: 'Изменить статью'
+            header: 'Изменить статью',
+            dismissableMask: true
         } as any,
         onClose: () => {
             selected.value = undefined
@@ -113,38 +116,41 @@ onMounted(() => {
 
 <template>
     <main class="flex h-screen flex-col items-stretch px-4" ref="root">
-        <h1 class="my-12 text-center text-3xl font-semibold leading-none">Статьи</h1>
+        <h1 class="my-12 text-center text-3xl font-semibold leading-none text-white">Статьи</h1>
 
         <ContextMenu ref="cm" :model="menuModel" @hide="selected = undefined" />
 
-        <Toolbar class="border-white/10">
+        <Toolbar>
             <template #center>
-                <div class="flex w-full">
-                    <div class="flex flex-1 justify-start gap-2">
-                        <Button icon="pi pi-refresh" :disabled="isFetching" @click="refresh()" />
-                        <Button icon="pi pi-plus" @click="beginCreateArticleInteraction()" />
-                    </div>
-
-                    <div class="flex flex-1 justify-center">
-                        <span class="p-input-icon-left">
-                            <i class="pi pi-search" />
-                            <InputText disabled v-model="search" placeholder="Поиск" />
-                        </span>
-                    </div>
-
-                    <div class="flex flex-1 justify-end gap-2">
-                        <Button
-                            icon="pi pi-pencil"
-                            :disabled="!selected"
-                            @click="beginUpdateArticleInteraction(selected!)"
-                        />
-                        <Button
-                            :disabled="!selected"
-                            icon="pi pi-times"
-                            severity="danger"
-                            @click="beginDeleteArticleInteraction(selected!)"
-                        />
-                    </div>
+                <div class="flex w-full flex-wrap gap-2">
+                    <Button
+                        class="shrink-0 max-md:grow"
+                        icon="pi pi-refresh"
+                        :disabled="isFetching"
+                        @click="refresh()"
+                    />
+                    <Button
+                        class="shrink-0 max-md:grow"
+                        icon="pi pi-plus"
+                        @click="beginCreateArticleInteraction()"
+                    />
+                    <IconField iconPosition="left" class="grow max-lg:order-1 max-lg:w-full">
+                        <InputIcon class="pi pi-search"></InputIcon>
+                        <InputText v-model="search" placeholder="Поиск" class="w-full" />
+                    </IconField>
+                    <Button
+                        class="shrink-0 max-md:grow"
+                        icon="pi pi-pencil"
+                        :disabled="!selected"
+                        @click="beginUpdateArticleInteraction(selected!)"
+                    />
+                    <Button
+                        class="shrink-0 max-md:grow"
+                        :disabled="!selected"
+                        icon="pi pi-times"
+                        severity="danger"
+                        @click="beginDeleteArticleInteraction(selected!)"
+                    />
                 </div>
             </template>
         </Toolbar>
@@ -170,11 +176,18 @@ onMounted(() => {
                 paginator
                 :first="0"
                 :rows="initialRowsPerPage"
-                :rowsPerPageOptions="[5, 10, 20, 50]"
                 dataKey="id"
                 tableStyle="min-width: 50rem"
                 @page="onPage($event)"
                 :totalRecords="data?.total"
+                :page-link-size="5"
+                :paginator-template="{
+                    '640px': 'PrevPageLink CurrentPageReport NextPageLink',
+                    '960px':
+                        'FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink',
+                    '1300px': 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink'
+                }"
+                current-page-report-template="{currentPage} из {totalPages}"
             >
                 <Column selectionMode="single" headerStyle="width: 3rem" />
                 <Column field="id" header="ID" />

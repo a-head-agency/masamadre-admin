@@ -1,6 +1,6 @@
 <template>
     <form @submit.prevent="onSubmit">
-        <div class="flex gap-4">
+        <div class="grid grid-cols-1 gap-x-4 md:grid-cols-2">
             <MyInputNumber name="id" label="ID" disabled />
             <MyInputNumber name="user_id" label="ID пользователя" disabled />
         </div>

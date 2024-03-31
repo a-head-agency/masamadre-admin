@@ -31,10 +31,6 @@ export const useArticles = <SData>(
     return useQuery({
         queryKey: ['blogs', { offset, limit }] as any,
         queryFn: async ({ queryKey }) => {
-            return {
-                list: [],
-                total: 0
-            } satisfies GetBlogsResponse
             const response = await axiosPrivate.get<GetBlogsResponse>('admin/blogs', {
                 params: {
                     offset: (queryKey[1] as any).offset as number,

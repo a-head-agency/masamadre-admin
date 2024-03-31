@@ -6,7 +6,7 @@ import { CreateTag, DeleteTag, useTags, type ITag } from '@/features/tags'
 import { useDialog } from 'primevue/usedialog'
 import { useDebounce } from '@vueuse/core'
 import UpdateTag from '@/features/tags/UpdateTag.vue'
-import dateFormat from 'dateformat'
+import dateFormat from '@/dateformat'
 
 const rowsPerPage = ref(20)
 
@@ -35,9 +35,10 @@ const dialog = useDialog()
 const beginCreateTagInteraction = () => {
     dialog.open(CreateTag, {
         props: {
-            class: 'w-full max-w-xl',
+            class: 'w-full max-w-xl mx-4',
             modal: true,
-            header: 'Новый тег'
+            header: 'Новый тег',
+            dismissableMask: true
         } as any
     })
 }
@@ -45,9 +46,10 @@ const beginCreateTagInteraction = () => {
 const beginDeleteTagInteraction = (tag: ITag) => {
     dialog.open(DeleteTag, {
         props: {
-            class: 'w-full max-w-xl',
+            class: 'w-full max-w-xl mx-4',
             modal: true,
-            header: 'Удалить тег'
+            header: 'Удалить тег',
+            dismissableMask: true
         } as any,
         onClose: () => {
             selected.value = undefined
@@ -61,9 +63,10 @@ const beginDeleteTagInteraction = (tag: ITag) => {
 const beginUpdateTagInteraction = (tag: ITag) => {
     dialog.open(UpdateTag, {
         props: {
-            class: 'w-full max-w-xl',
+            class: 'w-full max-w-xl mx-4',
             modal: true,
-            header: 'Изменить тег'
+            header: 'Изменить тег',
+            dismissableMask: true
         } as any,
         onClose: () => {
             selected.value = undefined
@@ -117,38 +120,41 @@ onMounted(() => {
 
 <template>
     <main class="flex h-screen flex-col items-stretch px-4" ref="root">
-        <h1 class="my-12 text-center text-3xl font-semibold leading-none">Теги</h1>
+        <h1 class="my-12 text-center text-3xl font-semibold leading-none text-white">Теги</h1>
 
         <ContextMenu ref="cm" :model="menuModel" @hide="selected = undefined" />
 
-        <Toolbar class="border-white/10">
+        <Toolbar>
             <template #center>
-                <div class="flex w-full">
-                    <div class="flex flex-1 gap-2">
-                        <Button icon="pi pi-refresh" :disabled="isFetching" @click="refresh()" />
-                        <Button icon="pi pi-plus" @click="beginCreateTagInteraction()" />
-                    </div>
-
-                    <div class="flex flex-1 justify-center">
-                        <span class="p-input-icon-left">
-                            <i class="pi pi-search" />
-                            <InputText placeholder="Поиск" v-model="search" />
-                        </span>
-                    </div>
-
-                    <div class="flex flex-1 justify-end gap-2">
-                        <Button
-                            icon="pi pi-pencil"
-                            :disabled="!selected"
-                            @click="beginUpdateTagInteraction(selected!)"
-                        />
-                        <Button
-                            :disabled="!selected"
-                            icon="pi pi-times"
-                            severity="danger"
-                            @click="beginDeleteTagInteraction(selected!)"
-                        />
-                    </div>
+                <div class="flex w-full flex-wrap gap-2">
+                    <Button
+                        class="shrink-0 max-md:grow"
+                        icon="pi pi-refresh"
+                        :disabled="isFetching"
+                        @click="refresh()"
+                    />
+                    <Button
+                        class="shrink-0 max-md:grow"
+                        icon="pi pi-plus"
+                        @click="beginCreateTagInteraction()"
+                    />
+                    <IconField iconPosition="left" class="grow max-lg:order-1 max-lg:w-full">
+                        <InputIcon class="pi pi-search"></InputIcon>
+                        <InputText v-model="search" placeholder="Поиск" class="w-full" />
+                    </IconField>
+                    <Button
+                        class="shrink-0 max-md:grow"
+                        icon="pi pi-pencil"
+                        :disabled="!selected"
+                        @click="beginUpdateTagInteraction(selected!)"
+                    />
+                    <Button
+                        class="shrink-0 max-md:grow"
+                        :disabled="!selected"
+                        icon="pi pi-times"
+                        severity="danger"
+                        @click="beginDeleteTagInteraction(selected!)"
+                    />
                 </div>
             </template>
         </Toolbar>
@@ -179,6 +185,14 @@ onMounted(() => {
                 tableStyle="min-width: 50rem"
                 @page="onPage($event)"
                 :totalRecords="data?.total"
+                :page-link-size="5"
+                :paginator-template="{
+                    '640px': 'PrevPageLink CurrentPageReport NextPageLink',
+                    '960px':
+                        'FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink',
+                    '1300px': 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink'
+                }"
+                current-page-report-template="{currentPage} из {totalPages}"
             >
                 <Column selectionMode="single" headerStyle="width: 3rem" />
                 <Column field="id" header="ID" />

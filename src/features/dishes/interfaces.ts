@@ -16,7 +16,7 @@ export interface IDish {
     active: boolean
     belki: number
     can_deliver: boolean
-    category: ICategory[]
+    categories: ICategory[]
     color: number
     count: number
     created_at: string
@@ -37,6 +37,12 @@ export interface IDish {
     updated_at: string
     weight: number
     ziri: number
+    link: string | undefined
+    keywords: string | undefined
+    description_seo: string | undefined
+    title: string | undefined
+    alt: string | undefined
+    iiko_sale_id: string | undefined
 
     tags: ITag[]
 

@@ -24,10 +24,6 @@ export const useOrders = <SData>(
     return useQuery({
         queryKey: ['orders', { offset, limit, search }] as any,
         queryFn: async ({ queryKey }) => {
-            return {
-                list: [],
-                total: 0
-            } satisfies GetOrdersResponse
             const response = await axiosPrivate.get<GetOrdersResponse>('admin/orders', {
                 params: {
                     offset: (queryKey[1] as any).offset as number,
@@ -79,7 +75,6 @@ export const useOrder = (id: MaybeRef<number | undefined>) => {
                     id: orderId
                 }
             })
-            console.log(response.data)
             return response.data
         }
     })

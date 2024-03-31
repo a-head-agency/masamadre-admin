@@ -10,7 +10,7 @@ import {
 } from '@/features/restaurants'
 import { useDialog } from 'primevue/usedialog'
 import { useDebounce } from '@vueuse/core'
-import dateFormat from 'dateformat'
+import dateFormat from '@/dateformat'
 
 const rowsPerPage = ref(20)
 
@@ -38,18 +38,20 @@ const dialog = useDialog()
 const beginCreateRestaurantInteraction = () => {
     dialog.open(CreateRestaurant, {
         props: {
-            class: 'w-full max-w-4xl',
+            class: 'w-full max-w-4xl mx-4',
             modal: true,
-            header: 'Новый ресторан'
+            header: 'Новый ресторан',
+            dismissableMask: true
         } as any
     })
 }
 const beginUpdateRestaurantInteraction = (restaurant: IRestaurant) => {
     dialog.open(UpdateRestaurant, {
         props: {
-            class: 'w-full max-w-4xl',
+            class: 'w-full max-w-4xl mx-4',
             modal: true,
-            header: 'Изменить ресторан'
+            header: 'Изменить ресторан',
+            dismissableMask: true
         } as any,
         onClose: () => {
             selected.value = undefined
@@ -63,9 +65,10 @@ const beginUpdateRestaurantInteraction = (restaurant: IRestaurant) => {
 const beginDeleteRestaurantInteraction = (restaurant: IRestaurant) => {
     dialog.open(DeleteRestaurant, {
         props: {
-            class: 'w-full max-w-xl',
+            class: 'w-full max-w-xl mx-4',
             modal: true,
-            header: 'Удалить ресторан'
+            header: 'Удалить ресторан',
+            dismissableMask: true
         } as any,
         onClose: () => {
             selected.value = undefined
@@ -119,38 +122,41 @@ onMounted(() => {
 
 <template>
     <main class="flex h-screen flex-col items-stretch px-4" ref="root">
-        <h1 class="my-12 text-center text-3xl font-semibold leading-none">Рестораны</h1>
+        <h1 class="my-12 text-center text-3xl font-semibold leading-none text-white">Рестораны</h1>
 
         <ContextMenu ref="cm" :model="menuModel" @hide="selected = undefined" />
 
-        <Toolbar class="border-white/10">
+        <Toolbar>
             <template #center>
-                <div class="flex w-full">
-                    <div class="flex flex-1 justify-start gap-2">
-                        <Button icon="pi pi-refresh" :disabled="isFetching" @click="refresh()" />
-                        <Button icon="pi pi-plus" @click="beginCreateRestaurantInteraction()" />
-                    </div>
-
-                    <div class="flex flex-1 justify-center">
-                        <span class="p-input-icon-left">
-                            <i class="pi pi-search" />
-                            <InputText placeholder="Поиск" v-model="search" />
-                        </span>
-                    </div>
-
-                    <div class="flex flex-1 justify-end gap-2">
-                        <Button
-                            icon="pi pi-pencil"
-                            :disabled="!selected"
-                            @click="beginUpdateRestaurantInteraction(selected!)"
-                        />
-                        <Button
-                            :disabled="!selected"
-                            icon="pi pi-times"
-                            severity="danger"
-                            @click="beginDeleteRestaurantInteraction(selected!)"
-                        />
-                    </div>
+                <div class="flex w-full flex-wrap gap-2">
+                    <Button
+                        class="shrink-0 max-md:grow"
+                        icon="pi pi-refresh"
+                        :disabled="isFetching"
+                        @click="refresh()"
+                    />
+                    <Button
+                        class="shrink-0 max-md:grow"
+                        icon="pi pi-plus"
+                        @click="beginCreateRestaurantInteraction()"
+                    />
+                    <IconField iconPosition="left" class="grow max-lg:order-1 max-lg:w-full">
+                        <InputIcon class="pi pi-search"></InputIcon>
+                        <InputText v-model="search" placeholder="Поиск" class="w-full" />
+                    </IconField>
+                    <Button
+                        class="shrink-0 max-md:grow"
+                        icon="pi pi-pencil"
+                        :disabled="!selected"
+                        @click="beginUpdateRestaurantInteraction(selected!)"
+                    />
+                    <Button
+                        class="shrink-0 max-md:grow"
+                        :disabled="!selected"
+                        icon="pi pi-times"
+                        severity="danger"
+                        @click="beginDeleteRestaurantInteraction(selected!)"
+                    />
                 </div>
             </template>
         </Toolbar>
@@ -170,7 +176,7 @@ onMounted(() => {
                 v-model:contextMenuSelection="selected"
                 @rowContextmenu="onRowContextMenu"
                 :meta-key-selection="false"
-                class="h-full overflow-hidden rounded-lg border border-white/10 border-white/10"
+                class="h-full overflow-hidden rounded-lg border border-white/10"
                 :value="data?.list"
                 lazy
                 paginator
@@ -180,6 +186,14 @@ onMounted(() => {
                 tableStyle="min-width: 50rem"
                 @page="onPage($event)"
                 :totalRecords="data?.total"
+                :page-link-size="5"
+                :paginator-template="{
+                    '640px': 'PrevPageLink CurrentPageReport NextPageLink',
+                    '960px':
+                        'FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink',
+                    '1300px': 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink'
+                }"
+                current-page-report-template="{currentPage} из {totalPages}"
             >
                 <Column selectionMode="single" headerStyle="width: 3rem" />
                 <Column field="id" header="ID" />

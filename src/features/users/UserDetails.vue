@@ -81,7 +81,6 @@
 <script setup lang="ts">
 import type { IUser } from './interfaces'
 import { inject } from 'vue'
-import dateFormat from 'dateformat'
 import UserRoleBadge from './UserRoleBadge.vue'
 import UserStatusBadge from './UserStatusBadge.vue'
 

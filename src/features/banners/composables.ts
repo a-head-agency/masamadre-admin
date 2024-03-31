@@ -24,10 +24,6 @@ export const useBanners = <SData>(
     return useQuery({
         queryKey: ['banners', { offset, limit, search }] as any,
         queryFn: async ({ queryKey }) => {
-            return {
-                list: [],
-                total: 0
-            } satisfies GetBannersResponse
             const response = await axiosPrivate.get<GetBannersResponse>('admin/banners', {
                 params: {
                     offset: (queryKey[1] as any).offset as number,

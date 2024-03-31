@@ -26,10 +26,6 @@ export const useStories = <SData>(
     return useQuery({
         queryKey: ['stories', { offset, limit, search }] as any,
         queryFn: async ({ queryKey }) => {
-            return {
-                list: [],
-                total: 0
-            } satisfies GetStoriesResponse
             const response = await axiosPrivate.get<GetStoriesResponse>('admin/stories', {
                 params: {
                     offset: (queryKey[1] as any).offset as number,

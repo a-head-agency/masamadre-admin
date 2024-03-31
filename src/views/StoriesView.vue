@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import type { DataTablePageEvent } from 'primevue/datatable'
-import dateFormat from 'dateformat'
+import dateFormat from '@/dateformat'
 
 import {
     CreateStory,
@@ -41,9 +41,10 @@ const dialog = useDialog()
 const beginCreateStoryInteraction = () => {
     dialog.open(CreateStory, {
         props: {
-            class: 'max-w-4xl w-full',
+            class: 'max-w-4xl w-full mx-4',
             modal: true,
-            header: 'Новая история'
+            header: 'Новая история',
+            dismissableMask: true
         } as any
     })
 }
@@ -51,9 +52,10 @@ const beginCreateStoryInteraction = () => {
 const beginDeleteStoryInteraction = (story: IStoryImage | IStoryVideo) => {
     dialog.open(DeleteStory, {
         props: {
-            class: 'max-w-xl w-full',
+            class: 'max-w-xl w-full mx-4',
             modal: true,
-            header: 'Удалить историю'
+            header: 'Удалить историю',
+            dismissableMask: true
         } as any,
         onClose: () => {
             selected.value = undefined
@@ -67,9 +69,10 @@ const beginDeleteStoryInteraction = (story: IStoryImage | IStoryVideo) => {
 const beginEditStoryInteraction = (story: IStoryImage | IStoryVideo) => {
     dialog.open(EditStory, {
         props: {
-            class: 'max-w-4xl w-full',
+            class: 'max-w-4xl w-full mx-4',
             modal: true,
-            header: 'Изменить историю'
+            header: 'Изменить историю',
+            dismissableMask: true
         } as any,
         onClose: () => {
             selected.value = undefined
@@ -123,38 +126,41 @@ onMounted(() => {
 
 <template>
     <main class="flex h-screen flex-col items-stretch px-4" ref="root">
-        <h1 class="my-12 text-center text-3xl font-semibold leading-none">Истории</h1>
+        <h1 class="my-12 text-center text-3xl font-semibold leading-none text-white">Истории</h1>
 
         <ContextMenu ref="cm" :model="menuModel" @hide="selected = undefined" />
 
-        <Toolbar class="border-white/10">
+        <Toolbar>
             <template #center>
-                <div class="flex w-full">
-                    <div class="flex flex-1 justify-start gap-2">
-                        <Button icon="pi pi-refresh" :disabled="isFetching" @click="refresh()" />
-                        <Button icon="pi pi-plus" @click="beginCreateStoryInteraction()" />
-                    </div>
-
-                    <div class="flex flex-1 justify-center">
-                        <span class="p-input-icon-left">
-                            <i class="pi pi-search" />
-                            <InputText disabled placeholder="Поиск" />
-                        </span>
-                    </div>
-
-                    <div class="flex flex-1 justify-end gap-2">
-                        <Button
-                            icon="pi pi-pencil"
-                            :disabled="!selected"
-                            @click="beginEditStoryInteraction(selected!)"
-                        />
-                        <Button
-                            icon="pi pi-times"
-                            severity="danger"
-                            :disabled="!selected"
-                            @click="beginDeleteStoryInteraction(selected!)"
-                        />
-                    </div>
+                <div class="flex w-full flex-wrap gap-2">
+                    <Button
+                        class="shrink-0 max-md:grow"
+                        icon="pi pi-refresh"
+                        :disabled="isFetching"
+                        @click="refresh()"
+                    />
+                    <Button
+                        class="shrink-0 max-md:grow"
+                        icon="pi pi-plus"
+                        @click="beginCreateStoryInteraction()"
+                    />
+                    <IconField iconPosition="left" class="grow max-lg:order-1 max-lg:w-full">
+                        <InputIcon class="pi pi-search"></InputIcon>
+                        <InputText disabled placeholder="Поиск" class="w-full" />
+                    </IconField>
+                    <Button
+                        class="shrink-0 max-md:grow"
+                        icon="pi pi-pencil"
+                        :disabled="!selected"
+                        @click="beginEditStoryInteraction(selected!)"
+                    />
+                    <Button
+                        class="shrink-0 max-md:grow"
+                        :disabled="!selected"
+                        icon="pi pi-times"
+                        severity="danger"
+                        @click="beginDeleteStoryInteraction(selected!)"
+                    />
                 </div>
             </template>
         </Toolbar>
@@ -184,6 +190,14 @@ onMounted(() => {
                 tableStyle="min-width: 50rem"
                 @page="onPage($event)"
                 :totalRecords="data?.total"
+                :page-link-size="5"
+                :paginator-template="{
+                    '640px': 'PrevPageLink CurrentPageReport NextPageLink',
+                    '960px':
+                        'FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink',
+                    '1300px': 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink'
+                }"
+                current-page-report-template="{currentPage} из {totalPages}"
             >
                 <Column selectionMode="single" headerStyle="width: 3rem" />
                 <Column field="id" header="ID" />

@@ -2,9 +2,7 @@
     <div>
         <p class="mb-8 text-lg leading-loose">
             Вы уверены, что хотите удалить статью
-            <span
-                class="inline-block min-w-max whitespace-nowrap rounded-lg bg-indigo-100 px-4 font-bold"
-            >
+            <span class="block w-fit rounded-lg bg-indigo-100 px-4 font-bold">
                 {{ article.name }} (id: {{ article.id }})
             </span>
         </p>

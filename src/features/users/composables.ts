@@ -24,10 +24,6 @@ export const useUsers = <SData>(
     return useQuery({
         queryKey: ['users', { offset, limit, search }] as any,
         queryFn: async ({ queryKey }) => {
-            return {
-                users: [],
-                total: 0
-            } satisfies GetUsersResponse
             const response = await axiosPrivate.get<GetUsersResponse>('admin/users', {
                 params: {
                     offset: (queryKey[1] as any).offset as number,

@@ -1,6 +1,6 @@
 <template>
     <form class="p-2" @submit="onSubmit">
-        <div class="flex items-center justify-between gap-4">
+        <div class="flex flex-col items-center justify-between gap-4 md:flex-row">
             <div class="aspect-square h-64 shrink-0">
                 <MyUploadImage
                     name="img"
@@ -11,9 +11,10 @@
                     filenamePropInResponse="link"
                 />
             </div>
-            <div class="grow">
-                <MyInputNumber name="id" label="ID" disabled />
-                <MyInputText name="name" label="Название" />
+            <div class="w-full grow">
+                <MyInputNumber class="w-full" name="id" label="ID" disabled />
+                <MyInputText class="w-full" name="name" label="Название" />
+                <MyInputText class="w-full" name="alt" label="Альтернативный текст" />
                 <DropdownSelect
                     name="active"
                     label="Активен"

@@ -48,8 +48,8 @@
             </template>
         </DropdownSelect>
 
-        <div class="mx-auto w-64 mb-8">
-            <p class="text-base mb-1 text-center font-medium">Превью</p>
+        <div class="mx-auto mb-8 w-64">
+            <p class="mb-1 text-center text-base font-medium">Превью</p>
             <MyUploadImage
                 name="preview"
                 class="rounded-lg"
@@ -68,9 +68,9 @@
         <fieldset
             v-for="(field, idx) in fields"
             :key="field.key"
-            class="relative mb-4 flex w-full items-center gap-8 rounded-lg border-2 border-dashed border-gray-200 p-4"
+            class="relative mb-4 flex w-full flex-wrap items-center justify-center gap-8 rounded-lg border-2 border-dashed border-gray-200 p-4"
         >
-            <div class="w-72 shrink-0">
+            <div class="mt-8 w-72 shrink-0">
                 <MyUploadImage
                     :name="`story_items[${idx}].img`"
                     class="rounded-lg"
@@ -81,7 +81,8 @@
                 />
             </div>
 
-            <div class="w-full">
+            <div class="grow">
+                <MyInputText :name="`story_items[${idx}].text`" label="Альтернативый текст" />
                 <MyTextarea :name="`story_items[${idx}].text`" label="Текст" />
             </div>
             <button class="absolute right-4 top-4" type="button" @click="remove(idx)">
@@ -116,6 +117,7 @@ import { useToast } from 'primevue/usetoast'
 import { useForm, useFieldArray } from 'vee-validate'
 import * as yup from 'yup'
 import { axiosPrivate } from '@/network'
+import MyInputText from '@/components/MyInputText.vue'
 
 const toast = useToast()
 const queryClient = useQueryClient()

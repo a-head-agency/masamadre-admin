@@ -22,6 +22,7 @@
 
         <MyInputText name="link" label="Ссылка" />
         <DropdownSelect
+            class="mb-6"
             name="active"
             label="Активен"
             placeholder="Выберите"
@@ -89,8 +90,8 @@ const { handleSubmit } = useForm({
     validationSchema: yup.object({
         img: yup.string().required().label('Десктопная версия изображения'),
         phone_img: yup.string().required().label('Мобильная версия изображения'),
+        active: yup.boolean().required().label('Активно'),
         link: yup.string().required().label('Ссылка'),
-        active: yup.boolean().required().label('Активно')
     }),
     initialValues: banner
 })

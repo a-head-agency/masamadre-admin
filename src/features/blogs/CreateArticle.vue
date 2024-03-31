@@ -1,9 +1,8 @@
 <template>
     <form @submit="onSubmit">
-        <div class="mb-2 flex gap-8">
-            <MyInputNumber disabled class="mb-2 flex-1" name="id" label="ID статьи" />
+        <div class="grid grid-cols-1 gap-x-4 lg:grid-cols-2">
+            <MyInputNumber disabled class="flex-1" name="id" label="ID статьи" />
             <DropdownSelect
-                class="flex-1"
                 name="active"
                 label="Активность"
                 :options="[
@@ -52,7 +51,7 @@
         <div class="mb-8">
             <p class="mb-2 text-center font-medium">Десктопная версия (3:4)</p>
             <MyUploadImage
-                class="mx-auto max-w-[50%]"
+                class="mx-auto sm:max-w-[50%]"
                 name="img"
                 :aspect-ratio="3 / 4"
                 filename-prop-in-request="file"
@@ -63,7 +62,7 @@
         <div class="mb-8">
             <p class="mb-2 text-center font-medium">Мобильная версия (2:1)</p>
             <MyUploadImage
-                class="mx-auto max-w-[50%]"
+                class="mx-auto sm:max-w-[50%]"
                 name="phone_img"
                 :aspect-ratio="2 / 1"
                 filename-prop-in-request="file"
@@ -72,7 +71,15 @@
             />
         </div>
 
-        <MyEditor class="h-full flex-1" name="text" label="Контент" />
+        <MyEditor class="mb-6 h-full flex-1" name="text" label="Контент" />
+
+        <h2 class="mb-6 text-lg font-bold">SEO</h2>
+        <div class="grid grid-flow-row grid-cols-1 gap-x-4 lg:grid-cols-2">
+            <MyInputText name="link" label="Ссылка" />
+            <MyInputText name="title" label="Title" />
+            <MyInputText class="col-span-full" name="description_seo" label="Описание" />
+            <MyInputText class="col-span-full" name="keywords" label="Ключевые слова" />
+        </div>
 
         <Button
             class="mt-8 flex w-full items-center p-4"
@@ -101,7 +108,11 @@ const { handleSubmit } = useForm({
         img: yup.string().required().label('Десктопная версия изображения'),
         phone_img: yup.string().required().label('Мобильная версия изображения'),
         text: yup.string().required().label('Контент'),
-        active: yup.boolean().required().label('Активность')
+        active: yup.boolean().required().label('Активность'),
+        link: yup.string().required().label('Ссылка'),
+        keywords: yup.string().label('Ключевые слова'),
+        description_seo: yup.string().label('Описание'),
+        title: yup.string().label('Title')
     }),
     initialValues: {
         active: false

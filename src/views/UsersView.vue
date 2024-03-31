@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue'
 import type { DataTablePageEvent, DataTableRowDoubleClickEvent } from 'primevue/datatable'
 import { useDebounce } from '@vueuse/core'
 
-import dateFormat from 'dateformat'
+import dateFormat from '@/dateformat'
 import {
     ChangeStatus,
     GiftBonusesToUser,
@@ -47,9 +47,10 @@ const dialog = useDialog()
 const beginBlockUnblockUserInteraction = (user: IUser) => {
     dialog.open(ChangeStatus, {
         props: {
-            class: 'w-full max-w-xl',
+            class: 'w-full max-w-xl mx-4',
             modal: true,
-            header: 'Изменить статус пользователя'
+            header: 'Изменить статус пользователя',
+            dismissableMask: true
         } as any,
         onClose: () => {
             selected.value = undefined
@@ -63,9 +64,10 @@ const beginBlockUnblockUserInteraction = (user: IUser) => {
 const beginGiftBonusesToUserInteraction = (user: IUser) => {
     dialog.open(GiftBonusesToUser, {
         props: {
-            class: 'w-full max-w-xl',
+            class: 'w-full max-w-xl mx-4',
             modal: true,
-            header: 'Подарить бонусы пользователю'
+            header: 'Подарить бонусы пользователю',
+            dismissableMask: true
         } as any,
         onClose: () => {
             selected.value = undefined
@@ -79,9 +81,10 @@ const beginGiftBonusesToUserInteraction = (user: IUser) => {
 const beginSendNotificationInteraction = (user: IUser) => {
     dialog.open(SendNotification, {
         props: {
-            class: 'w-full max-w-xl',
+            class: 'w-full max-w-xl mx-4',
             modal: true,
-            header: 'Отправить уведомление'
+            header: 'Отправить уведомление',
+            dismissableMask: true
         } as any,
         onClose: () => {
             selected.value = undefined
@@ -95,9 +98,10 @@ const beginSendNotificationInteraction = (user: IUser) => {
 const beginShowUserDetailsInteraction = (user: IUser) => {
     dialog.open(UserDetails, {
         props: {
-            class: 'w-full max-w-xl',
+            class: 'w-full max-w-xl mx-4',
             modal: true,
-            header: 'Подробности'
+            header: 'Подробности',
+            dismissableMask: true
         } as any,
         onClose: () => {
             selected.value = undefined
@@ -156,45 +160,45 @@ onMounted(() => {
 
 <template>
     <main class="flex h-screen flex-col items-stretch px-4" ref="root">
-        <h1 class="my-12 text-center text-3xl font-semibold leading-none">
+        <h1 class="my-12 text-center text-3xl font-semibold leading-none text-white">
             Пользователи
         </h1>
 
         <ContextMenu ref="cm" :model="menuModel" @hide="selected = undefined" />
 
-        <Toolbar class="border-white/10">
+        <Toolbar>
             <template #center>
-                <div class="flex w-full">
-                    <div class="flex flex-1 justify-start gap-2">
-                        <Button icon="pi pi-refresh" :disabled="isFetching" @click="refresh()" />
-                    </div>
-
-                    <div class="flex flex-1 justify-center">
-                        <span class="p-input-icon-left">
-                            <i class="pi pi-search" />
-                            <InputText placeholder="Поиск" v-model="search" />
-                        </span>
-                    </div>
-
-                    <div class="flex flex-1 justify-end gap-2">
-                        <Button
-                            icon="pi pi-user-edit"
-                            :disabled="!selected"
-                            @click="beginBlockUnblockUserInteraction(selected!)"
-                        />
-                        <Button
-                            :disabled="!selected"
-                            icon="pi pi-gift"
-                            severity="primary"
-                            @click="beginGiftBonusesToUserInteraction(selected!)"
-                        />
-                        <Button
-                            :disabled="!selected"
-                            icon="pi pi-bell"
-                            severity="primary"
-                            @click="beginSendNotificationInteraction(selected!)"
-                        />
-                    </div>
+                <div class="flex w-full flex-wrap gap-2 lg:gap-4">
+                    <Button
+                        class="shrink-0 max-lg:grow"
+                        icon="pi pi-refresh"
+                        :disabled="isFetching"
+                        @click="refresh()"
+                    />
+                    <IconField iconPosition="left" class="grow max-lg:order-1 max-lg:w-full">
+                        <InputIcon class="pi pi-search"></InputIcon>
+                        <InputText v-model="search" placeholder="Поиск" class="w-full" />
+                    </IconField>
+                    <Button
+                        class="shrink-0 max-lg:grow"
+                        icon="pi pi-user-edit"
+                        :disabled="!selected"
+                        @click="beginBlockUnblockUserInteraction(selected!)"
+                    />
+                    <Button
+                        class="shrink-0 max-lg:grow"
+                        :disabled="!selected"
+                        icon="pi pi-gift"
+                        severity="primary"
+                        @click="beginGiftBonusesToUserInteraction(selected!)"
+                    />
+                    <Button
+                        class="shrink-0 max-lg:grow"
+                        :disabled="!selected"
+                        icon="pi pi-bell"
+                        severity="primary"
+                        @click="beginSendNotificationInteraction(selected!)"
+                    />
                 </div>
             </template>
         </Toolbar>
@@ -213,6 +217,14 @@ onMounted(() => {
                 selection-mode="single"
                 contextMenu
                 v-model:contextMenuSelection="selected"
+                :page-link-size="5"
+                :paginator-template="{
+                    '640px': 'PrevPageLink CurrentPageReport NextPageLink',
+                    '960px':
+                        'FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink',
+                    '1300px': 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink'
+                }"
+                current-page-report-template="{currentPage} из {totalPages}"
                 @rowContextmenu="onRowContextMenu"
                 @row-dblclick="onRowDoubleClick"
                 :meta-key-selection="false"

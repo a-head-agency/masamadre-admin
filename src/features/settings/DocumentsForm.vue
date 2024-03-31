@@ -30,8 +30,7 @@ const { data } = useQuery({
     queryFn: async () => {
         const response = await axiosPrivate.get('admin/settings/text')
         return response.data
-    },
-    enabled: false
+    }
 })
 
 const { handleSubmit: handleSubmitDocuments } = useForm({

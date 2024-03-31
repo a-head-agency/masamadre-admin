@@ -24,10 +24,6 @@ export const useTags = <SData>(
     return useQuery({
         queryKey: ['tags', { offset, limit, search }] as any,
         queryFn: async ({ queryKey }) => {
-            return {
-                list: [],
-                total: 0
-            } satisfies GetTagsResponse
             const response = await axiosPrivate.get<GetTagsResponse>('admin/tags', {
                 params: {
                     offset: (queryKey[1] as any).offset as number,

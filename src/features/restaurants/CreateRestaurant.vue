@@ -1,28 +1,20 @@
 <template>
     <form class="p-2" @submit.prevent="onSubmit">
         <h2 class="mb-4 text-lg font-bold">Общая информация</h2>
-        <div class="mb-1 flex gap-4">
+        <div class="mb-8 grid grid-flow-row grid-cols-1 gap-4 lg:grid-cols-2">
             <MyInputText name="name" label="Название" />
             <MyInputText name="org_id" label="ID организации" />
-        </div>
-        <div class="mb-1 flex gap-4">
             <MyInputText name="terminal_id" label="ID терминала" />
             <MyInputText name="curier_card" label="ID оплаты картой курьеру" />
-        </div>
-        <div class="mb-1 flex gap-4">
             <MyInputText name="online" label="ID оплаты онлайн" />
             <MyInputText name="cash" label="ID оплаты наличными" />
-        </div>
-        <div class="mb-8 flex gap-4">
             <MyInputText name="type_rest" label="Тип заказа ресторана" />
             <MyInputText name="type_curier" label="Тип доставки ресторана" />
         </div>
 
         <h2 class="mb-4 text-lg font-bold">Локация</h2>
-        <div class="mb-2 flex gap-4">
-            <MyInputText name="adres" label="Адрес" />
-        </div>
-        <div class="mb-8 flex gap-4">
+        <div class="mb-8 grid grid-flow-row grid-cols-1 gap-4 lg:grid-cols-2">
+            <MyInputText class="col-span-full" name="adres" label="Адрес" />
             <MyInputNumber
                 name="lat"
                 label="Широта"

@@ -11,6 +11,7 @@ import {
     PaymentStatusBadge
 } from '@/features/orders'
 import { useDialog } from 'primevue/usedialog'
+import dateformat from '@/dateformat'
 
 const rowsPerPage = ref(20)
 
@@ -50,9 +51,10 @@ const onRowContextMenu = (event: any) => {
 const beginUpdateOrderStatusInteraction = (order: IOrder) => {
     dialog.open(UpdateOrderStatus, {
         props: {
-            class: 'w-full max-w-xl',
+            class: 'w-full max-w-xl mx-4',
             modal: true,
-            header: 'Обновить статус'
+            header: 'Обновить статус',
+            dismissableMask: true
         } as any,
         onClose: () => {
             selected.value = undefined
@@ -67,9 +69,10 @@ const beginShowOrderDetailsInteraction = (order: IOrder) => {
     console.log(order)
     dialog.open(OrderDetails, {
         props: {
-            class: 'w-full max-w-xl',
+            class: 'w-full max-w-xl mx-4',
             modal: true,
-            header: 'Подробности'
+            header: 'Подробности',
+            dismissableMask: true
         } as any,
         onClose: () => {
             selected.value = undefined
@@ -105,32 +108,25 @@ onMounted(() => {
 
 <template>
     <main class="flex h-screen flex-col items-stretch px-4" ref="root">
-        <h1 class="my-12 text-center text-3xl font-semibold leading-none">Заказы</h1>
+        <h1 class="my-12 text-center text-3xl font-semibold leading-none text-white">Заказы</h1>
 
         <ContextMenu ref="cm" :model="menuModel" @hide="selected = undefined" />
 
-        <Toolbar class="border-white/10">
+        <Toolbar>
             <template #center>
-                <div class="flex w-full">
-                    <div class="flex flex-1 justify-start gap-2">
-                        <Button icon="pi pi-refresh" :disabled="isFetching" @click="refresh()" />
-                    </div>
-
-                    <div class="flex flex-1 justify-center">
-                        <span class="p-input-icon-left">
-                            <i class="pi pi-search" />
-                            <InputText disabled placeholder="Поиск" />
-                        </span>
-                    </div>
-
-                    <div class="flex flex-1 justify-end gap-2">
-                        <Button
-                            class="hidden"
-                            icon="pi pi-pencil"
-                            :disabled="!selected"
-                            @click="beginUpdateOrderStatusInteraction(selected!)"
-                        />
-                    </div>
+                <div class="flex w-full flex-wrap gap-2">
+                    <Button
+                        class="shrink-0 max-md:grow"
+                        icon="pi pi-refresh"
+                        :disabled="isFetching"
+                        @click="refresh()"
+                    />
+                    <Button
+                        class="hidden shrink-0 max-md:grow"
+                        icon="pi pi-pencil"
+                        :disabled="!selected"
+                        @click="beginUpdateOrderStatusInteraction(selected!)"
+                    />
                 </div>
             </template>
         </Toolbar>
@@ -161,6 +157,14 @@ onMounted(() => {
                 tableStyle="min-width: 50rem"
                 @page="onPage($event)"
                 :totalRecords="data?.total"
+                :page-link-size="5"
+                :paginator-template="{
+                    '640px': 'PrevPageLink CurrentPageReport NextPageLink',
+                    '960px':
+                        'FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink',
+                    '1300px': 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink'
+                }"
+                current-page-report-template="{currentPage} из {totalPages}"
             >
                 <Column selectionMode="single" headerStyle="width: 3rem" />
                 <Column field="id" header="ID" />
@@ -181,6 +185,11 @@ onMounted(() => {
                     </template>
                 </Column>
                 <Column field="iiko_id" header="IIKO ID" />
+                <Column field="created_at" header="Создан">
+                    <template #body="slotProps">
+                        {{ dateformat(slotProps.data.created_at) }}
+                    </template>
+                </Column>
 
                 <template #loading>
                     <ProgressSpinner class="h-8" />

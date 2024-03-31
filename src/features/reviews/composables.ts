@@ -24,23 +24,19 @@ export const useReviews = <SData>(
     return useQuery({
         queryKey: ['reviews', { offset, limit, search }] as any,
         queryFn: async ({ queryKey }) => {
-            return {
-                list: [],
-                total: 0
-            } satisfies GetReviewsResponse
-            // const response = await axiosPrivate.get<GetReviewsResponse>('admin/reviews', {
-            //     params: {
-            //         offset: (queryKey[1] as any).offset as number,
-            //         limit: (queryKey[1] as any).limit as number,
-            //         search: (queryKey[1] as any).search as string
-            //     }
-            // })
-            // for (const review of response.data.list) {
-            //     if (review.UserID) {
-            //         review.user_id = review.UserID
-            //     }
-            // }
-            // return response.data
+            const response = await axiosPrivate.get<GetReviewsResponse>('admin/reviews', {
+                params: {
+                    offset: (queryKey[1] as any).offset as number,
+                    limit: (queryKey[1] as any).limit as number,
+                    search: (queryKey[1] as any).search as string
+                }
+            })
+            for (const review of response.data.list) {
+                if (review.UserID) {
+                    review.user_id = review.UserID
+                }
+            }
+            return response.data
         },
         select: selector,
         keepPreviousData: true

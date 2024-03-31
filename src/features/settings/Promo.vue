@@ -57,8 +57,7 @@ const { data: dishesOptions } = useQuery({
         const response = await axiosPrivate.get('admin/dishes/rec')
         return response.data
     },
-    select: (v) => v.map((d) => ({ code: d.id, label: `[id: ${d.id}]: ${d.name}` })),
-    enabled: false
+    select: (v) => v.map((d) => ({ code: d.id, label: `[id: ${d.id}]: ${d.name}` }))
 })
 
 const { data } = useQuery({
@@ -73,8 +72,7 @@ const { data } = useQuery({
             return undefined
         }
         return promo
-    },
-    enabled: false
+    }
 })
 
 const { handleSubmit } = useForm({

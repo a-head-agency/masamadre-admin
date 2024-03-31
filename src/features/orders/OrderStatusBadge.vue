@@ -24,9 +24,20 @@
         value="Ожидает оплату"
         severity="warning"
     />
-    <Tag v-else-if="code === 'cooking'" icon="pi pi-fw pi-heart-fill" value="Готовится" />
+    <Tag
+        v-else-if="code === 'cooking'"
+        icon="pi pi-fw pi-heart-fill"
+        value="Готовится"
+        severity="info"
+    />
     <Tag v-else-if="code === 'build'" icon="pi pi-fw pi-box" value="Сборка" />
     <Tag v-else-if="code === 'in_way'" icon="pi pi-fw pi-truck" value="В пути" severity="info" />
+    <Tag
+        v-else-if="code === 'process'"
+        icon="pi pi-fw pi-clock"
+        value="В процессе"
+        severity="info"
+    />
     <Tag
         v-else
         :value="code.charAt(0).toUpperCase() + code.slice(1) || 'Нет данных'"

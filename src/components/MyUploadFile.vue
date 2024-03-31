@@ -6,7 +6,7 @@
             'border-gray': !errorMessage
         }"
     >
-        <div class="flex items-center gap-4">
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
             <FileUpload
                 name="file"
                 :auto="true"
@@ -16,7 +16,7 @@
                 @select="onSelect"
                 :accept="props.accept"
             />
-            <div>
+            <div class="order-1 w-full">
                 <small>{{ value || '&nbsp;' }}</small>
                 <small class="p-error">{{ errorMessage || '&nbsp;' }}</small>
             </div>

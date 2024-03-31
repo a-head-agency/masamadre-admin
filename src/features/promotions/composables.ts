@@ -34,10 +34,6 @@ export const usePromotions = <SData>(
     return useQuery({
         queryKey: ['promotions', { offset, limit }] as any,
         queryFn: async ({ queryKey }) => {
-            return {
-                list: [],
-                total: 0
-            } satisfies GetPromotionsResponse
             const response = await axiosPrivate.get<GetPromotionsResponse>('admin/promos', {
                 params: {
                     offset: (queryKey[1] as any).offset as number,

@@ -29,13 +29,7 @@ const { handleSubmit } = useForm({
 const { isLoading, mutate } = useMutation<any, any, any>({
     mutationFn: async (payload: any) => {
         payload.password = md5(payload.password)
-        // return axiosPublic.post('auth/login', payload)
-        return Promise.resolve({
-            data: {
-                token: 'tipatoken',
-                refreshToken: 'tiparefresh'
-            }
-        })
+        return axiosPublic.post('admin/auth', payload)
     },
     onSuccess({ data }) {
         accessToken.value = data.token
@@ -82,8 +76,8 @@ const signIn = handleSubmit((vals) => {
             </div>
 
             <form class="w-full max-w-sm" @submit="signIn">
-                <MyInputText label="Логин (любой)" type="text" name="login" />
-                <MyInputText label="Пароль (любой)" type="password" name="password" />
+                <MyInputText label="Логин" type="text" name="login" />
+                <MyInputText label="Пароль" type="password" name="password" />
 
                 <Button
                     icon="pi pi-user"

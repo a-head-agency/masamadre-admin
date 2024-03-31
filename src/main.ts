@@ -45,19 +45,22 @@ import Toolbar from 'primevue/toolbar'
 import Chart from 'primevue/chart'
 import Calendar from 'primevue/calendar'
 import Paginator from 'primevue/paginator'
+import Sidebar from 'primevue/sidebar'
+import IconField from 'primevue/iconfield'
+import InputIcon from 'primevue/inputicon'
 
 import ToastService from 'primevue/toastservice'
 import ConfirmationService from 'primevue/confirmationservice'
 import DialogService from 'primevue/dialogservice'
 
+import App from '@/App.vue'
+import router from '@/router'
+import pinia from '@/stores'
+
 import { Chart as ChartJS } from 'chart.js'
 
 ChartJS.defaults.borderColor = 'rgba(255, 255, 255, 0.1)'
 ChartJS.defaults.color = 'rgba(255, 255, 255, 0.5)'
-
-import App from '@/App.vue'
-import router from '@/router'
-import pinia from '@/stores'
 
 YupSetLocale(ru)
 
@@ -315,5 +318,8 @@ app.component('Toolbar', Toolbar)
 app.component('Chart', Chart)
 app.component('Calendar', Calendar)
 app.component('Paginator', Paginator)
+app.component('Sidebar', Sidebar)
+app.component('IconField', IconField)
+app.component('InputIcon', InputIcon)
 
 app.mount('#app')

@@ -26,11 +26,6 @@ export const useAdditions = <SData>(
     return useQuery({
         queryKey: ['additions', { offset, limit, search }] as any,
         queryFn: async ({ queryKey }) => {
-            return {
-                list: [],
-                total: 0
-            } satisfies GetAdditionsResponse
-
             const response = await axiosPrivate.get<GetAdditionsResponse>('admin/adds', {
                 params: {
                     offset: (queryKey[1] as any).offset as number,
