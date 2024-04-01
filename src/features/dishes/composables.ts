@@ -82,6 +82,11 @@ interface GetDishResponse {
     title: string | undefined
     iiko_sale_id: string | undefined
 
+    short_description: string | undefined
+    content: string | undefined
+    alerg: string | undefined
+    date_contain: string | undefined
+
     tags: ITag[]
 
     vars: {
