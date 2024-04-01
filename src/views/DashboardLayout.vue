@@ -189,31 +189,6 @@ const menu: {
                 iconClass: 'pi pi-fw pi-building'
             }
         ]
-    },
-    {
-        name: 'Маркетинг',
-        links: [
-            {
-                name: 'Истории',
-                to: { name: 'stories' },
-                iconClass: 'pi pi-fw pi-instagram'
-            },
-            {
-                name: 'Баннеры',
-                to: { name: 'banners' },
-                iconClass: 'pi pi-fw pi-images'
-            },
-            {
-                name: 'Статьи',
-                to: { name: 'articles' },
-                iconClass: 'pi pi-fw pi-bars'
-            },
-            {
-                name: 'Акции',
-                to: { name: 'promotions' },
-                iconClass: 'pi pi-fw pi-percentage'
-            }
-        ]
     }
 ]
 </script>

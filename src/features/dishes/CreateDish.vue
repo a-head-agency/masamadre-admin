@@ -2,7 +2,6 @@
     <form class="mt-8" @submit="onSubmit">
         <div class="mb-8 grid grid-cols-3 items-center justify-items-center gap-4">
             <MyInputText name="name" label="Название" />
-            <MyInputText name="description" label="Описание" />
             <MyInputText label="RKeeper ID" name="rkeeper_id" />
             <MyInputNumber label="Вес" name="weight" />
             <MyInputNumber label="Количество кусочков" name="count" />
@@ -94,6 +93,15 @@
                     upload-route="admin/upload"
                 />
             </div>
+        </div>
+
+        <h2 class="mb-6 text-lg font-bold">Наполнение</h2>
+        <div class="grid grid-flow-row grid-cols-1 gap-x-4">
+            <MyInputText name="short_description" label="Краткое описание" />
+            <MyInputText name="description" label="Полное описание" />
+            <MyInputText name="content" label="Состав" />
+            <MyInputText name="alerg" label="Аллергены" />
+            <MyInputText name="date_contain" label="Срок хранения" />
         </div>
 
         <h2 class="mb-6 text-lg font-bold">SEO</h2>
@@ -211,7 +219,6 @@ const { handleSubmit } = useForm({
         weight: yup.number().required().label('Вес'),
         count: yup.number().required().label('Количество кусочков'),
         size: yup.number().required().label('Размер карточки'),
-        description: yup.string().label('Описание'),
         rkeeper_id: yup.string().required().label('RKeeper ID'),
         tags: yup.array().label('Теги'),
         active: yup.boolean().label('Активно'),
@@ -223,6 +230,12 @@ const { handleSubmit } = useForm({
         keywords: yup.string().label('Ключевые слова'),
         description_seo: yup.string().label('Описание'),
         title: yup.string().label('Title'),
+
+        short_description: yup.string().required().label('Краткое описание'),
+        description: yup.string().required().label('Полное описание'),
+        content: yup.string().required().label('Состав'),
+        alerg: yup.string().required().label('Аллергены'),
+        date_contain: yup.string().required().label('Срок хранения'),
 
         vars: yup.array().of(
             yup.object({

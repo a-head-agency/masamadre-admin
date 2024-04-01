@@ -3,7 +3,6 @@
         <div class="mb-8 grid grid-cols-3 items-center justify-items-center gap-4">
             <MyInputNumber name="id" label="ID" disabled />
             <MyInputText name="name" label="Название" />
-            <MyInputText name="description" label="Описание" />
             <MyInputText label="RKeeper ID" name="rkeeper_id" />
             <MyInputNumber label="Вес" name="weight" />
             <MyInputNumber label="Количество кусочков" name="count" />
@@ -95,6 +94,15 @@
                     upload-route="admin/upload"
                 />
             </div>
+        </div>
+
+        <h2 class="mb-6 text-lg font-bold">Наполнение</h2>
+        <div class="grid grid-flow-row grid-cols-1 gap-x-4">
+            <MyInputText name="short_description" label="Краткое описание" />
+            <MyInputText name="description" label="Полное описание" />
+            <MyInputText name="content" label="Состав" />
+            <MyInputText name="alerg" label="Аллергены" />
+            <MyInputText name="date_contain" label="Срок хранения" />
         </div>
 
         <h2 class="mb-6 text-lg font-bold">SEO</h2>

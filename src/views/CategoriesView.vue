@@ -9,7 +9,8 @@ import {
     CategoryStatusBadge,
     type SaveCategoriesOrderingMutation,
     useSaveCategoriesOrdering,
-    useCategories
+    useCategories,
+    CategoryTypeBadge
 } from '@/features/categories'
 import { useDialog } from 'primevue/usedialog'
 import { useDebounce } from '@vueuse/core'
@@ -290,7 +291,9 @@ const root = ref<HTMLElement>()
                                     <span class="opacity-50">Обновлена:</span>
                                     {{ dateFormat(element.updated_at) }}
                                 </div>
-                                <div class="flex-1 text-end">
+
+                                <div class="flex-1 flex gap-2 justify-end">
+                                    <CategoryTypeBadge :code="element.type" />
                                     <CategoryStatusBadge :code="element.active" />
                                 </div>
                             </div>
