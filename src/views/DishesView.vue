@@ -310,7 +310,7 @@ const root = ref<HTMLElement>()
                             aria-haspopup="true"
                         >
                             <img
-                                class="aspect-[4/3] w-32 shrink-0 self-center drop-shadow-xl max-lg:w-52"
+                                class="aspect-square w-32 shrink-0 self-center object-cover object-center drop-shadow-xl max-lg:w-52"
                                 :src="element.img"
                                 :alt="element.name"
                             />

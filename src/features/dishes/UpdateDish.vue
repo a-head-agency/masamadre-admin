@@ -88,7 +88,7 @@
                 <MyUploadImage
                     class="rounded-lg"
                     name="img"
-                    :aspect-ratio="4 / 3"
+                    :aspect-ratio="1"
                     filename-prop-in-request="file"
                     filename-prop-in-response="link"
                     upload-route="admin/upload"
