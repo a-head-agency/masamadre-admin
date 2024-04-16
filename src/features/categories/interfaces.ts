@@ -15,6 +15,7 @@ export interface ICategory {
     description_seo: string | undefined
     title: string | undefined
     type: number | undefined
+    show_title: boolean
 }
 
 export interface IUpdateCategory {

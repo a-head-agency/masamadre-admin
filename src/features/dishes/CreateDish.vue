@@ -95,6 +95,25 @@
             </div>
         </div>
 
+        <h2 class="mb-6 text-lg font-bold">Слайдер</h2>
+        <div class="mb-4 overflow-x-auto scroll-smooth">
+            <div class="flex items-stretch gap-4">
+                <div class="relative h-64 shrink-0" v-for="(img, idx) in images" :key="img">
+                    <button
+                        class="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-lg bg-gray-900 shadow-md outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-1"
+                        type="button"
+                        @click="deleteImg(idx)"
+                    >
+                        <i class="pi pi-times block text-[0.75rem]"></i>
+                    </button>
+                    <img class="h-full w-auto" :src="img" alt="" />
+                </div>
+            </div>
+        </div>
+        <div class="mb-8">
+            <input type="file" @change="uploadFiles" multiple />
+        </div>
+
         <h2 class="mb-6 text-lg font-bold">Наполнение</h2>
         <div class="grid grid-flow-row grid-cols-1 gap-x-4">
             <MyInputText name="short_description" label="Краткое описание" />
@@ -137,6 +156,7 @@
             placeholder="Выберите рестораны"
         />
         <div class="mb-8">
+            h-64
             <fieldset
                 v-for="(field, idx) in fields"
                 :key="field.key"
@@ -183,6 +203,7 @@ import { computed, ref, watch } from 'vue'
 import MyUploadImage from '@/components/MyUploadImage.vue'
 import { useFieldArray, useFieldValue, useForm } from 'vee-validate'
 import * as yup from 'yup'
+import mime from 'mime-types'
 
 import DropdownSelect from '@/components/DropdownSelect.vue'
 import MyInputText from '@/components/MyInputText.vue'
@@ -195,6 +216,7 @@ import { useRestaurants } from '@/features/restaurants'
 import { useTags } from '../tags'
 import MyMultiSelect from '@/components/MyMultiSelect.vue'
 import MyCalendar from '@/components/MyCalendar.vue'
+import { axiosPrivate } from '@/network'
 
 const possibleCardColors = ref([
     { label: '#FAFAFA', code: 1 },
@@ -204,7 +226,7 @@ const possibleCardColors = ref([
     { label: '#FEEDB1', code: 5 }
 ])
 
-const { handleSubmit } = useForm({
+const { handleSubmit, setFieldValue } = useForm<any>({
     validationSchema: yup.object({
         name: yup.string().required().label('Название'),
         img: yup.string().required().label('Изображение'),
@@ -230,6 +252,7 @@ const { handleSubmit } = useForm({
         keywords: yup.string().label('Ключевые слова'),
         description_seo: yup.string().label('Описание'),
         title: yup.string().label('Title'),
+        images: yup.array().of(yup.string()).label('Слайдер'),
 
         short_description: yup.string().required().label('Краткое описание'),
         description: yup.string().required().label('Полное описание'),
@@ -257,6 +280,22 @@ const active = useFieldValue<boolean>('active')
 const can_deliver = useFieldValue<boolean>('can_deliver')
 const have = useFieldValue<boolean>('have')
 const price = useFieldValue<number>('price')
+const images = useFieldValue<string[]>('images')
+
+const uploadFiles = (event: any) => {
+    const target: HTMLInputElement = event.target
+    const links: string[] = []
+    for (const file of target.files || []) {
+        links.push(URL.createObjectURL(file))
+    }
+    setFieldValue('images', links)
+}
+
+const deleteImg = (index: number) => {
+    const oldImages = images.value
+    const newImages = oldImages.filter((_, idx) => idx !== index)
+    setFieldValue('images', newImages)
+}
 
 const { replace, fields } = useFieldArray<any>('vars')
 
@@ -322,7 +361,34 @@ watch(
     }
 )
 
-const onSubmit = handleSubmit((vals) => {
+const onSubmit = handleSubmit(async (vals) => {
+    // upload object files
+    let uploadedPhotos: string[] = []
+    const formData = new FormData()
+    const filesToBeUploaded: File[] = []
+    for (const photoUrl of vals.images) {
+        if (photoUrl.startsWith('blob:')) {
+            const blob = await fetch(photoUrl).then((r) => r.blob())
+            const file = new File([blob], `img.${mime.extension(blob.type)}`)
+            filesToBeUploaded.push(file)
+        } else {
+            uploadedPhotos.push(photoUrl)
+        }
+    }
+
+    if (filesToBeUploaded.length) {
+        // upload blob files
+        const links = await Promise.all(
+            filesToBeUploaded.map((file) => {
+                const formData = new FormData()
+                formData.append('file', file)
+                return axiosPrivate.post('admin/upload', formData).then((r) => r.data.link)
+            })
+        )
+
+        vals.images = links
+    }
+
     mutate({
         category: -1,
         ...vals
