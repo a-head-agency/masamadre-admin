@@ -10,7 +10,7 @@
             class="w-full max-w-xs"
         >
             <template #header>
-                <a href="https://vkusilosos.ru">
+                <a href="https://masamadre.ru">
                     <img
                         :src="logoSrc"
                         class="h-8 w-full object-contain object-center pl-5"
