@@ -2,6 +2,7 @@
     <form class="w-full" @submit.prevent="onSubmit">
         <div class="mb-6">
             <MyInputText name="name" label="Название" />
+            <MyInputSwitch name="show_title" label="Показывать название категории" />
 
             <DropdownSelect
                 name="active"
@@ -77,6 +78,7 @@ import * as yup from 'yup'
 import { useCreateCategory } from './composables'
 import DropdownSelect from '@/components/DropdownSelect.vue'
 import { CategoryTypeBadge, CategoryStatusBadge } from '.'
+import MyInputSwitch from '@/components/MyInputSwitch.vue'
 
 const { handleSubmit } = useForm({
     validationSchema: yup.object({
@@ -87,10 +89,12 @@ const { handleSubmit } = useForm({
         description_seo: yup.string().label('Описание'),
         title: yup.string().label('Title'),
         type: yup.number().required().label('Тип категории'),
+        show_title: yup.boolean().required().label('Показывать название категории')
     }),
     initialValues: {
         active: false,
-        type: 0
+        type: 0,
+        show_title: true
     }
 })
 

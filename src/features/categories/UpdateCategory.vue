@@ -3,6 +3,8 @@
         <div class="mb-6">
             <MyInputNumber name="id" label="ID" disabled />
             <MyInputText name="name" label="Название" />
+            <MyInputSwitch name="show_title" label="Показывать название категории" />
+
             <DropdownSelect
                 name="active"
                 label="Активно"
@@ -78,7 +80,9 @@ import { useForm } from 'vee-validate'
 import * as yup from 'yup'
 import { useUpdateCategory } from './composables'
 import type { ICategory } from './interfaces'
-import { CategoryStatusBadge } from '.'
+import { CategoryStatusBadge, CategoryTypeBadge } from '.'
+import MyInputSwitch from '@/components/MyInputSwitch.vue'
+
 
 const dialogRef = inject('dialogRef') as any
 const category = dialogRef.value.data.category as ICategory
@@ -92,7 +96,8 @@ const { handleSubmit } = useForm({
         keywords: yup.string().label('Ключевые слова'),
         description_seo: yup.string().label('Описание'),
         title: yup.string().label('Title'),
-        type: yup.number().required().label('Тип категории')
+        type: yup.number().required().label('Тип категории'),
+        show_title: yup.boolean().required().label('Показывать название категории')
     }),
     initialValues: {
         id: category.id,
@@ -102,7 +107,8 @@ const { handleSubmit } = useForm({
         keywords: category.keywords,
         description_seo: category.description_seo,
         title: category.title,
-        type: category.type
+        type: category.type,
+        show_title: category.show_title
     }
 })
 
