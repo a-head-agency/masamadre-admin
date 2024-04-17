@@ -294,7 +294,7 @@ const uploadFiles = (event: any) => {
     for (const file of target.files || []) {
         links.push(URL.createObjectURL(file))
     }
-    setFieldValue('images', links)
+    setFieldValue('images', (images.value || []).concat(links))
 }
 
 const deleteImg = (index: number) => {

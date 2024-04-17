@@ -43,6 +43,7 @@ export interface IDish {
     title: string | undefined
     alt: string | undefined
     iiko_sale_id: string | undefined
+    images: string[]
 
     short_description: string | undefined
     content: string | undefined

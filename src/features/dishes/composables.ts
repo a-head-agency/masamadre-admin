@@ -66,6 +66,7 @@ interface GetDishResponse {
     id: number
     iiko_id: string
     img: string
+    images: string[] | null
     name: string
     pich_cen: number
     price: number
@@ -138,7 +139,8 @@ export const useDish = <SData>(id: MaybeRef<number>, selector?: (response: IDish
             }
             const data: IDish = {
                 ...response.data,
-                vars
+                vars,
+                images: response.data.images || []
             }
 
             return data
