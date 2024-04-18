@@ -281,13 +281,19 @@ const { handleSubmit, setFieldValue, resetForm } = useForm<any>({
     })
 })
 
-watch([dishData], () => {
-    resetForm({
-        values: {
-            ...dishData.value
-        }
-    })
-})
+watch(
+    [dishData],
+    () => {
+        resetForm({
+            values: {
+                ...dishData.value
+            }
+        })
+    },
+    {
+        immediate: true
+    }
+)
 
 const active = useFieldValue<boolean>('active')
 const can_deliver = useFieldValue<boolean>('can_deliver')
