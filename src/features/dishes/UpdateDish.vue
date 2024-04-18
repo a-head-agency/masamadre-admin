@@ -239,7 +239,7 @@ const { data: dishData } = useDish(dish.id, (v) => {
     return vals
 })
 
-const { handleSubmit, setFieldValue } = useForm<any>({
+const { handleSubmit, setFieldValue, resetForm } = useForm<any>({
     validationSchema: yup.object({
         id: yup.number().required().label('ID'),
         name: yup.string().required().label('Название'),
@@ -278,8 +278,15 @@ const { handleSubmit, setFieldValue } = useForm<any>({
                 have: yup.boolean().label('В наличии')
             })
         )
-    }),
-    initialValues: computed(() => dishData.value)
+    })
+})
+
+watch([dishData], () => {
+    resetForm({
+        values: {
+            ...dishData.value
+        }
+    })
 })
 
 const active = useFieldValue<boolean>('active')
