@@ -12,6 +12,12 @@
             <MyInputText name="type_curier" label="Тип доставки ресторана" />
         </div>
 
+        <h2 class="mb-4 text-lg font-bold">ЮКасса</h2>
+        <div class="mb-8 flex flex-col gap-4">
+            <MyInputText name="yookassa_id" label="ID" />
+            <MyInputText name="yookassa_key" label="Ключ" />
+        </div>
+
         <h2 class="mb-4 text-lg font-bold">Локация</h2>
         <div class="mb-8 grid grid-flow-row grid-cols-1 gap-4 lg:grid-cols-2">
             <MyInputText class="col-span-full" name="adres" label="Адрес" />
@@ -321,6 +327,9 @@ const schema = yup.object({
     cash: yup.string().label('ID оплаты наличными'),
     type_rest: yup.string().label('Тип заказа ресторана'),
     type_curier: yup.string().label('Тип доставки ресторана'),
+
+    yookassa_id: yup.string().label('ЮКасса ID'),
+    yookassa_key: yup.string().label('ЮКасса Key'),
 
     setMon: yup.boolean(),
     setThu: yup.boolean(),
