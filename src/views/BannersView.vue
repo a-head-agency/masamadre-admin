@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import type { DataTablePageEvent } from 'primevue/datatable'
+import type { DataTablePageEvent, DataTableRowDoubleClickEvent } from 'primevue/datatable'
 
 import {
     CreateBanner,
@@ -79,6 +79,10 @@ const beginDeleteBannerInteraction = (banner: IBanner) => {
             banner
         }
     })
+}
+
+const onRowDoubleClick = (e: DataTableRowDoubleClickEvent) => {
+    beginEditBannerInteraction(e.data)
 }
 
 const refresh = () => {
@@ -177,6 +181,7 @@ onMounted(() => {
                 contextMenu
                 v-model:contextMenuSelection="selected"
                 @rowContextmenu="onRowContextMenu"
+                @row-dblclick="onRowDoubleClick"
                 :meta-key-selection="false"
                 class="h-full overflow-hidden rounded-lg border border-white/10"
                 :value="data?.list"

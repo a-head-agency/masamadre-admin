@@ -306,6 +306,7 @@ const root = ref<HTMLElement>()
                                     selected?.id === element.id
                             }"
                             @click="onItemClick(element)"
+                            @dblclick="beginUpdateDishInteraction(element)"
                             @contextmenu="onRowContextMenu($event, element)"
                             aria-haspopup="true"
                         >

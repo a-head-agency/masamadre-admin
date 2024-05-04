@@ -20,6 +20,7 @@ import draggable from 'vuedraggable'
 import { useMutation } from '@tanstack/vue-query'
 import { axiosPrivate } from '@/network'
 import { useToast } from 'primevue/usetoast'
+import type { DataTableRowDoubleClickEvent } from 'primevue/datatable'
 
 const toast = useToast()
 
@@ -271,6 +272,7 @@ const root = ref<HTMLElement>()
                             @click="onItemClick(element)"
                             @contextmenu="onRowContextMenu($event, element)"
                             aria-haspopup="true"
+                            @dblclick="beginUpdateCategoryInteraction(element)"
                         >
                             <div class="mb-2 lg:mb-0">
                                 <span class="opacity-50">Название:</span>
