@@ -96,6 +96,8 @@ interface GetDishResponse {
         price: number
         active: boolean
         can_deliver: boolean
+        in_rest: boolean
+        can_order: boolean
         have: boolean
     }[]
 }
