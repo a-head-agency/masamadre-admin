@@ -9,6 +9,8 @@ export interface IVariation {
     price: number
     active: boolean
     can_deliver: boolean
+    can_order: boolean
+    in_rest: boolean
     have: boolean
 }
 

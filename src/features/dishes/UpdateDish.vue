@@ -122,6 +122,10 @@
             <MyInputText name="content" label="Состав" />
             <MyInputText name="alerg" label="Аллергены" />
             <MyInputText name="date_contain" label="Срок хранения" />
+            <MyInputText name="make_date" label="Год производства" />
+            <MyInputText name="flag" label="Флаг страны" />
+            <MyInputText name="malbec" label="Сорт винограда" />
+            <MyInputText name="maker" label="Страна изготовитель" />
         </div>
 
         <h2 class="mb-6 text-lg font-bold">SEO</h2>
@@ -162,7 +166,7 @@
                 :key="field.key"
                 class="relative mb-4 rounded-lg border-2 border-gray-200 p-4"
             >
-                <h3 class="absolute top-0 -translate-y-1/2 bg-white px-3 font-semibold">
+                <h3 class="absolute top-0 -translate-y-1/2 bg-[#18181b] px-3 font-semibold">
                     "{{ field.value.rest_name }}" - {{ field.value.rest_address }}
                 </h3>
                 <div class="flex gap-4">
@@ -185,6 +189,8 @@
                     <MyInputSwitch label="В наличии" :name="`vars[${idx}].have`" />
                     <MyInputSwitch label="Можно доставить" :name="`vars[${idx}].can_deliver`" />
                     <MyInputSwitch label="Активно" :name="`vars[${idx}].active`" />
+                    <MyInputSwitch label="Самовывоз" :name="`vars[${idx}].can_order`" />
+                    <MyInputSwitch label="В ресторане" :name="`vars[${idx}].in_rest`" />
                 </div>
             </fieldset>
         </div>
@@ -269,12 +275,19 @@ const { handleSubmit, setFieldValue, resetForm } = useForm<any>({
         title: yup.string().label('Title'),
         images: yup.array().of(yup.string()).label('Слайдер'),
 
+        make_date: yup.string().label('Год производства'),
+        flag: yup.string().label('Флаг страны'),
+        malbec: yup.string().label('Сорт винограда'),
+        maker: yup.string().label('Страна изготовитель'),
+
         vars: yup.array().of(
             yup.object({
                 rest_id: yup.number().required().label('ID ресторана'),
                 price: yup.number().required().label('Цена'),
                 active: yup.boolean().label('Активно'),
                 can_deliver: yup.boolean().label('Можно доставить'),
+                can_order: yup.boolean().label('Самовывоз'),
+                in_rest: yup.boolean().label('В ресторане'),
                 have: yup.boolean().label('В наличии')
             })
         )
@@ -365,6 +378,8 @@ const restaurantsFieldArray = ref<
         price: number
         active: boolean
         can_deliver: boolean
+        can_order: boolean
+        in_rest: boolean
         have: boolean
         rest_name: string
         rest_address: string
