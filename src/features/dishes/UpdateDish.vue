@@ -1,5 +1,33 @@
 <template>
     <form class="mt-8" @submit="onSubmit">
+        <div class="mb-8 flex justify-center">
+            <div class="flex w-full max-w-xs flex-col items-center">
+                <div class="mb-4 flex justify-center">
+                    <SelectButton
+                        :options="aspectRatioOptions"
+                        v-model="imageAspectRatio"
+                        option-label="label"
+                        option-value="value"
+                        :allow-empty="false"
+                    />
+                </div>
+                <div
+                    class="flex h-full max-h-[30rem] justify-center"
+                    :style="{
+                        aspectRatio: imageAspectRatio
+                    }"
+                >
+                    <MyUploadImage
+                        class="rounded-lg"
+                        name="img"
+                        :aspect-ratio="imageAspectRatio"
+                        filename-prop-in-request="file"
+                        filename-prop-in-response="link"
+                        upload-route="admin/upload"
+                    />
+                </div>
+            </div>
+        </div>
         <div class="mb-8 grid grid-cols-3 items-center justify-items-center gap-4">
             <MyInputNumber name="id" label="ID" disabled />
             <MyInputText name="name" label="Название" />
@@ -83,17 +111,6 @@
                 label="Теги"
                 :options="possibleTags || []"
             />
-
-            <div class="col-span-1 col-start-1 row-span-2 row-start-1 w-full">
-                <MyUploadImage
-                    class="rounded-lg"
-                    name="img"
-                    :aspect-ratio="1"
-                    filename-prop-in-request="file"
-                    filename-prop-in-response="link"
-                    upload-route="admin/upload"
-                />
-            </div>
         </div>
 
         <h2 class="mb-6 text-lg font-bold">Слайдер</h2>
@@ -294,9 +311,25 @@ const { handleSubmit, setFieldValue, resetForm } = useForm<any>({
     })
 })
 
+
+const imageAspectRatio = ref(1)
+const aspectRatioOptions = [
+    {
+        label: 'Квадрат',
+        value: 1
+    },
+    {
+        label: 'Высокий',
+        value: 142 / 540
+    }
+]
+
 watch(
     [dishData],
     () => {
+        if (dishData.value?.make_date) {
+            imageAspectRatio.value = aspectRatioOptions[1].value
+        }
         resetForm({
             values: {
                 ...dishData.value

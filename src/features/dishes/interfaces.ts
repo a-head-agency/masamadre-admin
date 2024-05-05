@@ -46,6 +46,7 @@ export interface IDish {
     alt: string | undefined
     iiko_sale_id: string | undefined
     images: string[]
+    make_date: string
 
     short_description: string | undefined
     content: string | undefined

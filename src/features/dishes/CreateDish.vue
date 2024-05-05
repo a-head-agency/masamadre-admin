@@ -1,5 +1,33 @@
 <template>
     <form class="mt-8" @submit="onSubmit">
+        <div class="mb-8 flex justify-center">
+            <div class="w-full max-w-xs flex items-center flex-col">
+                <div class="mb-4 flex justify-center">
+                    <SelectButton
+                        :options="aspectRatioOptions"
+                        v-model="imageAspectRatio"
+                        option-label="label"
+                        option-value="value"
+                        :allow-empty="false"
+                    />
+                </div>
+                <div
+                    class="max-h-[30rem] h-full flex justify-center"
+                    :style="{
+                        aspectRatio: imageAspectRatio
+                    }"
+                >
+                    <MyUploadImage
+                        class="rounded-lg"
+                        name="img"
+                        :aspect-ratio="imageAspectRatio"
+                        filename-prop-in-request="file"
+                        filename-prop-in-response="link"
+                        upload-route="admin/upload"
+                    />
+                </div>
+            </div>
+        </div>
         <div class="mb-8 grid grid-cols-3 items-center justify-items-center gap-4">
             <MyInputText name="name" label="Название" />
             <MyInputText label="RKeeper ID" name="rkeeper_id" />
@@ -37,17 +65,6 @@
                 label="Теги"
                 :options="possibleTags || []"
             />
-
-            <div class="col-span-1 col-start-1 row-span-2 row-start-1 w-full">
-                <MyUploadImage
-                    class="rounded-lg"
-                    name="img"
-                    :aspect-ratio="1"
-                    filename-prop-in-request="file"
-                    filename-prop-in-response="link"
-                    upload-route="admin/upload"
-                />
-            </div>
         </div>
 
         <h2 class="mb-6 text-lg font-bold">Слайдер</h2>
@@ -237,6 +254,18 @@ const can_deliver = useFieldValue<boolean>('can_deliver')
 const have = useFieldValue<boolean>('have')
 const price = useFieldValue<number>('price')
 const images = useFieldValue<string[]>('images')
+
+const imageAspectRatio = ref(1)
+const aspectRatioOptions = [
+    {
+        label: 'Квадрат',
+        value: 1
+    },
+    {
+        label: 'Высокий',
+        value: 142 / 540
+    }
+]
 
 const uploadFiles = (event: any) => {
     const target: HTMLInputElement = event.target

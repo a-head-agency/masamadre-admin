@@ -88,6 +88,8 @@ interface GetDishResponse {
     alerg: string | undefined
     date_contain: string | undefined
 
+    make_date: string
+
     tags: ITag[]
 
     vars: {
