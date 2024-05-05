@@ -137,7 +137,7 @@
             <MyInputText name="short_description" label="Краткое описание" />
             <MyInputText name="description" label="Полное описание" />
             <MyInputText name="content" label="Состав" />
-            <MyInputText name="alerg" label="Аллергены" />
+            <MyInputText name="alerg" label="КБЖУ" />
             <MyInputText name="date_contain" label="Срок хранения" />
             <MyInputText name="make_date" label="Год производства" />
             <MyInputText name="flag" label="Флаг страны" />

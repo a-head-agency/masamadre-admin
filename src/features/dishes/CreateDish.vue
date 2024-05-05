@@ -91,7 +91,7 @@
             <MyInputText name="short_description" label="Краткое описание" />
             <MyInputText name="description" label="Полное описание" />
             <MyInputText name="content" label="Состав" />
-            <MyInputText name="alerg" label="Аллергены" />
+            <MyInputText name="alerg" label="КБЖУ" />
             <MyInputText name="date_contain" label="Срок хранения" />
             <MyInputText name="make_date" label="Год производства" />
             <MyInputText name="flag" label="Флаг страны" />
@@ -224,7 +224,7 @@ const { handleSubmit, setFieldValue } = useForm<any>({
         short_description: yup.string().required().label('Краткое описание'),
         description: yup.string().required().label('Полное описание'),
         content: yup.string().required().label('Состав'),
-        alerg: yup.string().required().label('Аллергены'),
+        alerg: yup.string().required().label('КБЖУ'),
         date_contain: yup.string().required().label('Срок хранения'),
         make_date: yup.string().label('Год производства'),
         flag: yup.string().label('Флаг страны'),
