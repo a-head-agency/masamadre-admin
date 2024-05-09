@@ -50,7 +50,7 @@ const newUsersCount = computed(() => stats.value?.stats.map((v) => v.new_users) 
                 <Button severity="primary" icon="pi pi-refresh" @click="refreshStats" />
             </div>
         </div>
-        <div class="mb-16 flex flex-wrap items-stretch gap-4 text-white">
+        <div class="mb-16 flex flex-wrap items-stretch gap-4 text-pv-text-color">
             <div class="flex-1 rounded-lg bg-white/10 p-8">
                 <div class="mb-4 flex items-start justify-between gap-4">
                     <div class="shrink-0">

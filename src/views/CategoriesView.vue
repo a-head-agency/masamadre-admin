@@ -169,7 +169,9 @@ const root = ref<HTMLElement>()
 
 <template>
     <main class="flex flex-col items-stretch px-4" ref="root">
-        <h1 class="my-12 text-center text-3xl font-semibold leading-none text-white">Категории</h1>
+        <h1 class="text-pv-text-color my-12 text-center text-3xl font-semibold leading-none">
+            Категории
+        </h1>
 
         <ContextMenu ref="cm" :model="menuModel" @hide="selected = undefined" />
 
@@ -178,7 +180,7 @@ const root = ref<HTMLElement>()
         >
             <button
                 :disabled="!canReorderMode"
-                class="rounded-full px-8 text-white shadow-xl shadow-black/25 transition-all disabled:bg-gray-400"
+                class="text-pv-primary-color-text disabled:bg-pv-primary-color rounded-full px-8 shadow-xl shadow-black/10 transition-all"
                 :class="{
                     'bg-green-500 !shadow-green-400/25': canReorderMode && reorderMode,
                     'bg-indigo-500 !shadow-indigo-400/25': canReorderMode && !reorderMode
@@ -190,7 +192,7 @@ const root = ref<HTMLElement>()
             </button>
             <button
                 v-if="reorderMode"
-                class="rounded-full bg-red-500 px-8 text-white shadow-xl shadow-red-400/25 transition-all"
+                class="text-pv-primary-color-text flex justify-center items-center rounded-full bg-red-500 px-8 shadow-xl shadow-red-400/25 transition-all"
                 @click="cancelReorder"
             >
                 <i class="pi pi-times" />
@@ -264,10 +266,9 @@ const root = ref<HTMLElement>()
                 >
                     <template #item="{ element }">
                         <button
-                            class="mb-2 w-full rounded-lg bg-white/5 p-4 text-start outline-none transition-all focus:bg-white/10 focus:text-white"
+                            class="focus:text-pv-text-color mb-2 w-full rounded-lg bg-black/5 p-4 text-start outline-none transition-all focus:bg-black/10"
                             :class="{
-                                '!bg-white !text-black shadow-lg shadow-white/10':
-                                    selected?.id === element.id
+                                '!bg-pv-primary-color !text-pv-primary-color-text shadow-lg shadow-black/10': selected?.id === element.id
                             }"
                             @click="onItemClick(element)"
                             @contextmenu="onRowContextMenu($event, element)"
@@ -294,7 +295,7 @@ const root = ref<HTMLElement>()
                                     {{ dateFormat(element.updated_at) }}
                                 </div>
 
-                                <div class="flex-1 flex gap-2 justify-end">
+                                <div class="flex flex-1 justify-end gap-2">
                                     <CategoryTypeBadge :code="element.type" />
                                     <CategoryStatusBadge :code="element.active" />
                                 </div>

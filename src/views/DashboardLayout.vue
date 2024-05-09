@@ -11,17 +11,13 @@
         >
             <template #header>
                 <a href="https://masamadre.ru">
-                    <img
-                        :src="logoSrc"
-                        class="h-8 w-full object-contain object-center pl-5"
-                        alt=""
-                    />
+                    <img :src="logoSrc" class="h-8 w-full object-contain object-center" alt="" />
                 </a>
             </template>
-            <div class="flex flex-col items-stretch px-6 py-4 text-black">
+            <div class="flex flex-col items-stretch text-black">
                 <ul class="flex grow flex-col gap-1">
                     <template v-for="g of menu" :key="g.name">
-                        <li class="mb-1 mt-2 text-sm font-bold text-white">{{ g.name }}</li>
+                        <li class="text-pv-text-color mb-1 mt-2 text-sm font-bold">{{ g.name }}</li>
                         <li v-for="link of g.links" :key="link.name" class="min-w-max">
                             <RouterLink
                                 v-slot="{ isExactActive }"
@@ -29,7 +25,7 @@
                                 :to="link.to"
                             >
                                 <span
-                                    class="flex items-center gap-2 rounded-lg px-4 py-2 text-sm leading-none text-white transition-all hover:bg-white/10"
+                                    class="text-pv-text-color flex items-center gap-2 rounded-lg px-4 py-2 text-sm leading-none transition-all hover:bg-white/10"
                                     :class="isExactActive ? '!bg-white !text-black' : ''"
                                 >
                                     <i :class="link.iconClass" />
@@ -41,7 +37,7 @@
                     <li class="mt-8 flex grow flex-col justify-end">
                         <button
                             @click="userStore.signOut"
-                            class="block rounded-lg p-3 text-start text-white transition-all hover:bg-white/10"
+                            class="text-pv-text-color block rounded-lg p-3 text-start transition-all hover:bg-white/10"
                         >
                             <i class="pi pi-fw pi-sign-out" />
                             Выйти
@@ -72,7 +68,7 @@
 
                 <ul class="flex grow flex-col gap-1">
                     <template v-for="g of menu" :key="g.name">
-                        <li class="mb-1 mt-2 text-sm font-bold text-white">{{ g.name }}</li>
+                        <li class="text-pv-text-color mb-1 mt-2 text-sm font-bold">{{ g.name }}</li>
                         <li v-for="link of g.links" :key="link.name" class="min-w-max">
                             <RouterLink
                                 v-slot="{ isExactActive }"
@@ -80,7 +76,7 @@
                                 :to="link.to"
                             >
                                 <span
-                                    class="flex items-center gap-2 rounded-lg px-4 py-2 text-sm leading-none text-white transition-all hover:bg-white/10"
+                                    class="text-pv-text-color flex items-center gap-2 rounded-lg px-4 py-2 text-sm leading-none transition-all hover:bg-white/10"
                                     :class="isExactActive ? '!bg-white !text-black' : ''"
                                 >
                                     <i :class="link.iconClass" />
@@ -92,7 +88,7 @@
                     <li class="mt-8 flex grow flex-col justify-end">
                         <button
                             @click="userStore.signOut"
-                            class="block rounded-lg p-3 text-start text-white transition-all hover:bg-white/10"
+                            class="text-pv-text-color block rounded-lg p-3 text-start transition-all hover:bg-white/10"
                         >
                             <i class="pi pi-fw pi-sign-out" />
                             Выйти

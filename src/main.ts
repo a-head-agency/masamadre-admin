@@ -1,7 +1,7 @@
 /* eslint-disable vue/no-reserved-component-names */
 /* eslint-disable vue/multi-word-component-names */
 import './assets/main.css'
-import 'primevue/resources/themes/aura-dark-noir/theme.css'
+import 'primevue/resources/themes/aura-light-noir/theme.css'
 import 'primeicons/primeicons.css'
 
 import { createApp } from 'vue'

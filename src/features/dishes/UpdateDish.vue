@@ -122,7 +122,7 @@
                         type="button"
                         @click="deleteImg(idx)"
                     >
-                        <i class="pi pi-times block text-[0.75rem]"></i>
+                        <i class="pi pi-times block text-[0.75rem] text-white"></i>
                     </button>
                     <img class="h-full w-auto" :src="img" alt="" />
                 </div>

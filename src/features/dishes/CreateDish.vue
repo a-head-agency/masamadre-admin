@@ -1,7 +1,7 @@
 <template>
     <form class="mt-8" @submit="onSubmit">
         <div class="mb-8 flex justify-center">
-            <div class="w-full max-w-xs flex items-center flex-col">
+            <div class="flex w-full max-w-xs flex-col items-center">
                 <div class="mb-4 flex justify-center">
                     <SelectButton
                         :options="aspectRatioOptions"
@@ -12,7 +12,7 @@
                     />
                 </div>
                 <div
-                    class="max-h-[30rem] h-full flex justify-center"
+                    class="flex h-full max-h-[30rem] justify-center"
                     :style="{
                         aspectRatio: imageAspectRatio
                     }"
@@ -76,7 +76,7 @@
                         type="button"
                         @click="deleteImg(idx)"
                     >
-                        <i class="pi pi-times block text-[0.75rem]"></i>
+                        <i class="pi pi-times block text-[0.75rem] text-white"></i>
                     </button>
                     <img class="h-full w-auto" :src="img" alt="" />
                 </div>

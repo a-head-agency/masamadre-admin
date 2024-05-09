@@ -126,7 +126,7 @@ onMounted(() => {
 
 <template>
     <main class="flex h-screen flex-col items-stretch px-4" ref="root">
-        <h1 class="my-12 text-center text-3xl font-semibold leading-none text-white">Рестораны</h1>
+        <h1 class="my-12 text-center text-3xl font-semibold leading-none text-black">Рестораны</h1>
 
         <ContextMenu ref="cm" :model="menuModel" @hide="selected = undefined" />
 

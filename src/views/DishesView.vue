@@ -202,7 +202,7 @@ const root = ref<HTMLElement>()
 
 <template>
     <main class="flex h-screen flex-col items-stretch px-4" ref="root">
-        <h1 class="my-12 text-center text-3xl font-semibold leading-none text-white">Блюда</h1>
+        <h1 class="my-12 text-center text-3xl font-semibold leading-none text-black">Блюда</h1>
 
         <ContextMenu ref="cm" :model="menuModel" @hide="selected = undefined" />
 
@@ -211,7 +211,7 @@ const root = ref<HTMLElement>()
         >
             <button
                 :disabled="!canReorderMode"
-                class="rounded-full px-8 text-white shadow-xl shadow-black/25 transition-all disabled:bg-gray-400"
+                class="rounded-full px-8 text-pv-text-color shadow-xl shadow-black/25 transition-all disabled:bg-gray-400"
                 :class="{
                     'bg-green-500 !shadow-green-400/25': canReorderMode && reorderMode,
                     'bg-indigo-500 !shadow-indigo-400/25': canReorderMode && !reorderMode
@@ -223,7 +223,7 @@ const root = ref<HTMLElement>()
             </button>
             <button
                 v-if="reorderMode"
-                class="rounded-full bg-red-500 px-8 text-white shadow-xl shadow-red-400/25 transition-all"
+                class="rounded-full bg-red-500 px-8 text-pv-text-color shadow-xl shadow-red-400/25 transition-all"
                 @click="cancelReorder"
             >
                 <i class="pi pi-times" />
@@ -300,9 +300,9 @@ const root = ref<HTMLElement>()
                 >
                     <template #item="{ element }">
                         <button
-                            class="mb-2 flex w-full flex-col items-stretch gap-4 rounded-lg p-4 text-start text-white outline-none transition-all focus:bg-white/10 lg:flex-row"
+                            class="mb-2 flex w-full flex-col items-stretch gap-4 rounded-lg p-4 text-start text-pv-text-color outline-none transition-all bg-black/5 focus:bg-black/10 lg:flex-row"
                             :class="{
-                                ' !bg-white !text-black shadow-lg shadow-white/25':
+                                ' !bg-pv-primary-color !text-pv-primary-color-text shadow-lg shadow-black/10':
                                     selected?.id === element.id
                             }"
                             @click="onItemClick(element)"

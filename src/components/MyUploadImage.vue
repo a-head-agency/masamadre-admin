@@ -67,11 +67,11 @@
         <Transition name="fade" mode="out-in">
             <div
                 v-if="isSelected"
-                class="absolute left-0 top-0 z-20 flex w-full items-center justify-center flex-wrap gap-2 p-2 text-white"
+                class="absolute left-0 top-0 z-20 flex w-full flex-wrap items-center justify-center gap-2 p-2 text-white"
             >
                 <button
                     type="button"
-                    class="flex h-8 max-w-[10rem] w-max flex-1 basis-0 items-center justify-center rounded-md bg-black bg-opacity-50 px-2 text-sm leading-none transition-all hover:bg-opacity-75"
+                    class="flex h-8 w-max max-w-[10rem] flex-1 basis-0 items-center justify-center rounded-md bg-black bg-opacity-50 px-2 text-sm leading-none transition-all hover:bg-opacity-75"
                     @click="reset()"
                 >
                     <i class="pi pi-times mr-1 text-sm"></i>
@@ -81,7 +81,7 @@
                 <button
                     type="button"
                     :disabled="isUploading"
-                    class="flex h-8 max-w-[10rem] w-max flex-1 basis-0 items-center justify-center rounded-md bg-black bg-opacity-50 px-2 text-sm leading-none transition-all hover:bg-opacity-75"
+                    class="flex h-8 w-max max-w-[10rem] flex-1 basis-0 items-center justify-center rounded-md bg-black bg-opacity-50 px-2 text-sm leading-none transition-all hover:bg-opacity-75"
                     @click="saveOrEditAction()"
                 >
                     <Transition name="fade" mode="out-in" :duration="200">
@@ -109,14 +109,14 @@
                     class="flex aspect-square h-8 items-center justify-center rounded-md bg-black bg-opacity-50 transition-all hover:bg-opacity-75"
                     @click="rotate(90)"
                 >
-                    <i class="pi pi-refresh text-lg text-white"></i>
+                    <i class="pi pi-refresh text-pv-text-color text-lg"></i>
                 </button>
                 <button
                     type="button"
                     class="flex aspect-square h-8 items-center justify-center rounded-md bg-black bg-opacity-50 transition-all hover:bg-opacity-75"
                     @click="rotate(-90)"
                 >
-                    <i class="pi pi-replay text-lg text-white"></i>
+                    <i class="pi pi-replay text-pv-text-color text-lg"></i>
                 </button>
             </div>
         </Transition>
