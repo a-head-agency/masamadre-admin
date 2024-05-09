@@ -35,7 +35,7 @@ const review = dialogRef.value.data.review as IReview
 
 const { handleSubmit } = useForm({
     validationSchema: yup.object({
-        id: yup.number().required().label('ID отзыва'),
+        id: yup.number().required().label('ID обращения'),
         user_id: yup.number().required().label('ID пользователя'),
         text: yup.string().required().label('Ответ')
     }),

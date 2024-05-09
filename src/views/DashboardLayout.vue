@@ -145,7 +145,7 @@ const menu: {
                 iconClass: 'pi pi-fw pi-user'
             },
             {
-                name: 'Отзывы',
+                name: 'Обращения',
                 to: { name: 'reviews' },
                 iconClass: 'pi pi-fw pi-comments'
             },

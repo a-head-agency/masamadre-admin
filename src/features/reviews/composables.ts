@@ -54,7 +54,7 @@ export const useChangeReviewStatus = () => {
                 severity: 'success',
                 life: 3000,
                 summary: 'Успешно',
-                detail: `Статус отзыва id: ${vars.user_id} изменён`
+                detail: `Статус обращения id: ${vars.user_id} изменён`
             })
             queryClient.invalidateQueries(['reviews'])
         },
@@ -62,7 +62,7 @@ export const useChangeReviewStatus = () => {
             toast.add({
                 severity: 'error',
                 life: 3000,
-                summary: 'Не удалось изменить статус отзыва',
+                summary: 'Не удалось изменить статус обращения',
                 detail: error
             })
         }

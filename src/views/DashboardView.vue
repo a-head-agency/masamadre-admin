@@ -104,7 +104,7 @@ const newUsersCount = computed(() => stats.value?.stats.map((v) => v.new_users) 
             <div class="flex-1 rounded-lg bg-white/10 p-8">
                 <div class="mb-4 flex items-start justify-between gap-4">
                     <div class="shrink-0">
-                        <div class="mb-2 font-medium">Отзывы</div>
+                        <div class="mb-2 font-medium">Обращения</div>
                         <div class="text-lg font-bold">{{ stats?.new_reviews }} новых</div>
                     </div>
                     <div
