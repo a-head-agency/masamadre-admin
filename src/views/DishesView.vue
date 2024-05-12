@@ -207,11 +207,11 @@ const root = ref<HTMLElement>()
         <ContextMenu ref="cm" :model="menuModel" @hide="selected = undefined" />
 
         <div
-            class="fixed bottom-6 left-0 right-0 z-10 mx-4 flex h-12 justify-center gap-2 lg:justify-end xl:left-64"
+            class="fixed bottom-6 pointer-events-none left-0 right-0 z-10 mx-4 flex h-12 justify-center gap-2 lg:justify-end xl:left-64"
         >
             <button
                 :disabled="!canReorderMode"
-                class="rounded-full px-8 text-pv-text-color shadow-xl shadow-black/25 transition-all disabled:bg-gray-400"
+                class="rounded-full pointer-events-auto px-8 text-pv-text-color text-white shadow-xl shadow-black/25 transition-all disabled:bg-gray-400"
                 :class="{
                     'bg-green-500 !shadow-green-400/25': canReorderMode && reorderMode,
                     'bg-indigo-500 !shadow-indigo-400/25': canReorderMode && !reorderMode
@@ -223,7 +223,7 @@ const root = ref<HTMLElement>()
             </button>
             <button
                 v-if="reorderMode"
-                class="rounded-full bg-red-500 px-8 text-pv-text-color shadow-xl shadow-red-400/25 transition-all"
+                class="rounded-full pointer-events-auto text-white bg-red-500 px-8 text-pv-text-color shadow-xl shadow-red-400/25 transition-all"
                 @click="cancelReorder"
             >
                 <i class="pi pi-times" />
