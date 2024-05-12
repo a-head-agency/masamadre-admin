@@ -198,6 +198,24 @@
                 </div>
             </div>
         </MySkeleton>
+
+        <MySkeleton :show-body="isSuccess" :skeleton="{}">
+            <div class="mt-8" v-if="data.basket && data.basket.length > 0">
+                <h2 class="text-lg font-medium">Состав</h2>
+                <div class="mb-2" v-for="(v, i) in data.basket" :key="[v.name, i].join('-')">
+                    <div class="flex justify-between rounded-lg bg-gray-100 p-2">
+                        <div class="flex items-center gap-2">
+                            <img class="h-12 w-12 rounded-lg" :src="v.photo" alt="" />
+                            {{ v.name }}
+                        </div>
+                        <div class="text-end">
+                            <div>{{ v.count }}x{{ formatMoney(v.price) }}</div>
+                            <div>={{ v.full_price }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </MySkeleton>
     </div>
 </template>
 
@@ -215,6 +233,10 @@ console.log(dialogRef.value.data)
 const order = dialogRef.value.data.order as IOrder | undefined
 
 const orderId = computed(() => order?.id)
+
+const formatMoney = (money: number) => {
+    return money.toFixed(2)
+}
 
 const { data, isSuccess } = useOrder(orderId)
 </script>
