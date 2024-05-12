@@ -138,7 +138,7 @@
                 :key="field.key"
                 class="relative mb-4 rounded-lg border-2 border-gray-200 p-4"
             >
-                <h3 class="absolute top-0 -translate-y-1/2 bg-[#18181b] px-3 font-semibold">
+                <h3 class="absolute top-0 -translate-y-1/2 bg-white text-pv-text-color px-3 font-semibold">
                     "{{ field.value.rest_name }}" - {{ field.value.rest_address }}
                 </h3>
                 <div class="flex gap-4">
