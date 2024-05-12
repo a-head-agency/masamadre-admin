@@ -22,26 +22,12 @@
                     mode="currency"
                     currency="RUB"
                 />
-                <MyInputNumber name="bonus_percent" label="Процент бонусов" />
-                <MyInputText name="instagram" label="Instagram" />
             </div>
 
             <div class="flex-1">
-                <MyInputText name="vk" label="VK" />
-                <MyInputText name="whatsapp" label="WhatsApp" />
-                <MyInputText name="viber" label="Viber" />
-                <MyInputText name="youtube" label="YouTube" />
                 <MyInputText name="phone" label="Телефон" />
-                <MyInputText name="email" label="Email" />
             </div>
         </div>
-        <MyMultiSelect
-            placeholder="Выберите"
-            label="Важные теги"
-            name="tags"
-            :options="tagsOptions || []"
-            :max-selected-labels="3"
-        />
 
         <MyInputText name="title" label="Title" />
         <MyInputText name="description" label="Описание" />
@@ -60,20 +46,9 @@ import { useForm } from 'vee-validate'
 
 import MyInputText from '@/components/MyInputText.vue'
 import MyInputNumber from '@/components/MyInputNumber.vue'
-import MyMultiSelect from '@/components/MyMultiSelect.vue'
-import { useTags } from '@/features/tags'
 
 const toast = useToast()
 const queryClient = useQueryClient()
-
-const { data: tagsOptions } = useTags(
-    {
-        limit: 99999999,
-        offset: 0,
-        search: ''
-    },
-    (v) => v.list.map((t) => ({ code: t.id, label: `[id: ${t.id}]: ${t.name}` }))
-)
 
 const { data } = useQuery({
     queryKey: ['settings'],
@@ -92,15 +67,8 @@ const { handleSubmit } = useForm({
         deliver_price: yup.number().required().label('Цена доставки'),
         time_deliver: yup.string().required().label('Время доставки'),
         min_price: yup.number().required().label('Минимальная сумма заказа'),
-        bonus_percent: yup.number().required().label('Процент бонусов от суммы заказа'),
-        instagram: yup.string().label('Ссылка на Instagram'),
-        vk: yup.string().label('Ссылка на ВК'),
-        whatsapp: yup.string().label('Номер WhatsApp'),
-        viber: yup.string().label('Номер Viber'),
-        youtube: yup.string().label('Ссылка на YouTube'),
         phone: yup.string().required().label('Номер телефона'),
         email: yup.string().required().label('Электронная почта'),
-        tags: yup.array().of(yup.number()).required().label('Важные теги'),
 
         title: yup.string().required().label('Title'),
         description: yup.string().label('Описание'),

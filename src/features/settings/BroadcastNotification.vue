@@ -6,7 +6,6 @@
         <MyInputText name="text" label="Текст" />
 
         <small class="p-error mb-3 block">{{ errors[''] || '&nbsp;' }}</small>
-        <MyInputSwitch name="push" label="Пуш" :initial-value="true" />
         <MyInputSwitch name="email" label="Электронная почта" />
         <MyInputSwitch name="phone" label="SMS" />
 
@@ -32,11 +31,19 @@ const { handleSubmit, errors } = useForm({
         yup.object({
             title: yup.string().required().label('Заголовок'),
             text: yup.string().required().label('Тело'),
-            push: yup.boolean().label('Пуш-уведомление'),
             email: yup.boolean().label('Электронная почта'),
             phone: yup.boolean().label('SMS')
         }) as any
-    ).atLeastOneIsTrueOf(['push', 'email', 'phone'])
+    ).atLeastOneIsTrueOf([
+        {
+            key: 'email',
+            label: 'Электронная почта'
+        },
+        {
+            key: 'phone',
+            label: 'SMS'
+        }
+    ])
 })
 
 const { mutate, isLoading } = useSendNotification()
