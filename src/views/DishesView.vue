@@ -201,7 +201,7 @@ const root = ref<HTMLElement>()
 </script>
 
 <template>
-    <main class="flex h-screen flex-col items-stretch px-4" ref="root">
+    <main class="flex min-h-screen flex-col items-stretch px-4 pb-8" ref="root">
         <h1 class="my-12 text-center text-3xl font-semibold leading-none text-black">Блюда</h1>
 
         <ContextMenu ref="cm" :model="menuModel" @hide="selected = undefined" />
