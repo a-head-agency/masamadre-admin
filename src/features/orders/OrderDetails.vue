@@ -160,12 +160,12 @@
 
         <MySkeleton :show-body="isSuccess" :skeleton="{}">
             <div class="flex items-end leading-none">
-                <div>IIKO ID</div>
+                <div>R_KEEPER ID</div>
                 <div
                     class="mx-2 grow border-b-2 border-dotted border-black border-opacity-50"
                 ></div>
                 <div>
-                    <template v-if="data.iiko_id != undefined">{{ data.iiko_id }}</template>
+                    <template v-if="data.rkeeper_id != undefined">{{ data.rkeeper_id }}</template>
                     <template v-else>Нет данных</template>
                 </div>
             </div>

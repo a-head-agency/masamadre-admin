@@ -125,7 +125,7 @@ export const useCreateAddition = () => {
     return useMutation({
         mutationFn: async (vars: any) => {
             const response = await axiosPrivate.post('admin/dish', {
-                iiko_id: 'null',
+                rkeeper_id: 'null',
                 from_hour: 1,
                 to_hour: 1,
                 description: 'null',
@@ -169,7 +169,7 @@ export const useUpdateAddition = () => {
     return useMutation({
         mutationFn: async (vars: any) => {
             const response = await axiosPrivate.put('admin/dish', {
-                iiko_id: 'null',
+                rkeeper_id: 'null',
                 from_hour: 1,
                 to_hour: 1,
                 description: 'null',

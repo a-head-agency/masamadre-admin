@@ -184,7 +184,7 @@ onMounted(() => {
                         <PaymentStatusBadge :code="slotProps.data.pay_type" />
                     </template>
                 </Column>
-                <Column field="iiko_id" header="IIKO ID" />
+                <Column field="rkeeper_id" header="R_KEEPER ID" />
                 <Column field="created_at" header="Создан">
                     <template #body="slotProps">
                         {{ dateformat(slotProps.data.created_at) }}

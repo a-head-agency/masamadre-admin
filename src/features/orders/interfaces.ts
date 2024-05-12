@@ -8,6 +8,6 @@ export interface IOrder {
     count_items: number
     rest: number
     pay_type: number // 0 - карта, 1 - наличные, 2 - Тинькофф
-    iiko_id: string
+    rkeeper_id: string
     created_at: string
 }

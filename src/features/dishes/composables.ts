@@ -64,7 +64,7 @@ interface GetDishResponse {
     from_hour: number
     have: boolean
     id: number
-    iiko_id: string
+    rkeeper_id: string
     img: string
     images: string[] | null
     name: string

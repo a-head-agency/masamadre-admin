@@ -28,7 +28,7 @@ export interface IDish {
     from_hour: number
     have: boolean
     id: number
-    iiko_id: string
+    rkeeper_id: string
     img: string
     name: string
     pich_cen: number

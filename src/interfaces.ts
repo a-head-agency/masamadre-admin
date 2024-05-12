@@ -37,7 +37,7 @@ export interface CreateDish {
     sale_price: number | undefined
     img: string | undefined
     category_id: number | undefined
-    iiko_id: number | undefined
+    rkeeper_id: number | undefined
     count: number | undefined
     weight: number | undefined
     energy: number | undefined
