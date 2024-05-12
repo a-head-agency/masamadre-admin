@@ -43,7 +43,10 @@ const { handleSubmit, errors } = useForm({
             key: 'phone',
             label: 'SMS'
         }
-    ])
+    ]),
+    initialValues: {
+        phone: true
+    }
 })
 
 const { mutate, isLoading } = useSendNotification()
