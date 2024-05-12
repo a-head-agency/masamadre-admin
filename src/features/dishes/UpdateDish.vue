@@ -51,51 +51,6 @@
             <MyInputNumber label="Жиры" name="ziri" />
             <MyInputNumber label="Углеводы" name="uglevodi" />
 
-            <DropdownSelect
-                class="w-full"
-                name="color"
-                label="Цвет карточки"
-                placeholder="Выберите"
-                :options="possibleCardColors"
-            >
-                <template #option="slotProps">
-                    <div class="flex items-center gap-4">
-                        <div
-                            class="aspect-square h-6 rounded-md border-2 border-gray-500"
-                            :style="{ backgroundColor: slotProps.option.label }"
-                        ></div>
-                        <span>{{ slotProps.option.label }}</span>
-                    </div>
-                </template>
-                <template #value="slotProps">
-                    <div v-if="slotProps.value" class="flex items-center gap-4">
-                        <div
-                            class="aspect-square h-6 rounded-md border-2 border-gray-500"
-                            :style="{ backgroundColor: slotProps.value.label }"
-                        ></div>
-                        <span>{{ slotProps.value.label }}</span>
-                    </div>
-                    <span v-else>Выберите</span>
-                </template>
-            </DropdownSelect>
-
-            <DropdownSelect
-                class="w-full"
-                name="size"
-                label="Размер карточки"
-                placeholder="Выберите"
-                :options="[
-                    {
-                        label: 'Маленький',
-                        code: 1
-                    },
-                    {
-                        label: 'Большой',
-                        code: 2
-                    }
-                ]"
-            ></DropdownSelect>
-
             <MyMultiSelect
                 class="w-full"
                 name="categories"
@@ -228,7 +183,6 @@ import MyUploadImage from '@/components/MyUploadImage.vue'
 import { useFieldArray, useFieldValue, useForm } from 'vee-validate'
 import * as yup from 'yup'
 
-import DropdownSelect from '@/components/DropdownSelect.vue'
 import MyInputText from '@/components/MyInputText.vue'
 import MyInputNumber from '@/components/MyInputNumber.vue'
 import MyInputSwitch from '@/components/MyInputSwitch.vue'
@@ -246,14 +200,6 @@ import mime from 'mime-types'
 const dialogRef = inject('dialogRef') as any
 const dish = dialogRef.value.data.dish as IDish
 
-const possibleCardColors = ref([
-    { label: '#FAFAFA', code: 1 },
-    { label: '#FADEC3', code: 2 },
-    { label: '#E6F0F8', code: 3 },
-    { label: '#F0EDBA', code: 4 },
-    { label: '#FEEDB1', code: 5 }
-])
-
 const { data: dishData } = useDish(dish.id, (v) => {
     const vals = {
         ...v,
@@ -269,7 +215,6 @@ const { handleSubmit, setFieldValue, resetForm } = useForm<any>({
         img: yup.string().required().label('Изображение'),
         price: yup.number().required().label('Цена'),
         categories: yup.array().required().label('Категория'),
-        color: yup.string().required().label('Цвет карточки'),
         belki: yup.number().required().label('Количество белков'),
         pich_cen: yup.number().required().label('Пищевая ценность'),
         energ_cen: yup.number().required().label('Энергетическая ценность'),
@@ -277,7 +222,6 @@ const { handleSubmit, setFieldValue, resetForm } = useForm<any>({
         ziri: yup.number().required().label('Количество жиров'),
         weight: yup.number().required().label('Вес'),
         count: yup.number().required().label('Количество кусочков'),
-        size: yup.number().required().label('Размер карточки'),
         description: yup.string().label('Описание'),
         rkeeper_id: yup.string().required().label('RKeeper ID'),
         tags: yup.array().label('Теги'),
