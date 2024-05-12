@@ -67,10 +67,9 @@ const { handleSubmit } = useForm({
         deliver_price: yup.number().required().label('Цена доставки'),
         time_deliver: yup.string().required().label('Время доставки'),
         min_price: yup.number().required().label('Минимальная сумма заказа'),
-        phone: yup.string().required().label('Номер телефона'),
-        email: yup.string().required().label('Электронная почта'),
+        phone: yup.string().min(11).required().label('Номер телефона'),
 
-        title: yup.string().required().label('Title'),
+        title: yup.string().label('Title'),
         description: yup.string().label('Описание'),
         keywords: yup.string().label('Ключевые слова')
     }),
