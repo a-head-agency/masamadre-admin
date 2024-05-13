@@ -394,7 +394,7 @@ const root = ref<HTMLElement>()
                 </draggable>
 
                 <Paginator
-                    v-if="!reorderMode"
+                    v-if="!reorderMode && !canReorderMode"
                     v-model:rows="rowsPerPage"
                     :totalRecords="data.total"
                     @page="onPage"

@@ -33,7 +33,7 @@ export const useDishes = <SData>(
             const response = await axiosPrivate.get<GetDishesResponse>('admin/dishes', {
                 params: {
                     offset: queryKey[1].offset,
-                    limit: queryKey[1].limit,
+                    limit: queryKey[1].categoryID ? 999999999 : queryKey[1].limit,
                     search: queryKey[1].search,
                     id: queryKey[1].categoryID
                 }
