@@ -7,20 +7,22 @@
                         :options="aspectRatioOptions"
                         v-model="imageAspectRatio"
                         option-label="label"
-                        option-value="value"
                         :allow-empty="false"
                     />
                 </div>
+
                 <div
-                    class="flex h-full max-h-[30rem] justify-center"
+                    class="flex justify-center"
                     :style="{
-                        aspectRatio: imageAspectRatio
+                        aspectRatio: imageAspectRatio.value,
+                        height: imageAspectRatio.code === 'square' ? '20rem' : '25rem'
                     }"
+                    :key="imageAspectRatio.code"
                 >
                     <MyUploadImage
                         class="rounded-lg"
                         name="img"
-                        :aspect-ratio="imageAspectRatio"
+                        :aspect-ratio="imageAspectRatio.value"
                         filename-prop-in-request="file"
                         filename-prop-in-response="link"
                         upload-route="admin/upload"
@@ -184,7 +186,6 @@ import { useFieldArray, useFieldValue, useForm } from 'vee-validate'
 import * as yup from 'yup'
 import mime from 'mime-types'
 
-import DropdownSelect from '@/components/DropdownSelect.vue'
 import MyInputText from '@/components/MyInputText.vue'
 import MyInputNumber from '@/components/MyInputNumber.vue'
 import MyInputSwitch from '@/components/MyInputSwitch.vue'
@@ -248,7 +249,8 @@ const { handleSubmit, setFieldValue } = useForm<any>({
     initialValues: {
         from_hour: 600,
         to_hour: 2200
-    }
+    },
+    keepValuesOnUnmount: true
 })
 
 const active = useFieldValue<boolean>('active')
@@ -257,17 +259,19 @@ const have = useFieldValue<boolean>('have')
 const price = useFieldValue<number>('price')
 const images = useFieldValue<string[]>('images')
 
-const imageAspectRatio = ref(1)
 const aspectRatioOptions = [
     {
+        code: 'square',
         label: 'Квадрат',
         value: 1
     },
     {
+        code: 'high',
         label: 'Высокий',
         value: 142 / 540
     }
 ]
+const imageAspectRatio = ref(aspectRatioOptions[0])
 
 const uploadFiles = (event: any) => {
     const target: HTMLInputElement = event.target

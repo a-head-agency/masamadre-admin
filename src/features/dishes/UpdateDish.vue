@@ -7,20 +7,21 @@
                         :options="aspectRatioOptions"
                         v-model="imageAspectRatio"
                         option-label="label"
-                        option-value="value"
                         :allow-empty="false"
                     />
                 </div>
                 <div
-                    class="flex h-full max-h-[30rem] justify-center"
+                    class="flex justify-center"
                     :style="{
-                        aspectRatio: imageAspectRatio
+                        aspectRatio: imageAspectRatio.value,
+                        height: imageAspectRatio.code === 'square' ? '20rem' : '25rem'
                     }"
+                    :key="imageAspectRatio.code"
                 >
                     <MyUploadImage
                         class="rounded-lg"
                         name="img"
-                        :aspect-ratio="imageAspectRatio"
+                        :aspect-ratio="imageAspectRatio.value"
                         filename-prop-in-request="file"
                         filename-prop-in-response="link"
                         upload-route="admin/upload"
@@ -252,27 +253,30 @@ const { handleSubmit, setFieldValue, resetForm } = useForm<any>({
                 have: yup.boolean().label('В наличии')
             })
         )
-    })
+    }),
+    keepValuesOnUnmount: true
 })
 
 
-const imageAspectRatio = ref(1)
 const aspectRatioOptions = [
     {
+        code: 'square',
         label: 'Квадрат',
         value: 1
     },
     {
+        code: 'high',
         label: 'Высокий',
         value: 142 / 540
     }
 ]
+const imageAspectRatio = ref(aspectRatioOptions[0])
 
 watch(
     [dishData],
     () => {
         if (dishData.value?.make_date) {
-            imageAspectRatio.value = aspectRatioOptions[1].value
+            imageAspectRatio.value = aspectRatioOptions[1]
         }
         resetForm({
             values: {
