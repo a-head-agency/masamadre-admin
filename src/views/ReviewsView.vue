@@ -42,11 +42,6 @@ const menuModel = ref([
         icon: 'pi pi-fw pi-refresh',
         command: () => refresh()
     },
-    {
-        label: 'Ответить',
-        icon: 'pi pi-fw pi-check',
-        command: () => beginRespondToReviewInteraction(selected.value!)
-    }
 ])
 
 const beginRespondToReviewInteraction = (review: IReview) => {
@@ -99,12 +94,6 @@ onMounted(() => {
                         <InputIcon class="pi pi-search"></InputIcon>
                         <InputText disabled placeholder="Поиск" class="w-full" />
                     </IconField>
-                    <Button
-                        class="shrink-0 max-md:grow"
-                        icon="pi pi-pencil"
-                        :disabled="!selected"
-                        @click="beginRespondToReviewInteraction(selected!)"
-                    />
                 </div>
             </template>
         </Toolbar>
@@ -152,22 +141,6 @@ onMounted(() => {
                 <Column field="text" header="Текст">
                     <template #body="slotProps">
                         {{ truncate(slotProps.data.text, 20) }}
-                    </template>
-                </Column>
-                <Column field="status" header="Статус">
-                    <template #body="slotProps">
-                        <Tag
-                            v-if="slotProps.data.status === 1"
-                            icon="pi pi-check-circle"
-                            value="Отвечен"
-                            severity="success"
-                        />
-                        <Tag
-                            v-else-if="slotProps.data.status === 0"
-                            icon="pi pi-times"
-                            value="Не отвечен"
-                            severity="danger"
-                        />
                     </template>
                 </Column>
 
