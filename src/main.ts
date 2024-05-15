@@ -59,8 +59,8 @@ import pinia from '@/stores'
 
 import { Chart as ChartJS } from 'chart.js'
 
-ChartJS.defaults.borderColor = 'rgba(255, 255, 255, 0.1)'
-ChartJS.defaults.color = 'rgba(255, 255, 255, 0.5)'
+ChartJS.defaults.borderColor = 'rgba(0, 0, 0, 0.1)'
+ChartJS.defaults.color = 'rgba(0, 0, 0, 0.5)'
 
 YupSetLocale(ru)
 
