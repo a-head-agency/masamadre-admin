@@ -16,6 +16,7 @@ export interface ICategory {
     title: string | undefined
     type: number | undefined
     show_title: boolean
+    subtitle: string | undefined
 }
 
 export interface IUpdateCategory {

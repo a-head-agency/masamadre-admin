@@ -5,6 +5,8 @@
             <MyInputText name="name" label="Название" />
             <MyInputSwitch name="show_title" label="Показывать название категории" />
 
+            <MyInputText name="subtitle" label="Подкатегория"/>
+
             <DropdownSelect
                 name="active"
                 label="Активно"
@@ -96,6 +98,7 @@ const { handleSubmit } = useForm({
         keywords: yup.string().label('Ключевые слова'),
         description_seo: yup.string().label('Описание'),
         title: yup.string().label('Title'),
+        subtitle: yup.string().label('Подкатегория'),
         type: yup.number().required().label('Тип категории'),
         show_title: yup.boolean().required().label('Показывать название категории')
     }),
@@ -108,7 +111,8 @@ const { handleSubmit } = useForm({
         description_seo: category.description_seo,
         title: category.title,
         type: category.type,
-        show_title: category.show_title
+        show_title: category.show_title,
+        subtitle: category.subtitle
     }
 })
 
