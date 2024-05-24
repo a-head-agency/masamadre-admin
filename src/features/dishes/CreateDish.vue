@@ -72,9 +72,13 @@
         <h2 class="mb-6 text-lg font-bold">Слайдер</h2>
         <div class="mb-4 overflow-x-auto scroll-smooth">
             <div class="flex items-stretch gap-4">
-                <div class="relative h-64 min-w-[10rem] shrink-0" v-for="(img, idx) in images" :key="img">
+                <div
+                    class="relative h-64 min-w-[10rem] shrink-0"
+                    v-for="(img, idx) in images"
+                    :key="img"
+                >
                     <button
-                        class="absolute z-40 right-1 top-1 flex h-6 w-6 items-center justify-center rounded-lg bg-gray-900 shadow-md outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-1"
+                        class="absolute right-1 top-1 z-40 flex h-6 w-6 items-center justify-center rounded-lg bg-gray-900 shadow-md outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-1"
                         type="button"
                         @click="deleteImg(idx)"
                     >
@@ -99,6 +103,25 @@
             <MyInputText name="flag" label="Флаг страны" />
             <MyInputText name="malbec" label="Сорт винограда" />
             <MyInputText name="maker" label="Страна изготовитель" />
+            <DropdownSelect
+                name="cert"
+                label="Сертификация"
+                placeholder="Выберите"
+                :options="[
+                    {
+                        code: 'eco',
+                        label: 'Eco'
+                    },
+                    {
+                        code: 'org',
+                        label: 'Org'
+                    },
+                    {
+                        code: 'bio',
+                        label: 'Bio'
+                    }
+                ]"
+            />
         </div>
 
         <h2 class="mb-6 text-lg font-bold">SEO</h2>
@@ -189,6 +212,7 @@ import mime from 'mime-types'
 import MyInputText from '@/components/MyInputText.vue'
 import MyInputNumber from '@/components/MyInputNumber.vue'
 import MyInputSwitch from '@/components/MyInputSwitch.vue'
+import DropdownSelect from '@/components/DropdownSelect.vue'
 
 import { useCategories } from '@/features/categories'
 import { useCreateDish } from './composables'

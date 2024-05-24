@@ -99,6 +99,25 @@
             <MyInputText name="flag" label="Флаг страны" />
             <MyInputText name="malbec" label="Сорт винограда" />
             <MyInputText name="maker" label="Страна изготовитель" />
+            <DropdownSelect
+                name="cert"
+                label="Сертификация"
+                placeholder="Выберите"
+                :options="[
+                    {
+                        code: 'eco',
+                        label: 'Eco'
+                    },
+                    {
+                        code: 'org',
+                        label: 'Org'
+                    },
+                    {
+                        code: 'bio',
+                        label: 'Bio'
+                    }
+                ]"
+            />
         </div>
 
         <h2 class="mb-6 text-lg font-bold">SEO</h2>
@@ -188,6 +207,7 @@ import MyInputText from '@/components/MyInputText.vue'
 import MyInputNumber from '@/components/MyInputNumber.vue'
 import MyInputSwitch from '@/components/MyInputSwitch.vue'
 import MyCalendar from '@/components/MyCalendar.vue'
+import DropdownSelect from '@/components/DropdownSelect.vue'
 
 import { useCategories } from '@/features/categories'
 import { useUpdateDish, useDish } from './composables'
