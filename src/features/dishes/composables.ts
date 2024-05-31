@@ -6,6 +6,7 @@ import type { MaybeRef } from 'vue'
 import { useRestaurants } from '@/features/restaurants'
 import type { ITag } from '@/features/tags'
 import type { ICategory } from '../categories'
+import type { IMod } from '../mods'
 
 interface GetDishesResponse {
     list: IDish[]
@@ -91,6 +92,7 @@ interface GetDishResponse {
     make_date: string
 
     tags: ITag[]
+    mods: IMod[]
 
     vars: {
         id: number
