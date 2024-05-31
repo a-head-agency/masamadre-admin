@@ -67,14 +67,26 @@
                 label="Теги"
                 :options="possibleTags || []"
             />
+
+            <MyMultiSelect
+                class="w-full"
+                name="mods"
+                placeholder="Выберите"
+                label="Модификаторы"
+                :options="possibleMods || []"
+            />
         </div>
 
         <h2 class="mb-6 text-lg font-bold">Слайдер</h2>
         <div class="mb-4 overflow-x-auto scroll-smooth">
             <div class="flex items-stretch gap-4">
-                <div class="relative h-64 min-w-[10rem] shrink-0" v-for="(img, idx) in images" :key="img">
+                <div
+                    class="relative h-64 min-w-[10rem] shrink-0"
+                    v-for="(img, idx) in images"
+                    :key="img"
+                >
                     <button
-                        class="absolute z-40 right-1 top-1 flex h-6 w-6 items-center justify-center rounded-lg bg-gray-900 shadow-md outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-1"
+                        class="absolute right-1 top-1 z-40 flex h-6 w-6 items-center justify-center rounded-lg bg-gray-900 shadow-md outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-1"
                         type="button"
                         @click="deleteImg(idx)"
                     >
@@ -158,7 +170,9 @@
                 :key="field.key"
                 class="relative mb-4 rounded-lg border-2 border-gray-200 p-4"
             >
-                <h3 class="absolute top-0 -translate-y-1/2 bg-white text-pv-text-color px-3 font-semibold">
+                <h3
+                    class="absolute top-0 -translate-y-1/2 bg-white px-3 font-semibold text-pv-text-color"
+                >
                     "{{ field.value.rest_name }}" - {{ field.value.rest_address }}
                 </h3>
                 <div class="flex gap-4">
@@ -217,6 +231,7 @@ import MyMultiSelect from '@/components/MyMultiSelect.vue'
 import type { IDish } from './interfaces'
 import { axiosPrivate } from '@/network'
 import mime from 'mime-types'
+import { useMods } from '../mods'
 
 const dialogRef = inject('dialogRef') as any
 const dish = dialogRef.value.data.dish as IDish
@@ -224,7 +239,8 @@ const dish = dialogRef.value.data.dish as IDish
 const { data: dishData } = useDish(dish.id, (v) => {
     const vals = {
         ...v,
-        tags: v.tags.map((t) => t.id)
+        tags: v.tags.map((t) => t.id),
+        mods: v.mods.map((m) => m.id)
     }
     return vals
 })
@@ -246,6 +262,7 @@ const { handleSubmit, setFieldValue, resetForm } = useForm<any>({
         description: yup.string().label('Описание'),
         rkeeper_id: yup.string().required().label('RKeeper ID'),
         tags: yup.array().label('Теги'),
+        mods: yup.array().label('Модификаторы'),
         active: yup.boolean().label('Активно'),
         can_deliver: yup.boolean().label('Можно доставить'),
         have: yup.boolean().label('В наличии'),
@@ -276,7 +293,6 @@ const { handleSubmit, setFieldValue, resetForm } = useForm<any>({
     }),
     keepValuesOnUnmount: true
 })
-
 
 const aspectRatioOptions = [
     {
@@ -337,6 +353,11 @@ const { mutate, isLoading } = useUpdateDish()
 const { data: possibleCategories } = useCategories({ offset: 0, limit: 9999999, search: '' }, (r) =>
     r.list.map((v) => ({ label: v.name, code: v.id }))
 )
+
+const { data: possibleMods } = useMods({ offset: 0, limit: 9999999, search: '' }, (r) =>
+    r.list.map((v) => ({ label: v.name, code: v.id }))
+)
+
 const { data: restaurantsData } = useRestaurants(
     {
         offset: 0,

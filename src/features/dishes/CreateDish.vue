@@ -67,6 +67,14 @@
                 label="Теги"
                 :options="possibleTags || []"
             />
+
+            <MyMultiSelect
+                class="w-full"
+                name="mods"
+                placeholder="Выберите"
+                label="Модификаторы"
+                :options="possibleMods || []"
+            />
         </div>
 
         <h2 class="mb-6 text-lg font-bold">Слайдер</h2>
@@ -217,10 +225,11 @@ import DropdownSelect from '@/components/DropdownSelect.vue'
 import { useCategories } from '@/features/categories'
 import { useCreateDish } from './composables'
 import { useRestaurants } from '@/features/restaurants'
-import { useTags } from '../tags'
+import { useTags } from '@/features/tags'
 import MyMultiSelect from '@/components/MyMultiSelect.vue'
 import MyCalendar from '@/components/MyCalendar.vue'
 import { axiosPrivate } from '@/network'
+import { useMods } from '@/features/mods'
 
 const { handleSubmit, setFieldValue } = useForm<any>({
     validationSchema: yup.object({
@@ -237,6 +246,7 @@ const { handleSubmit, setFieldValue } = useForm<any>({
         count: yup.number().required().label('Количество кусочков'),
         rkeeper_id: yup.string().required().label('RKeeper ID'),
         tags: yup.array().label('Теги'),
+        mods: yup.array().label('Модификаторы'),
         active: yup.boolean().label('Активно'),
         can_deliver: yup.boolean().label('Можно доставить'),
         have: yup.boolean().label('В наличии'),
@@ -319,6 +329,11 @@ const { mutate, isLoading } = useCreateDish()
 const { data: possibleCategories } = useCategories({ offset: 0, limit: 9999999, search: '' }, (r) =>
     r.list.map((v) => ({ label: v.name, code: v.id }))
 )
+
+const { data: possibleMods } = useMods({ offset: 0, limit: 9999999, search: '' }, (r) =>
+    r.list.map((v) => ({ label: v.name, code: v.id }))
+)
+
 const { data: restaurantsData } = useRestaurants(
     {
         offset: 0,
@@ -381,7 +396,6 @@ watch(
 const onSubmit = handleSubmit(async (vals) => {
     // upload object files
     let uploadedPhotos: string[] = []
-    const formData = new FormData()
     const filesToBeUploaded: File[] = []
     for (const photoUrl of vals.images) {
         if (photoUrl.startsWith('blob:')) {

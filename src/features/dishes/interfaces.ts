@@ -1,5 +1,6 @@
 import type { ITag } from '@/features/tags'
 import type { ICategory } from '@/features/categories'
+import type { IMod } from '../mods'
 
 export interface IVariation {
     id: number
@@ -54,6 +55,7 @@ export interface IDish {
     date_contain: string | undefined
 
     tags: ITag[]
+    mods: IMod[]
 
     vars: IVariation[]
 }
