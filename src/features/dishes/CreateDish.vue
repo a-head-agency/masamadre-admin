@@ -420,6 +420,9 @@ const onSubmit = handleSubmit(async (vals) => {
         vals.images = links
     }
 
+    vals.modificators = vals.mods
+    delete vals.mods
+
     mutate({
         category: -1,
         ...vals
