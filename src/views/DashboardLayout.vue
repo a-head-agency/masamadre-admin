@@ -173,6 +173,11 @@ const menu: {
                 name: 'Теги',
                 to: { name: 'tags' },
                 iconClass: 'pi pi-fw pi-hashtag'
+            },
+            {
+                name: 'Модификаторы',
+                to: { name: 'mods' },
+                iconClass: 'pi pi-fw pi-sliders-v'
             }
         ]
     },

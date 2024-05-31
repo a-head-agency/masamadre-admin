@@ -18,6 +18,7 @@ import SettingsView from '@/views/SettingsView.vue'
 import { useUserStore } from '@/stores/user'
 import BlogsView from '@/views/BlogsView.vue'
 import AdditionsView from '@/views/AdditionsView.vue'
+import ModsView from '@/views/ModsView.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -95,6 +96,11 @@ const router = createRouter({
                     path: 'orders',
                     name: 'orders',
                     component: OrdersView
+                },
+                {
+                    path: 'mods',
+                    name: 'mods',
+                    component: ModsView
                 }
             ]
         },
