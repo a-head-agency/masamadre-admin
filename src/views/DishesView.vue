@@ -246,7 +246,7 @@ const root = ref<HTMLElement>()
                         @click="beginCreateDishInteraction()"
                     />
                     <Dropdown
-                        class="w-full max-w-xs grow max-md:order-2 md:w-auto"
+                        class="w-full lg:max-w-xs grow max-md:order-1 md:w-auto"
                         placeholder="Категория"
                         option-label="label"
                         option-value="code"
