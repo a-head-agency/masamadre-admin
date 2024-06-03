@@ -1,43 +1,7 @@
-import { type MaybeRef } from 'vue'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
-import type { ICategory } from './interfaces'
+import { useMutation, useQueryClient } from '@tanstack/vue-query'
 
 import { axiosPrivate } from '@/network'
 import { useToast } from 'primevue/usetoast'
-
-interface GetCategoriesResponse {
-    list: ICategory[]
-    total: number
-}
-
-interface QueryConfig {
-    offset: MaybeRef<number>
-    limit: MaybeRef<number>
-    search: MaybeRef<string>
-}
-
-export const useCategories = <SData>(
-    queryConfig: QueryConfig,
-    selector?: (response: GetCategoriesResponse) => SData
-) => {
-    const { offset, limit, search } = queryConfig
-    return useQuery({
-        queryKey: ['categories', { offset, limit, search }] as any,
-        queryFn: async ({ queryKey }) => {
-            const response = await axiosPrivate.get<GetCategoriesResponse>('admin/categories', {
-                params: {
-                    offset: (queryKey[1] as any).offset as number,
-                    limit: (queryKey[1] as any).limit as number,
-                    search: (queryKey[1] as any).search as string
-                }
-            })
-            response.data.total = response.data.list.length
-            return response.data
-        },
-        select: selector,
-        keepPreviousData: true
-    })
-}
 
 export const useCreateCategory = () => {
     const toast = useToast()
@@ -52,7 +16,7 @@ export const useCreateCategory = () => {
                 summary: 'Успешно',
                 detail: `Добавлена категория ${vars.name}`
             })
-            queryClient.invalidateQueries(['categories'])
+            queryClient.invalidateQueries({queryKey: ['categories']})
         },
         onError(error: any) {
             toast.add({
@@ -85,7 +49,7 @@ export const useDeleteCategory = () => {
                 summary: 'Успешно',
                 detail: `Удалена категория ${vars.name} (id: ${vars.id})`
             })
-            queryClient.invalidateQueries(['categories'])
+            queryClient.invalidateQueries({queryKey: ['categories']})
         },
         onError(error: any) {
             toast.add({
@@ -114,7 +78,7 @@ export const useUpdateCategory = () => {
                 summary: 'Успешно',
                 detail: `Изменена категория ${vars.name} (id: ${vars.id})`
             })
-            queryClient.invalidateQueries(['categories'])
+            queryClient.invalidateQueries({queryKey: ['categories']})
         },
         onError(error: any) {
             toast.add({
@@ -125,19 +89,6 @@ export const useUpdateCategory = () => {
             })
         }
     })
-}
-
-export const useAdditionsCategory = () => {
-    return useCategories(
-        {
-            limit: 99999999,
-            offset: 0,
-            search: ''
-        },
-        (v) => {
-            return v.list.find((t) => t.addable)
-        }
-    )
 }
 
 export interface SaveCategoriesOrderingMutation {
@@ -164,7 +115,7 @@ export const useSaveCategoriesOrdering = () => {
                 summary: 'Успешно',
                 detail: `Порядок категорий сохранён.`
             })
-            queryClient.invalidateQueries(['categories'])
+            queryClient.invalidateQueries({queryKey: ['categories']})
         },
         onError(error: any) {
             toast.add({

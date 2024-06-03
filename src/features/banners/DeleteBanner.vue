@@ -13,7 +13,7 @@
                 class="flex-1"
                 size="small"
                 label="Нет"
-                :disabled="isLoading"
+                :disabled="isPending"
                 severity="secondary"
                 @click="dialogRef.close()"
             />
@@ -21,8 +21,8 @@
                 class="flex-1"
                 size="small"
                 label="Да"
-                :loading="isLoading"
-                :disabled="isLoading"
+                :loading="isPending"
+                :disabled="isPending"
                 severity="danger"
                 @click="deleteCategory()"
             />
@@ -38,7 +38,7 @@ import type { IBanner } from './interfaces'
 const dialogRef = inject('dialogRef') as any
 const banner = dialogRef.value.data.banner as IBanner
 
-const { mutateAsync, isLoading } = useDeleteBanner()
+const { mutateAsync, isPending } = useDeleteBanner()
 
 const deleteCategory = () => {
     mutateAsync({

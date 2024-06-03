@@ -39,7 +39,7 @@ export const useReviews = <SData>(
             return response.data
         },
         select: selector,
-        keepPreviousData: true
+        placeholderData: (v) => v
     })
 }
 
@@ -56,7 +56,7 @@ export const useChangeReviewStatus = () => {
                 summary: 'Успешно',
                 detail: `Статус обращения id: ${vars.user_id} изменён`
             })
-            queryClient.invalidateQueries(['reviews'])
+            queryClient.invalidateQueries({queryKey: ['reviews']})
         },
         onError(error: any) {
             toast.add({

@@ -58,6 +58,7 @@ import router from '@/router'
 import pinia from '@/stores'
 
 import { Chart as ChartJS } from 'chart.js'
+import { queryClient } from './query-client'
 
 ChartJS.defaults.borderColor = 'rgba(0, 0, 0, 0.1)'
 ChartJS.defaults.color = 'rgba(0, 0, 0, 0.5)'
@@ -274,15 +275,7 @@ app.use(ConfirmationService)
 app.use(DialogService)
 app.use(pinia)
 app.use(router)
-app.use(VueQueryPlugin, {
-    queryClientConfig: {
-        defaultOptions: {
-            queries: {
-                staleTime: 60 * 1000
-            }
-        }
-    }
-} as VueQueryPluginOptions)
+app.use(VueQueryPlugin, { queryClient })
 
 app.component('InputNumber', InputNumber)
 app.component('InputMask', InputMask)

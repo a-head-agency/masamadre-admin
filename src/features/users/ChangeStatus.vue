@@ -23,8 +23,8 @@
             class="mt-8 flex w-full items-center p-4"
             type="submit"
             label="Сохранить"
-            :loading="isLoading"
-            :disabled="isLoading"
+            :loading="isPending"
+            :disabled="isPending"
         />
     </form>
 </template>
@@ -60,7 +60,7 @@ const possibleStatuses = ref([
     { label: 'На модерации', code: 2 }
 ])
 
-const { mutateAsync, isLoading } = useChangeUserStatus()
+const { mutateAsync, isPending } = useChangeUserStatus()
 
 const onSubmit = handleSubmit((vals) => {
     mutateAsync(vals).then(dialogRef.value.close)

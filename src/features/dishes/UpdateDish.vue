@@ -11,10 +11,10 @@
                     />
                 </div>
                 <div
-                    class="flex justify-center"
+                    class="w-full"
                     :style="{
                         aspectRatio: imageAspectRatio.value,
-                        height: imageAspectRatio.code === 'square' ? '20rem' : '25rem'
+                        maxWidth: imageAspectRatio.code === 'square' ? '20rem' : '6.5rem'
                     }"
                     :key="imageAspectRatio.code"
                 >
@@ -29,7 +29,9 @@
                 </div>
             </div>
         </div>
-        <div class="mb-8 grid grid-cols-3 items-center justify-items-center gap-4">
+        <div
+            class="mb-8 grid grid-cols-1 items-center justify-items-center gap-x-4 md:grid-cols-2 lg:grid-cols-3"
+        >
             <MyInputNumber name="id" label="ID" disabled />
             <MyInputText name="name" label="Название" />
             <MyInputText label="RKeeper ID" name="rkeeper_id" />
@@ -77,7 +79,7 @@
             />
         </div>
 
-        <h2 class="mb-6 text-lg font-bold">Слайдер</h2>
+        <h2 class="section-header">Слайдер</h2>
         <div class="mb-4 overflow-x-auto scroll-smooth">
             <div class="flex items-stretch gap-4">
                 <div
@@ -100,7 +102,7 @@
             <input type="file" @change="uploadFiles" multiple />
         </div>
 
-        <h2 class="mb-6 text-lg font-bold">Наполнение</h2>
+        <h2 class="section-header">Наполнение</h2>
         <div class="grid grid-flow-row grid-cols-1 gap-x-4">
             <MyInputText name="short_description" label="Краткое описание" />
             <MyInputText name="description" label="Полное описание" />
@@ -132,8 +134,8 @@
             />
         </div>
 
-        <h2 class="mb-6 text-lg font-bold">SEO</h2>
-        <div class="mb-6 grid grid-flow-row grid-cols-2 gap-x-4">
+        <h2 class="section-header">SEO</h2>
+        <div class="mb-6 grid grid-flow-row grid-cols-1 gap-x-4 md:grid-cols-2">
             <MyInputText name="alt" label="Альтернативный текст" />
             <MyInputText name="link" label="Ссылка" />
             <MyInputText name="description_seo" label="Описание" />
@@ -141,20 +143,19 @@
             <MyInputText class="col-span-full" name="keywords" label="Ключевые слова" />
         </div>
 
-        <h2 class="mb-6 text-lg font-bold">Время показа</h2>
-        <div class="mb-8 flex items-center justify-center gap-8">
-            <MyCalendar name="from_hour" time-only />
-            <div class="h-px w-8 bg-black"></div>
-            <MyCalendar name="to_hour" time-only />
+        <h2 class="section-header">Время показа</h2>
+        <div class="mb-8">
+            <MyCalendar class="w-full" label="Время начала" name="from_hour" time-only />
+            <MyCalendar class="w-full" label="Время окончания" name="to_hour" time-only />
         </div>
 
-        <div class="mb-8 flex flex-wrap items-center justify-center gap-12">
+        <div class="mb-8 flex flex-col gap-2">
             <MyInputSwitch label="В наличии" :name="`have`" />
             <MyInputSwitch label="Можно доставить" :name="`can_deliver`" />
             <MyInputSwitch label="Активно" :name="`active`" />
         </div>
 
-        <h2 class="mb-6 text-lg font-bold">По ресторанам</h2>
+        <h2 class="section-header">По ресторанам</h2>
         <MultiSelect
             class="mb-8 w-full"
             display="chip"
@@ -173,9 +174,12 @@
                 <h3
                     class="absolute top-0 -translate-y-1/2 bg-white px-3 font-semibold text-pv-text-color"
                 >
-                    "{{ field.value.rest_name }}" - {{ field.value.rest_address }}
+                    "{{ field.value.rest_name }}"
+                    <template v-if="field.value.rest_address">
+                        - {{ field.value.rest_address }}
+                    </template>
                 </h3>
-                <div class="flex gap-4">
+                <div class="grid grid-cols-1 gap-x-2 md:grid-cols-2">
                     <MyInputNumber
                         class="flex-1"
                         :name="`vars[${idx}].rest_id`"
@@ -191,7 +195,7 @@
                         currency="RUB"
                     />
                 </div>
-                <div class="flex flex-wrap items-center justify-center gap-12">
+                <div class="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
                     <MyInputSwitch label="В наличии" :name="`vars[${idx}].have`" />
                     <MyInputSwitch label="Можно доставить" :name="`vars[${idx}].can_deliver`" />
                     <MyInputSwitch label="Активно" :name="`vars[${idx}].active`" />
@@ -205,8 +209,8 @@
             class="mt-8 flex w-full items-center p-4"
             type="submit"
             label="Сохранить"
-            :loading="isLoading"
-            :disabled="isLoading"
+            :loading="isPending"
+            :disabled="isPending"
         />
     </form>
 </template>
@@ -215,6 +219,7 @@
 import { inject, ref, watch, computed } from 'vue'
 import MyUploadImage from '@/components/MyUploadImage.vue'
 import { useFieldArray, useFieldValue, useForm } from 'vee-validate'
+import { toTypedSchema } from '@vee-validate/yup'
 import * as yup from 'yup'
 
 import MyInputText from '@/components/MyInputText.vue'
@@ -223,74 +228,80 @@ import MyInputSwitch from '@/components/MyInputSwitch.vue'
 import MyCalendar from '@/components/MyCalendar.vue'
 import DropdownSelect from '@/components/DropdownSelect.vue'
 
-import { useCategories } from '@/features/categories'
-import { useUpdateDish, useDish } from './composables'
-import { useRestaurants } from '@/features/restaurants'
+import { CategoriesQueries } from '@/features/categories'
+import { useUpdateDish } from './composables'
+import { RestsQueries } from '@/features/restaurants'
 import { useTags } from '@/features/tags'
 import MyMultiSelect from '@/components/MyMultiSelect.vue'
-import type { IDish } from './interfaces'
 import { axiosPrivate } from '@/network'
 import mime from 'mime-types'
 import { useMods } from '../mods'
+import type { z } from 'zod'
+import { DishesQueries, type DishesSchemes } from '.'
+import { useQuery } from '@tanstack/vue-query'
+
+type Entity = z.infer<typeof DishesSchemes.ListedDishScheme>
 
 const dialogRef = inject('dialogRef') as any
-const dish = dialogRef.value.data.dish as IDish
+const entity = dialogRef.value.data.entity as Entity
 
-const { data: dishData } = useDish(dish.id, (v) => {
-    const vals = {
+const { data: dishData } = useQuery({
+    ...DishesQueries.detail({ id: entity.id }),
+    select: (v) => ({
         ...v,
         tags: v.tags.map((t) => t.id),
-        mods: v.mods.map((m) => m.id)
-    }
-    return vals
+        mods: v.mods.map((t) => t.id)
+    })
 })
 
-const { handleSubmit, setFieldValue, resetForm } = useForm<any>({
-    validationSchema: yup.object({
-        id: yup.number().required().label('ID'),
-        name: yup.string().required().label('Название'),
-        img: yup.string().required().label('Изображение'),
-        price: yup.number().required().label('Цена'),
-        categories: yup.array().required().label('Категория'),
-        belki: yup.number().required().label('Количество белков'),
-        pich_cen: yup.number().required().label('Пищевая ценность'),
-        energ_cen: yup.number().required().label('Энергетическая ценность'),
-        uglevodi: yup.number().required().label('Количество углеводов'),
-        ziri: yup.number().required().label('Количество жиров'),
-        weight: yup.number().required().label('Вес'),
-        count: yup.number().required().label('Количество кусочков'),
-        description: yup.string().label('Описание'),
-        rkeeper_id: yup.string().required().label('RKeeper ID'),
-        tags: yup.array().label('Теги'),
-        mods: yup.array().label('Модификаторы'),
-        active: yup.boolean().label('Активно'),
-        can_deliver: yup.boolean().label('Можно доставить'),
-        have: yup.boolean().label('В наличии'),
-        from_hour: yup.number().required().label('Доступно С'),
-        to_hour: yup.number().required().label('Доступно ДО'),
-        link: yup.string().required().label('Ссылка'),
-        keywords: yup.string().label('Ключевые слова'),
-        description_seo: yup.string().label('Описание'),
-        title: yup.string().label('Title'),
-        images: yup.array().of(yup.string()).label('Слайдер'),
+const validationSchema = yup.object({
+    id: yup.number().required().label('ID'),
+    name: yup.string().required().label('Название'),
+    img: yup.string().required().label('Изображение'),
+    price: yup.number().required().label('Цена'),
+    categories: yup.array().required().label('Категория'),
+    belki: yup.number().required().label('Количество белков'),
+    pich_cen: yup.number().required().label('Пищевая ценность'),
+    energ_cen: yup.number().required().label('Энергетическая ценность'),
+    uglevodi: yup.number().required().label('Количество углеводов'),
+    ziri: yup.number().required().label('Количество жиров'),
+    weight: yup.number().required().label('Вес'),
+    count: yup.number().required().label('Количество кусочков'),
+    description: yup.string().label('Описание'),
+    rkeeper_id: yup.string().required().label('RKeeper ID'),
+    tags: yup.array().label('Теги'),
+    mods: yup.array().label('Модификаторы'),
+    active: yup.boolean().label('Активно'),
+    can_deliver: yup.boolean().label('Можно доставить'),
+    have: yup.boolean().label('В наличии'),
+    from_hour: yup.number().required().label('Доступно С'),
+    to_hour: yup.number().required().label('Доступно ДО'),
+    link: yup.string().required().label('Ссылка'),
+    keywords: yup.string().label('Ключевые слова'),
+    description_seo: yup.string().label('Описание'),
+    title: yup.string().label('Title'),
+    images: yup.array().of(yup.string().required()).default([]).label('Слайдер'),
 
-        make_date: yup.string().label('Год производства'),
-        flag: yup.string().label('Флаг страны'),
-        malbec: yup.string().label('Сорт винограда'),
-        maker: yup.string().label('Страна изготовитель'),
+    make_date: yup.string().label('Год производства'),
+    flag: yup.string().label('Флаг страны'),
+    malbec: yup.string().label('Сорт винограда'),
+    maker: yup.string().label('Страна изготовитель'),
 
-        vars: yup.array().of(
-            yup.object({
-                rest_id: yup.number().required().label('ID ресторана'),
-                price: yup.number().required().label('Цена'),
-                active: yup.boolean().label('Активно'),
-                can_deliver: yup.boolean().label('Можно доставить'),
-                can_order: yup.boolean().label('Самовывоз'),
-                in_rest: yup.boolean().label('В ресторане'),
-                have: yup.boolean().label('В наличии')
-            })
-        )
-    }),
+    vars: yup.array().of(
+        yup.object({
+            rest_id: yup.number().required().label('ID ресторана'),
+            price: yup.number().required().label('Цена'),
+            active: yup.boolean().label('Активно'),
+            can_deliver: yup.boolean().label('Можно доставить'),
+            can_order: yup.boolean().label('Самовывоз'),
+            in_rest: yup.boolean().label('В ресторане'),
+            have: yup.boolean().label('В наличии')
+        })
+    )
+})
+
+const { handleSubmit, setFieldValue, resetForm } = useForm({
+    validationSchema: toTypedSchema(validationSchema),
     keepValuesOnUnmount: true
 })
 
@@ -348,30 +359,26 @@ const deleteImg = (index: number) => {
 
 const { replace, fields } = useFieldArray<any>('vars')
 
-const { mutate, isLoading } = useUpdateDish()
+const { mutate, isPending } = useUpdateDish()
 
-const { data: possibleCategories } = useCategories({ offset: 0, limit: 9999999, search: '' }, (r) =>
+const { data: possibleCategories } = useQuery({
+    ...CategoriesQueries.list({ search: '' }),
+    select: (r) => r.list.map((v) => ({ label: v.name, code: v.id }))
+})
+
+const { data: possibleMods } = useMods({ offset: 0, limit: 999999999, search: '' }, (r) =>
     r.list.map((v) => ({ label: v.name, code: v.id }))
 )
 
-const { data: possibleMods } = useMods({ offset: 0, limit: 9999999, search: '' }, (r) =>
-    r.list.map((v) => ({ label: v.name, code: v.id }))
-)
-
-const { data: restaurantsData } = useRestaurants(
-    {
-        offset: 0,
-        limit: 99999999,
-        search: ''
-    },
-    (resp) => {
-        return resp.list.map((r) => ({
+const { data: restaurantsData } = useQuery({
+    ...RestsQueries.list({ offset: 0, limit: 999999999, search: '' }),
+    select: (v) =>
+        v.list.map((r) => ({
             rest_id: r.id,
             rest_address: r.adres,
             rest_name: r.name
         }))
-    }
-)
+})
 
 const restaurantsOptions = computed(() => {
     return (
@@ -388,7 +395,7 @@ const restaurantsOptions = computed(() => {
 const { data: possibleTags } = useTags(
     {
         offset: 0,
-        limit: 99999999,
+        limit: 999999999,
         search: ''
     },
     (r) => r.list.map((v) => ({ label: v.name, code: v.id }))
@@ -403,8 +410,8 @@ const restaurantsFieldArray = ref<
         can_order: boolean
         in_rest: boolean
         have: boolean
-        rest_name: string
-        rest_address: string
+        rest_name?: string
+        rest_address?: string
     }[]
 >([])
 watch(
@@ -431,7 +438,7 @@ watch(
     }
 )
 
-const onSubmit = handleSubmit(async (vals) => {
+const onSubmit = handleSubmit(async (vals: any) => {
     // upload object files
     let uploadedPhotos: string[] = []
     const filesToBeUploaded: File[] = []

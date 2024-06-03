@@ -77,7 +77,7 @@
             />
         </div>
 
-        <h2 class="mb-6 text-lg font-bold">Слайдер</h2>
+        <h2 class="section-header">Слайдер</h2>
         <div class="mb-4 overflow-x-auto scroll-smooth">
             <div class="flex items-stretch gap-4">
                 <div
@@ -100,7 +100,7 @@
             <input type="file" @change="uploadFiles" multiple />
         </div>
 
-        <h2 class="mb-6 text-lg font-bold">Наполнение</h2>
+        <h2 class="section-header">Наполнение</h2>
         <div class="grid grid-flow-row grid-cols-1 gap-x-4">
             <MyInputText name="short_description" label="Краткое описание" />
             <MyInputText name="description" label="Полное описание" />
@@ -132,7 +132,7 @@
             />
         </div>
 
-        <h2 class="mb-6 text-lg font-bold">SEO</h2>
+        <h2 class="section-header">SEO</h2>
         <div class="mb-6 grid grid-flow-row grid-cols-2 gap-x-4">
             <MyInputText name="alt" label="Альтернативный текст" />
             <MyInputText name="link" label="Ссылка" />
@@ -141,7 +141,7 @@
             <MyInputText class="col-span-full" name="keywords" label="Ключевые слова" />
         </div>
 
-        <h2 class="mb-6 text-lg font-bold">Время показа</h2>
+        <h2 class="section-header">Время показа</h2>
         <div class="mb-8 flex items-center justify-center gap-8">
             <MyCalendar name="from_hour" time-only />
             <div class="h-px w-8 bg-black"></div>
@@ -154,7 +154,7 @@
             <MyInputSwitch label="Активно" :name="`active`" />
         </div>
 
-        <h2 class="mb-6 text-lg font-bold">По ресторанам</h2>
+        <h2 class="section-header">По ресторанам</h2>
         <MultiSelect
             class="mb-8 w-full"
             display="chip"
@@ -204,8 +204,8 @@
             class="mt-8 flex w-full items-center p-4"
             type="submit"
             label="Создать"
-            :loading="isLoading"
-            :disabled="isLoading"
+            :loading="isPending"
+            :disabled="isPending"
         />
     </form>
 </template>
@@ -222,14 +222,15 @@ import MyInputNumber from '@/components/MyInputNumber.vue'
 import MyInputSwitch from '@/components/MyInputSwitch.vue'
 import DropdownSelect from '@/components/DropdownSelect.vue'
 
-import { useCategories } from '@/features/categories'
+import { CategoriesQueries } from '@/features/categories'
 import { useCreateDish } from './composables'
-import { useRestaurants } from '@/features/restaurants'
+import { RestsQueries } from '@/features/restaurants'
 import { useTags } from '@/features/tags'
 import MyMultiSelect from '@/components/MyMultiSelect.vue'
 import MyCalendar from '@/components/MyCalendar.vue'
 import { axiosPrivate } from '@/network'
 import { useMods } from '@/features/mods'
+import { useQuery } from '@tanstack/vue-query'
 
 const { handleSubmit, setFieldValue } = useForm<any>({
     validationSchema: yup.object({
@@ -324,30 +325,26 @@ const deleteImg = (index: number) => {
 
 const { replace, fields } = useFieldArray<any>('vars')
 
-const { mutate, isLoading } = useCreateDish()
+const { mutate, isPending } = useCreateDish()
 
-const { data: possibleCategories } = useCategories({ offset: 0, limit: 9999999, search: '' }, (r) =>
+const { data: possibleCategories } = useQuery({
+    ...CategoriesQueries.list({ search: '' }),
+    select: (r) => r.list.map((v) => ({ label: v.name, code: v.id }))
+})
+
+const { data: possibleMods } = useMods({ offset: 0, limit: 999999999, search: '' }, (r) =>
     r.list.map((v) => ({ label: v.name, code: v.id }))
 )
 
-const { data: possibleMods } = useMods({ offset: 0, limit: 9999999, search: '' }, (r) =>
-    r.list.map((v) => ({ label: v.name, code: v.id }))
-)
-
-const { data: restaurantsData } = useRestaurants(
-    {
-        offset: 0,
-        limit: 99999999,
-        search: ''
-    },
-    (resp) => {
-        return resp.list.map((r) => ({
+const { data: restaurantsData } = useQuery({
+    ...RestsQueries.list({ offset: 0, limit: 999999999, search: '' }),
+    select: (v) =>
+        v.list.map((r) => ({
             rest_id: r.id,
             rest_address: r.adres,
             rest_name: r.name
         }))
-    }
-)
+})
 
 const restaurantsOptions = computed(() => {
     return (
@@ -364,7 +361,7 @@ const restaurantsOptions = computed(() => {
 const { data: possibleTags } = useTags(
     {
         offset: 0,
-        limit: 99999999,
+        limit: 999999999,
         search: ''
     },
     (r) => r.list.map((v) => ({ label: v.name, code: v.id }))

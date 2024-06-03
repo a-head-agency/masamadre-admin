@@ -66,8 +66,8 @@
             class="mt-8 flex w-full items-center p-4"
             type="submit"
             label="Создать"
-            :loading="isLoading"
-            :disabled="isLoading"
+            :loading="isPending"
+            :disabled="isPending"
         />
     </form>
 </template>
@@ -90,7 +90,7 @@ const { handleSubmit } = useForm({
     }
 })
 
-const { mutate, isLoading } = useCreateTag()
+const { mutate, isPending } = useCreateTag()
 
 const onSubmit = handleSubmit((v) => {
     mutate(v)

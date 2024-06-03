@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref, unref, watchEffect } from 'vue'
+import { z } from 'zod'
 
 import dateFormat from '@/dateformat'
 import { useDebounce } from '@vueuse/core'
@@ -7,18 +8,22 @@ import draggable from 'vuedraggable'
 
 import {
     CreateDish,
-    DeleteDish,
     UpdateDish,
-    useDishes,
-    type IDish,
     DishHavingBadge,
     DishStatusBadge,
     useSaveDishesOrdering,
-    type SaveDishesOrderingMutation
+    useDeleteDish,
+    DishesQueries,
+    DishesSchemes
 } from '@/features/dishes'
 import { useDialog } from 'primevue/usedialog'
-import { useCategories } from '@/features/categories'
+import { CategoriesQueries } from '@/features/categories'
 import type { PageState } from 'primevue/paginator'
+import { useQuery } from '@tanstack/vue-query'
+import { useConfirm } from 'primevue/useconfirm'
+import type { QueryFnDataDynamic } from '@/common/types'
+
+type ListedEntity = z.infer<typeof DishesSchemes.ListedDishScheme>
 
 const rowsPerPage = ref(20)
 
@@ -26,58 +31,50 @@ const offset = ref(0)
 const limit = rowsPerPage
 const search = ref('')
 const filterCategory = ref(0)
-const selected = ref<IDish>()
+const selected = ref<ListedEntity>()
 const debouncedSearch = useDebounce(search, 500)
 const reorderMode = ref(false)
 const canReorderMode = computed(() => !search.value && filterCategory.value !== 0)
 
-const { data: categoriesOptions, isLoading: isCategoriesOptionsLoading } = useCategories(
-    {
-        offset: 0,
-        limit: 999999999,
-        search: ''
-    },
-    (v) => {
-        const options = [
-            {
-                code: 0,
-                label: 'Все'
-            }
-        ]
+const { data: categoriesOptions, isLoading: isCategoriesOptionsLoading } = useQuery(
+    computed(() => ({
+        ...CategoriesQueries.list({ search: '' }),
+        select: (v: QueryFnDataDynamic<typeof CategoriesQueries.list>) => {
+            const options = [
+                {
+                    code: 0,
+                    label: 'Все'
+                }
+            ]
 
-        options.push(
-            ...v.list.map((c) => ({
-                code: c.id,
-                label: c.name
-            }))
-        )
-        return options
-    }
+            options.push(
+                ...v.list.map((c) => ({
+                    code: c.id,
+                    label: c.name
+                }))
+            )
+            return options
+        }
+    }))
 )
 
-const { data, refetch, isFetching, isError } = useDishes(
-    {
-        limit,
-        offset,
-        search: debouncedSearch,
-        categoryID: filterCategory
-    },
-    (r) => r
+const { data, refetch, isFetching, isError } = useQuery(
+    computed(() => ({
+        ...DishesQueries.list({
+            limit: unref(limit),
+            offset: unref(offset),
+            search: unref(debouncedSearch),
+            categoryID: unref(filterCategory)
+        }),
+        placeholderData: (v: any) => v
+    }))
 )
 
 const drag = ref(false)
-const ordered = ref<IDish[]>([])
-watch(
-    [data],
-    () => {
-        if (data.value) {
-            ordered.value = data.value.list.slice()
-        }
-    },
-    {
-        immediate: true
-    }
-)
+const ordered = ref<ListedEntity[]>([])
+watchEffect(() => {
+    ordered.value = data.value?.list.slice() ?? []
+})
 
 const { mutate: saveDishesOrder } = useSaveDishesOrdering()
 const toggleReorderMode = () => {
@@ -86,22 +83,19 @@ const toggleReorderMode = () => {
             reorderMode.value = true
         }
     } else {
-        const vals: SaveDishesOrderingMutation = {
+        saveDishesOrder({
             positions: ordered.value.map((c, i) => ({
                 id: c.id,
                 position: i
             })),
             category_id: filterCategory.value
-        }
-        saveDishesOrder(vals)
+        })
         reorderMode.value = false
     }
 }
 
 const cancelReorder = () => {
-    if (data.value) {
-        ordered.value = data.value.list.slice() || []
-    }
+    ordered.value = data.value?.list.slice() ?? []
     reorderMode.value = false
 }
 
@@ -121,7 +115,7 @@ const beginCreateDishInteraction = () => {
         } as any
     })
 }
-const beginUpdateDishInteraction = (dish: IDish) => {
+const beginUpdateDishInteraction = (entity: ListedEntity) => {
     dialog.open(UpdateDish, {
         props: {
             class: 'w-full max-w-5xl',
@@ -133,24 +127,23 @@ const beginUpdateDishInteraction = (dish: IDish) => {
             selected.value = undefined
         },
         data: {
-            dish
+            entity
         }
     })
 }
 
-const beginDeleteDishInteraction = (dish: IDish) => {
-    dialog.open(DeleteDish, {
-        props: {
-            class: 'w-full max-w-xl',
-            modal: true,
-            header: 'Удалить блюдо',
-            dismissableMask: true
-        } as any,
-        onClose: () => {
+const { mutate: deleteDish } = useDeleteDish()
+const confirm = useConfirm()
+const beginDeleteDishInteraction = (entity: ListedEntity) => {
+    confirm.require({
+        group: 'danger',
+        header: 'Вы уверены?',
+        message: `Подвердите удаление блюда: ${entity.name}`,
+        acceptLabel: 'Удалить',
+        rejectLabel: 'Отмена',
+        accept: () => {
+            deleteDish(entity)
             selected.value = undefined
-        },
-        data: {
-            dish
         }
     })
 }
@@ -160,7 +153,7 @@ const refresh = () => {
 }
 
 const cm = ref()
-const onRowContextMenu = (event: any, element: IDish) => {
+const onRowContextMenu = (event: MouseEvent, element: ListedEntity) => {
     selected.value = element
     if (!reorderMode.value) {
         cm.value.show(event)
@@ -180,16 +173,16 @@ const menuModel = ref([
     {
         label: 'Изменить',
         icon: 'pi pi-fw pi-pencil',
-        command: () => beginUpdateDishInteraction(selected.value!)
+        command: () => selected.value && beginUpdateDishInteraction(selected.value)
     },
     {
         label: 'Удалить',
         icon: 'pi pi-fw pi-times',
-        command: () => beginDeleteDishInteraction(selected.value!)
+        command: () => selected.value && beginDeleteDishInteraction(selected.value)
     }
 ])
 
-const onItemClick = (item: IDish) => {
+const onItemClick = (item: z.infer<typeof DishesSchemes.ListedDishScheme>) => {
     if (selected.value?.id === item.id) {
         selected.value = undefined
     } else {
@@ -207,14 +200,16 @@ const root = ref<HTMLElement>()
         <ContextMenu ref="cm" :model="menuModel" @hide="selected = undefined" />
 
         <div
-            class="fixed bottom-6 pointer-events-none left-0 right-0 z-10 mx-4 flex h-12 justify-center gap-2 lg:justify-end xl:left-64"
+            class="pointer-events-none fixed bottom-6 left-0 right-0 z-10 mx-4 flex h-12 justify-center gap-2 lg:justify-end xl:left-64"
         >
             <button
                 :disabled="!canReorderMode"
-                class="rounded-full pointer-events-auto px-8 text-pv-text-color text-white shadow-xl shadow-black/25 transition-all disabled:bg-gray-400"
+                class="pointer-events-auto rounded-full border-2 px-8 text-pv-text-color text-white shadow-xl shadow-black/25 backdrop-blur-md transition-all disabled:bg-gray-400"
                 :class="{
-                    'bg-green-500 !shadow-green-400/25': canReorderMode && reorderMode,
-                    'bg-indigo-500 !shadow-indigo-400/25': canReorderMode && !reorderMode
+                    'border-green-500 bg-green-500/70 !shadow-green-400/25':
+                        canReorderMode && reorderMode,
+                    'border-indigo-500 bg-indigo-500/70 !shadow-indigo-400/25':
+                        canReorderMode && !reorderMode
                 }"
                 @click="toggleReorderMode"
             >
@@ -223,7 +218,7 @@ const root = ref<HTMLElement>()
             </button>
             <button
                 v-if="reorderMode"
-                class="rounded-full pointer-events-auto text-white bg-red-500 px-8 text-pv-text-color shadow-xl shadow-red-400/25 transition-all"
+                class="pointer-events-auto rounded-full border-2 border-red-500 bg-red-500/70 px-8 text-pv-text-color text-white shadow-xl shadow-red-400/25 backdrop-blur-md transition-all"
                 @click="cancelReorder"
             >
                 <i class="pi pi-times" />
@@ -246,7 +241,7 @@ const root = ref<HTMLElement>()
                         @click="beginCreateDishInteraction()"
                     />
                     <Dropdown
-                        class="w-full lg:max-w-xs grow max-md:order-1 md:w-auto"
+                        class="w-full grow max-md:order-1 md:w-auto lg:max-w-xs"
                         placeholder="Категория"
                         option-label="label"
                         option-value="code"
@@ -300,9 +295,9 @@ const root = ref<HTMLElement>()
                 >
                     <template #item="{ element }">
                         <button
-                            class="mb-2 flex w-full flex-col items-stretch gap-4 rounded-lg p-4 text-start text-pv-text-color outline-none transition-all bg-black/5 focus:bg-black/10 lg:flex-row"
+                            class="mb-2 flex w-full flex-col items-stretch gap-4 rounded-lg bg-black/5 p-4 text-start text-pv-text-color outline-none transition-all focus:bg-black/10 sm:flex-row"
                             :class="{
-                                ' !bg-pv-primary-color !text-pv-primary-color-text shadow-lg shadow-black/10':
+                                '!bg-pv-primary-color !text-pv-primary-color-text shadow-lg shadow-black/10':
                                     selected?.id === element.id
                             }"
                             @click="onItemClick(element)"
@@ -311,13 +306,13 @@ const root = ref<HTMLElement>()
                             aria-haspopup="true"
                         >
                             <img
-                                class="aspect-square w-32 shrink-0 self-center object-cover object-center drop-shadow-xl max-lg:w-52"
+                                class="relative aspect-square w-32 shrink-0 self-center rounded-xl border-4 border-gray-400 bg-gray-50 object-contain object-center max-lg:w-52"
                                 :src="element.img"
                                 :alt="element.name"
                             />
                             <div class="flex grow flex-col justify-center gap-1">
                                 <div
-                                    class="flex flex-1 gap-x-1 max-lg:w-full max-lg:items-center max-lg:justify-between max-lg:gap-1.5"
+                                    class="flex flex-1 gap-x-1 max-lg:w-full max-lg:justify-between max-lg:gap-1.5"
                                 >
                                     <span class="opacity-50">Название:</span>
                                     <span class="text-end">
@@ -325,10 +320,10 @@ const root = ref<HTMLElement>()
                                     </span>
                                 </div>
                                 <div
-                                    class="flex flex-col items-start justify-between gap-y-1 lg:flex-row lg:items-center lg:gap-8"
+                                    class="flex flex-col items-start justify-between gap-y-1 lg:flex-row lg:gap-8"
                                 >
                                     <div
-                                        class="flex flex-1 gap-x-1 max-lg:w-full max-lg:items-center max-lg:justify-between max-lg:gap-1.5"
+                                        class="flex flex-1 gap-x-1 max-lg:w-full max-lg:justify-between max-lg:gap-1.5"
                                     >
                                         <span class="opacity-50">ID:</span>
                                         <span class="text-end">
@@ -336,7 +331,7 @@ const root = ref<HTMLElement>()
                                         </span>
                                     </div>
                                     <div
-                                        class="flex flex-1 gap-x-1 max-lg:w-full max-lg:items-center max-lg:justify-between max-lg:gap-1.5"
+                                        class="flex flex-1 gap-x-1 max-lg:w-full max-lg:justify-between max-lg:gap-1.5"
                                     >
                                         <span class="opacity-50">Создана:</span>
                                         <span class="text-end">
@@ -344,7 +339,7 @@ const root = ref<HTMLElement>()
                                         </span>
                                     </div>
                                     <div
-                                        class="flex flex-1 gap-x-1 max-lg:w-full max-lg:items-center max-lg:justify-between max-lg:gap-1.5"
+                                        class="flex flex-1 gap-x-1 max-lg:w-full max-lg:justify-between max-lg:gap-1.5"
                                     >
                                         <span class="opacity-50">Обновлена:</span>
                                         <span class="text-end">
@@ -356,7 +351,7 @@ const root = ref<HTMLElement>()
                                     class="flex flex-col items-start justify-between gap-y-1 lg:flex-row lg:items-center lg:gap-8"
                                 >
                                     <div
-                                        class="flex flex-1 gap-x-1 max-lg:w-full max-lg:items-center max-lg:justify-between max-lg:gap-1.5"
+                                        class="flex flex-1 gap-x-1 max-lg:w-full max-lg:justify-between max-lg:gap-1.5"
                                     >
                                         <span class="opacity-50">Цена:</span>
                                         <span class="text-end">{{ element.price }} ₽</span>
@@ -382,9 +377,9 @@ const root = ref<HTMLElement>()
                                 </div>
                             </div>
                             <div
-                                class="invisible flex shrink items-center justify-center"
+                                class="hidden shrink items-center justify-center"
                                 :class="{
-                                    '!visible': reorderMode
+                                    '!flex': reorderMode
                                 }"
                             >
                                 <i class="pi pi-bars" />
@@ -408,83 +403,6 @@ const root = ref<HTMLElement>()
                     current-page-report-template="{currentPage} из {totalPages}"
                 />
             </div>
-
-            <!-- <DataTable
-                v-else
-                size="small"
-                scrollable
-                :scroll-height="scrollHeight"
-                v-model:selection="selected"
-                selection-mode="single"
-                contextMenu
-                v-model:contextMenuSelection="selected"
-                @rowContextmenu="onRowContextMenu"
-                :meta-key-selection="false"
-                class="h-full overflow-hidden rounded-lg border border-white/10"
-                :value="data?.list"
-                lazy
-                paginator
-                :first="0"
-                :rows="rowsPerPage"
-                dataKey="id"
-                tableStyle="min-width: 50rem"
-                @page="onPage($event)"
-                :totalRecords="data?.total"
-            >
-                <Column selectionMode="single" headerStyle="width: 3rem" />
-                <Column field="id" header="ID" />
-                <Column field="name" header="Название" />
-                <Column field="img" header="Картинка">
-                    <template #body="slotProps">
-                        <img
-                            :src="slotProps.data.img"
-                            :alt="slotProps.data.img"
-                            class="aspect-[4/3] w-[6rem] min-w-[6rem] rounded-lg object-cover drop-shadow-md"
-                        />
-                    </template>
-                </Column>
-                <Column field="price" header="Цена">
-                    <template #body="slotProps">{{ slotProps.data.price }} ₽</template>
-                </Column>
-                <Column field="active" header="Статус">
-                    <template #body="slotProps">
-                        <Tag
-                            :value="slotProps.data.active ? 'Активно' : 'Заблокировано'"
-                            :severity="slotProps.data.active ? 'success' : 'danger'"
-                        />
-                    </template>
-                </Column>
-                <Column field="active" header="Наличие">
-                    <template #body="slotProps">
-                        <Tag
-                            :value="slotProps.data.have ? 'Есть' : 'Нету'"
-                            :severity="slotProps.data.have ? 'success' : 'danger'"
-                        />
-                    </template>
-                </Column>
-
-                <Column field="created_at" header="Создано">
-                    <template #body="slotProps">
-                        {{ dateFormat(slotProps.data.created_at) }}
-                    </template>
-                </Column>
-                <Column field="updated_at" header="Обновлено">
-                    <template #body="slotProps">
-                        {{ dateFormat(slotProps.data.updated_at) }}
-                    </template>
-                </Column>
-
-                <template #loading>
-                    <ProgressSpinner class="h-8" />
-                </template>
-
-                <template #empty>
-                    <div class="flex flex-col items-center gap-4 py-12">
-                        <img class="h-36" src="/empty.svg" alt="" />
-                        <span>Нет данных</span>
-                    </div>
-                </template>
-            </DataTable> -->
         </div>
     </main>
 </template>

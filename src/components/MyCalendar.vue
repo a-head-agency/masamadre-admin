@@ -1,5 +1,7 @@
 <template>
-    <div class="w-full">
+    <div>
+        <label v-if="props.label" :for="inputID">{{ props.label }}</label>
+
         <Calendar
             class="w-full text-center"
             :id="inputID"
@@ -21,6 +23,7 @@ import { computed, ref, watch } from 'vue'
 
 const props = defineProps<{
     name: string
+    label?: string
     timeOnly?: boolean
 }>()
 

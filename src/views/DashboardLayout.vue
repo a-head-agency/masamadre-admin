@@ -7,14 +7,14 @@
                     class: '!justify-between'
                 }
             }"
-            class="w-full max-w-xs"
+            class="w-full max-w-xs rounded-xl"
         >
             <template #header>
                 <a href="https://masamadre.ru">
-                    <img :src="logoSrc" class="h-8 w-full object-contain object-center" alt="" />
+                    <img :src="logoSrc" class="h-6 w-full object-contain object-center" alt="" />
                 </a>
             </template>
-            <div class="flex flex-col items-stretch text-black">
+            <div class="flex min-h-full flex-col items-stretch text-black">
                 <ul class="flex grow flex-col gap-1">
                     <template v-for="g of menu" :key="g.name">
                         <li class="text-pv-text-color mb-1 mt-2 text-sm font-bold">{{ g.name }}</li>
@@ -47,7 +47,7 @@
             </div>
         </Sidebar>
         <button
-            class="fixed left-0 top-4 z-50 flex items-center gap-2 rounded-r-full bg-white p-4 leading-none text-black shadow-lg shadow-white/10 xl:hidden"
+            class="fixed left-0 top-4 z-50 flex items-center gap-2 rounded-r-full bg-gray-100/60 backdrop-blur-sm border-2 border-gray-100 p-4 leading-none text-black shadow-lg shadow-white/10 xl:hidden"
             @click="menuSidebarVisible = true"
         >
             Меню
@@ -55,18 +55,18 @@
         </button>
 
         <div
-            class="fixed hidden h-screen w-64 shrink-0 overflow-y-auto scrollbar-thin scrollbar-track-white/5 scrollbar-thumb-white/10 xl:block"
+            class="fixed hidden border-r h-screen w-64 shrink-0 overflow-y-auto scrollbar-thin scrollbar-track-white/5 scrollbar-thumb-white/10 xl:block"
         >
-            <div class="flex flex-col items-stretch px-6 py-4 text-black">
+            <div class="flex min-h-full flex-col items-stretch px-6 py-4 text-black">
                 <a href="https://masamadre.ru">
                     <img
                         :src="logoSrc"
-                        class="my-6 h-8 w-full object-contain object-center"
+                        class="my-6 h-6 w-full object-contain object-center"
                         alt=""
                     />
                 </a>
 
-                <ul class="flex grow flex-col gap-1">
+                <ul class="flex min-h-full grow flex-col gap-1">
                     <template v-for="g of menu" :key="g.name">
                         <li class="text-pv-text-color mb-1 mt-2 text-sm font-bold">{{ g.name }}</li>
                         <li v-for="link of g.links" :key="link.name" class="min-w-max">

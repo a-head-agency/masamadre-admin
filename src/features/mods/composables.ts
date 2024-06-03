@@ -34,7 +34,7 @@ export const useMods = <SData>(
             return response.data
         },
         select: selector,
-        keepPreviousData: true
+        placeholderData: (v) => v
     })
 }
 
@@ -51,7 +51,9 @@ export const useCreateMod = () => {
                 summary: 'Успешно',
                 detail: `Создан модификатор ${vars.name}`
             })
-            queryClient.invalidateQueries(['mods'])
+            queryClient.invalidateQueries({
+                queryKey: ['mods']
+            })
         },
         onError(error: any) {
             toast.add({
@@ -77,7 +79,9 @@ export const useUpdateMod = () => {
                 summary: 'Успешно',
                 detail: `Изменен модификатор ${vars.name}`
             })
-            queryClient.invalidateQueries(['mods'])
+            queryClient.invalidateQueries({
+                queryKey: ['mods']
+            })
         },
         onError(error: any) {
             toast.add({
@@ -95,11 +99,12 @@ export const useDeleteMod = () => {
     const queryClient = useQueryClient()
 
     return useMutation({
-        mutationFn: (vars: any) => axiosPrivate.delete('admin/mod', {
-            params: {
-                id: vars.id
-            }
-        }),
+        mutationFn: (vars: { id: number; name: string }) =>
+            axiosPrivate.delete('admin/mod', {
+                params: {
+                    id: vars.id
+                }
+            }),
         onSuccess(_, vars) {
             toast.add({
                 severity: 'success',
@@ -107,7 +112,9 @@ export const useDeleteMod = () => {
                 summary: 'Успешно',
                 detail: `Удалён модификатор ${vars.name}`
             })
-            queryClient.invalidateQueries(['mods'])
+            queryClient.invalidateQueries({
+                queryKey: ['mods']
+            })
         },
         onError(error: any) {
             toast.add({

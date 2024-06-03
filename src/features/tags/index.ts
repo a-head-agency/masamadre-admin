@@ -1,5 +1,6 @@
 export { default as CreateTag } from './CreateTag.vue'
-export { default as DeleteTag } from './DeleteTag.vue'
 
 export * from './composables'
-export type * from './interfaces'
+export * as TagsSchemes from './schemes'
+export * as TagsService from './service'
+export { queries as TagsQueries } from './queries'

@@ -16,7 +16,7 @@
                 @select="onSelect"
                 :accept="props.accept"
             />
-            <div class="order-1 w-full">
+            <div v-if="value || errorMessage" class="order-1 w-full">
                 <small>{{ value || '&nbsp;' }}</small>
                 <small class="p-error">{{ errorMessage || '&nbsp;' }}</small>
             </div>

@@ -15,8 +15,8 @@
             class="mt-4 flex w-full items-center"
             type="submit"
             label="Сохранить"
-            :loading="isLoading"
-            :disabled="isLoading"
+            :loading="isPending"
+            :disabled="isPending"
         />
     </form>
 </template>
@@ -45,7 +45,7 @@ const { handleSubmit } = useForm({
     }
 })
 
-const { mutate, isLoading } = useChangeReviewStatus()
+const { mutate, isPending } = useChangeReviewStatus()
 
 const onSubmit = handleSubmit((vals) => {
     mutate(vals)

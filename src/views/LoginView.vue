@@ -26,7 +26,7 @@ const { handleSubmit } = useForm({
     })
 })
 
-const { isLoading, mutate } = useMutation<any, any, any>({
+const { isPending, mutate } = useMutation<any, any, any>({
     mutationFn: async (payload: any) => {
         payload.password = md5(payload.password)
         return axiosPublic.post('admin/auth', payload)
@@ -66,12 +66,10 @@ const signIn = handleSubmit((vals) => {
 <template>
     <main class="flex min-h-screen items-center justify-center p-4">
         <div class="flex flex-col items-center">
-            <div class="mb-4 flex w-full flex-col justify-center text-center">
-                <img :src="logoSrc" alt="Image" class="mb-12 h-12" />
+            <div class="mb-4 flex w-full flex-col items-center justify-center text-center">
+                <img :src="logoSrc" alt="Image" class="mb-12 w-full max-w-xs" />
                 <div class="text-900 mb-3 text-3xl font-medium">
-                    Вход
-                    <br />
-                    в панель администратора
+                    Вход в панель администратора
                 </div>
             </div>
 
@@ -84,8 +82,8 @@ const signIn = handleSubmit((vals) => {
                     class="mt-4 flex w-full items-center p-4"
                     label="Войти"
                     type="submit"
-                    :loading="isLoading"
-                    :disabled="isLoading"
+                    :loading="isPending"
+                    :disabled="isPending"
                 />
             </form>
         </div>

@@ -17,7 +17,6 @@ import SettingsView from '@/views/SettingsView.vue'
 
 import { useUserStore } from '@/stores/user'
 import BlogsView from '@/views/BlogsView.vue'
-import AdditionsView from '@/views/AdditionsView.vue'
 import ModsView from '@/views/ModsView.vue'
 
 const router = createRouter({
@@ -51,11 +50,6 @@ const router = createRouter({
                     path: 'dishes',
                     name: 'dishes',
                     component: DishesView
-                },
-                {
-                    path: 'additions',
-                    name: 'additions',
-                    component: AdditionsView
                 },
                 {
                     path: 'categories',

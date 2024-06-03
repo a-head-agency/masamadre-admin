@@ -1,6 +1,6 @@
 <template>
     <form class="p-2" @submit.prevent="onSubmit">
-        <h2 class="mb-4 text-lg font-bold">Общая информация</h2>
+        <h2 class="section-header">Общая информация</h2>
         <div class="mb-8 grid grid-flow-row grid-cols-1 gap-4 lg:grid-cols-2">
             <MyInputText name="name" label="Название" />
             <MyInputText name="org_id" label="ID организации" />
@@ -12,13 +12,13 @@
             <MyInputText name="type_curier" label="Тип доставки ресторана" />
         </div>
 
-        <h2 class="mb-4 text-lg font-bold">ЮКасса</h2>
+        <h2 class="section-header">ЮКасса</h2>
         <div class="mb-8 flex flex-col gap-4">
             <MyInputText name="yookassa_id" label="ID" />
             <MyInputText name="yookassa_key" label="Ключ" />
         </div>
 
-        <h2 class="mb-4 text-lg font-bold">Локация</h2>
+        <h2 class="section-header">Локация</h2>
         <div class="mb-8 grid grid-flow-row grid-cols-1 gap-4 lg:grid-cols-2">
             <MyInputText class="col-span-full" name="adres" label="Адрес" />
             <MyInputNumber
@@ -35,7 +35,7 @@
             />
         </div>
 
-        <h2 class="mb-4 text-lg font-bold">GeoJson</h2>
+        <h2 class="section-header">GeoJson</h2>
         <MyUploadFile
             class="mb-8"
             name="geo"
@@ -92,7 +92,7 @@
             </template>
         </DropdownSelect>
 
-        <h2 class="mb-4 text-lg font-bold">Часы работы</h2>
+        <h2 class="section-header">Часы работы</h2>
 
         <div class="flex flex-col gap-2">
             <div
@@ -296,8 +296,8 @@
             class="mt-8 flex w-full items-center p-4"
             type="submit"
             label="Создать"
-            :loading="isLoading"
-            :disabled="isLoading"
+            :loading="isPending"
+            :disabled="isPending"
         />
     </form>
 </template>
@@ -382,7 +382,7 @@ const setFri = useFieldValue<boolean>('setFri')
 const setSat = useFieldValue<boolean>('setSat')
 const setSun = useFieldValue<boolean>('setSun')
 
-const { mutate, isLoading } = useCreateRestaurant()
+const { mutate, isPending } = useCreateRestaurant()
 
 const onSubmit = handleSubmit((v) => {
     // prettier-ignore

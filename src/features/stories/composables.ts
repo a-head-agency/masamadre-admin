@@ -36,6 +36,6 @@ export const useStories = <SData>(
             return response.data
         },
         select: selector,
-        keepPreviousData: true
+        placeholderData: (v) => v
     })
 }

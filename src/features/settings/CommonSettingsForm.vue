@@ -84,7 +84,7 @@ const { mutate: mutate } = useMutation({
             severity: 'success',
             life: 3000
         })
-        queryClient.invalidateQueries(['settings'])
+        queryClient.invalidateQueries({queryKey: ['settings']})
     },
     onError: (error) => {
         toast.add({

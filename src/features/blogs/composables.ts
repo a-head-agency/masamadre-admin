@@ -40,7 +40,7 @@ export const useArticles = <SData>(
             return response.data
         },
         select: selector,
-        keepPreviousData: true
+        placeholderData: (v) => v
     })
 }
 
@@ -61,7 +61,7 @@ export const useArticle = <SData>(
             return response.data
         },
         select: selector,
-        keepPreviousData: true
+        placeholderData: (v) => v
     })
 }
 
@@ -81,7 +81,7 @@ export const useCreateArticle = () => {
                 summary: 'Успешно',
                 detail: `Создана статья ${vars.name}`
             })
-            queryClient.invalidateQueries(['blogs'])
+            queryClient.invalidateQueries({queryKey: ['blogs']})
         },
         onError(error: any) {
             toast.add({
@@ -110,7 +110,7 @@ export const useUpdateArticle = () => {
                 summary: 'Успешно',
                 detail: `Обновлена статья ${vars.name}`
             })
-            queryClient.invalidateQueries(['blogs'])
+            queryClient.invalidateQueries({queryKey: ['blogs']})
         },
         onError(error: any) {
             toast.add({

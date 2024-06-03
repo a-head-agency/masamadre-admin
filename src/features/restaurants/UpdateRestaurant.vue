@@ -1,6 +1,6 @@
 <template>
     <form class="p-2" @submit.prevent="onSubmit">
-        <h2 class="mb-4 text-lg font-bold">Общая информация</h2>
+        <h2 class="section-header">Общая информация</h2>
         <div class="mb-8 grid grid-flow-row grid-cols-1 gap-4 lg:grid-cols-2">
             <MyInputNumber name="id" label="ID" disabled />
             <MyInputText name="org_id" label="ID организации" />
@@ -13,20 +13,20 @@
             <MyInputText name="type_curier" label="Тип доставки ресторана" />
         </div>
 
-        <h2 class="mb-4 text-lg font-bold">ЮКасса</h2>
+        <h2 class="section-header">ЮКасса</h2>
         <div class="mb-8 flex flex-col gap-4">
             <MyInputText name="yookassa_id" label="ID" />
             <MyInputText name="yookassa_key" label="Ключ" />
         </div>
 
-        <h2 class="mb-4 text-lg font-bold">Локация</h2>
+        <h2 class="section-header">Локация</h2>
         <div class="mb-8 grid grid-flow-row grid-cols-1 gap-4 lg:grid-cols-2">
             <MyInputText class="col-span-full" name="adres" label="Адрес" />
             <MyInputNumber name="lat" label="Широта" />
             <MyInputNumber name="lng" label="Долгота" />
         </div>
 
-        <h2 class="mb-4 text-lg font-bold">GeoJson</h2>
+        <h2 class="section-header">GeoJson</h2>
         <MyUploadFile
             class="mb-8"
             name="geo"
@@ -83,7 +83,7 @@
             </template>
         </DropdownSelect>
 
-        <h2 class="mb-4 text-lg font-bold">Часы работы</h2>
+        <h2 class="section-header">Часы работы</h2>
 
         <div class="flex flex-col gap-2">
             <div
@@ -287,8 +287,8 @@
             class="mt-8 flex w-full items-center p-4"
             type="submit"
             label="Изменить"
-            :loading="updateRestaurantMutation.isLoading"
-            :disabled="updateRestaurantMutation.isLoading"
+            :loading="updateRestaurantMutation.isPending"
+            :disabled="updateRestaurantMutation.isPending"
         />
     </form>
 </template>
@@ -300,16 +300,19 @@ import { axiosPrivate } from '@/network'
 import { useToast } from 'primevue/usetoast'
 import { useFieldValue, useForm } from 'vee-validate'
 import * as yup from 'yup'
-import type { Restaurant } from '@/interfaces'
 import MyUploadFile from '@/components/MyUploadFile.vue'
 import MyInputText from '@/components/MyInputText.vue'
 import MyInputNumber from '@/components/MyInputNumber.vue'
 import DropdownSelect from '@/components/DropdownSelect.vue'
 import MyInputCheckbox from '@/components/MyInputCheckbox.vue'
 import MyTimeSelector from '@/components/MyTimeSelector.vue'
+import { RestsQueries, type RestsSchemes } from '.'
+import type { z } from 'zod'
+
+type Entity = z.infer<typeof RestsSchemes.ListedRestScheme>
 
 const dialogRef = inject('dialogRef') as any
-const restaurant = dialogRef.value.data.restaurant as Restaurant
+const entity = dialogRef.value.data.entity as Entity
 
 const toast = useToast()
 const queryClient = useQueryClient()
@@ -324,7 +327,9 @@ const updateRestaurantMutation = reactive(
                 summary: 'Успешно',
                 detail: `Ресторан ${variables.name} изменен`
             })
-            queryClient.invalidateQueries(['rests'])
+            queryClient.invalidateQueries({
+                queryKey: RestsQueries._def
+            })
         },
         onError(error: any) {
             toast.add({
@@ -337,18 +342,7 @@ const updateRestaurantMutation = reactive(
     })
 )
 
-const { data } = useQuery({
-    queryKey: ['rests', { id: restaurant.id }],
-    queryFn: async ({ queryKey }) => {
-        const response = await axiosPrivate.get('admin/rest', {
-            params: {
-                id: (queryKey[1] as any).id
-            }
-        })
-
-        return response.data
-    }
-})
+const { data } = useQuery(RestsQueries.detail({ id: entity.id }))
 
 const { handleSubmit } = useForm<any>({
     // prettier-ignore
@@ -358,9 +352,9 @@ const { handleSubmit } = useForm<any>({
         adres: yup.string().required().label('Адрес ресторана'),
         lat: yup.number().required().label('Широта'),
         lng: yup.number().required().label('Долгота'),
-        geo: yup.string().label('GeoJson'),
+        geo: yup.string().required().label('GeoJson'),
         active: yup.boolean().required().label('Активен'),
-        org_id: yup.string().required().label('ID организации'),
+        org_id: yup.string().label('ID организации'),
         terminal_id: yup.string().label('ID терминала'),
         curier_card: yup.string().label('ID оплаты картой курьеру'),
         online: yup.string().label('ID оплаты онлайн'),
@@ -415,13 +409,13 @@ const { handleSubmit } = useForm<any>({
                 yookassa_id: data.value.yookassa_id,
                 yookassa_key: data.value.yookassa_key,
 
-                setMon: data.value.mon_from !== -1,
-                setThu: data.value.thu_from !== -1,
-                setWed: data.value.wed_from !== -1,
-                setThurs: data.value.thurs_from !== -1,
-                setFri: data.value.fri_from !== -1,
-                setSat: data.value.sat_from !== -1,
-                setSun: data.value.sun_from !== -1,
+                setMon: data.value.mon_from && data.value.mon_from !== -1,
+                setThu: data.value.thu_from && data.value.thu_from !== -1,
+                setWed: data.value.wed_from && data.value.wed_from !== -1,
+                setThurs: data.value.thurs_from && data.value.thurs_from !== -1,
+                setFri: data.value.fri_from && data.value.fri_from !== -1,
+                setSat: data.value.sat_from && data.value.sat_from !== -1,
+                setSun: data.value.sun_from && data.value.sun_from !== -1,
 
                 mon_from: data.value.mon_from === -1 ? undefined : data.value.mon_from,
                 mon_to: data.value.mon_to === -1 ? undefined : data.value.mon_to,

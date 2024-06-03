@@ -200,8 +200,8 @@
         </MySkeleton>
 
         <MySkeleton :show-body="isSuccess" :skeleton="{}">
-            <div class="mt-8" v-if="data.basket && data.basket.length > 0">
-                <h2 class="text-lg font-medium">Состав</h2>
+            <div class="mt-10" v-if="data.basket && data.basket.length > 0">
+                <h2 class="section-header">Состав</h2>
                 <div class="mb-2" v-for="(v, i) in data.basket" :key="[v.name, i].join('-')">
                     <div class="flex justify-between rounded-lg bg-gray-100 p-2">
                         <div class="flex items-center gap-2">

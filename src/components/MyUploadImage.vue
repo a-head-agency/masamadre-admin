@@ -10,38 +10,29 @@
         @dragleave="onDragLeave"
         @drop="onDrop"
     >
-        <div
-            class="relative z-0 h-full w-full"
-            :style="{
-                aspectRatio: props.aspectRatio
-            }"
-        >
+        <div class="relative z-0 h-full w-full">
             <Transition name="fade" mode="out-in">
                 <div v-if="isSelected" class="h-full w-full overflow-hidden rounded-md">
-                    <div>
-                        <Cropper
-                            :style="{
-                                aspectRatio: props.aspectRatio
-                            }"
-                            ref="cropper"
-                            :src="editingFileUrl || value"
-                            :stencil-props="{
-                                handlers: {},
-                                movable: false,
-                                resizable: false,
-                                aspectRatio: props.aspectRatio
-                            }"
-                            :moveImage="isEditingImage"
-                            defaultBoundaries="fill"
-                            :stencil-size="stencilSize"
-                            :resize-image="{
-                                touch: isEditingImage,
-                                wheel: isEditingImage,
-                                adjustStencil: false
-                            }"
-                            image-restriction="none"
-                        />
-                    </div>
+                    <Cropper
+                        class="h-full w-full"
+                        ref="cropper"
+                        :src="editingFileUrl || value"
+                        :stencil-props="{
+                            handlers: {},
+                            movable: false,
+                            resizable: false,
+                            aspectRatio: props.aspectRatio
+                        }"
+                        :moveImage="isEditingImage"
+                        defaultBoundaries="fill"
+                        :stencil-size="stencilSize"
+                        :resize-image="{
+                            touch: isEditingImage,
+                            wheel: isEditingImage,
+                            adjustStencil: false
+                        }"
+                        image-restriction="none"
+                    />
                 </div>
                 <div v-else class="h-full w-full">
                     <input
@@ -86,11 +77,11 @@
                 >
                     <Transition name="fade" mode="out-in" :duration="200">
                         <span v-if="isUploading"><i class="pi pi-spin pi-spinner"></i></span>
-                        <span v-else-if="isEditingImage">
+                        <span class="flex items-center" v-else-if="isEditingImage">
                             <i class="pi pi-check mr-1 text-sm"></i>
                             Сохранить
                         </span>
-                        <span v-else>
+                        <span class="flex items-center" v-else>
                             <i class="pi pi-pencil mr-1 text-sm"></i>
                             Обрезать
                         </span>
@@ -109,14 +100,14 @@
                     class="flex aspect-square h-8 items-center justify-center rounded-md bg-black bg-opacity-50 transition-all hover:bg-opacity-75"
                     @click="rotate(90)"
                 >
-                    <i class="pi pi-refresh text-pv-text-color text-lg"></i>
+                    <i class="pi pi-refresh text-lg text-pv-text-color"></i>
                 </button>
                 <button
                     type="button"
                     class="flex aspect-square h-8 items-center justify-center rounded-md bg-black bg-opacity-50 transition-all hover:bg-opacity-75"
                     @click="rotate(-90)"
                 >
-                    <i class="pi pi-replay text-pv-text-color text-lg"></i>
+                    <i class="pi pi-replay text-lg text-pv-text-color"></i>
                 </button>
             </div>
         </Transition>

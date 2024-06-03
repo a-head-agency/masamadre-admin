@@ -34,7 +34,7 @@ export const useUsers = <SData>(
             return response.data
         },
         select: selector,
-        keepPreviousData: true
+        placeholderData: (v) => v
     })
 }
 
@@ -51,7 +51,7 @@ export const useChangeUserStatus = () => {
                 summary: 'Успешно',
                 detail: `Статус пользователя ID: ${vars.user_id} изменён`
             })
-            queryClient.invalidateQueries(['users'])
+            queryClient.invalidateQueries({queryKey: ['users']})
         },
         onError(error: any) {
             toast.add({
@@ -77,7 +77,7 @@ export const useGiftBonusesToUser = () => {
                 summary: 'Успешно',
                 detail: `Добавлено бонусов пользователю с ID: ${vars.user_id})`
             })
-            queryClient.invalidateQueries(['users'])
+            queryClient.invalidateQueries({queryKey: ['users']})
         },
         onError(error: any) {
             toast.add({

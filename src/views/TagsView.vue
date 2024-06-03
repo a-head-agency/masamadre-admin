@@ -1,29 +1,35 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed, unref } from 'vue'
 import type { DataTablePageEvent, DataTableRowDoubleClickEvent } from 'primevue/datatable'
 
-import { CreateTag, DeleteTag, useTags, type ITag } from '@/features/tags'
+import { CreateTag, TagsSchemes, TagsQueries, useDeleteTag } from '@/features/tags'
 import { useDialog } from 'primevue/usedialog'
 import { useDebounce } from '@vueuse/core'
 import UpdateTag from '@/features/tags/UpdateTag.vue'
 import dateFormat from '@/dateformat'
+import { z } from 'zod'
+import { useQuery } from '@tanstack/vue-query'
+import { useConfirm } from 'primevue/useconfirm'
+
+type ListedEntity = z.infer<typeof TagsSchemes.ListedTagScheme>
 
 const rowsPerPage = ref(20)
 
 const offset = ref(0)
 const limit = rowsPerPage
-const selected = ref<ITag>()
+const selected = ref<ListedEntity>()
 
 const search = ref('')
 const debouncedSearch = useDebounce(search, 500)
 
-const { data, refetch, isFetching, isError } = useTags(
-    {
-        limit,
-        offset,
-        search: debouncedSearch
-    },
-    (r) => r
+const { data, refetch, isFetching, isError } = useQuery(
+    computed(() =>
+        TagsQueries.list({
+            offset: unref(offset),
+            limit: unref(limit),
+            search: unref(debouncedSearch)
+        })
+    )
 )
 
 const onPage = (e: DataTablePageEvent) => {
@@ -43,24 +49,23 @@ const beginCreateTagInteraction = () => {
     })
 }
 
-const beginDeleteTagInteraction = (tag: ITag) => {
-    dialog.open(DeleteTag, {
-        props: {
-            class: 'w-full max-w-xl mx-4',
-            modal: true,
-            header: 'Удалить тег',
-            dismissableMask: true
-        } as any,
-        onClose: () => {
+const { mutate: deleteTag } = useDeleteTag()
+const confirm = useConfirm()
+const beginDeleteTagInteraction = (entity: ListedEntity) => {
+    confirm.require({
+        group: 'danger',
+        header: 'Вы уверены?',
+        message: `Подвердите удаление тега: ${entity.name}`,
+        acceptLabel: 'Удалить',
+        rejectLabel: 'Отмена',
+        accept: () => {
+            deleteTag(entity)
             selected.value = undefined
-        },
-        data: {
-            tag
         }
     })
 }
 
-const beginUpdateTagInteraction = (tag: ITag) => {
+const beginUpdateTagInteraction = (entity: ListedEntity) => {
     dialog.open(UpdateTag, {
         props: {
             class: 'w-full max-w-xl mx-4',
@@ -72,7 +77,7 @@ const beginUpdateTagInteraction = (tag: ITag) => {
             selected.value = undefined
         },
         data: {
-            tag
+            entity
         }
     })
 }

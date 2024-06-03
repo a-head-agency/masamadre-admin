@@ -1,27 +1,28 @@
 <template>
-    <div>
-        <div class="flex items-center gap-4">
-            <InputSwitch
-                :id="inputID"
-                v-model="value"
-                :name="props.name"
-                :label="props.label"
-                :class="{
-                    'p-invalid': errorMessage
-                }"
-            />
-            <label :for="inputID" @click="setValue(!value)" class="text-900 block font-medium">
+    <div @click="setValue(!value)" class="block cursor-pointer rounded-lg border border-gray-300 p-3 font-medium">
+        <div class="flex items-center justify-between gap-4">
+            <span>
                 {{ props.label }}
-            </label>
+            </span>
+            <div @click.stop="" class="contents">
+                <InputSwitch
+                    class="shrink-0"
+                    v-model="value"
+                    :name="props.name"
+                    :label="props.label"
+                    :class="{
+                        'p-invalid': errorMessage
+                    }"
+                />
+            </div>
         </div>
 
-        <small class="p-error">{{ errorMessage || '&nbsp;' }}</small>
+        <small v-if="errorMessage" class="p-error">{{ errorMessage || '&nbsp;' }}</small>
     </div>
 </template>
 
 <script setup lang="ts">
 import { useField } from 'vee-validate'
-import { computed } from 'vue'
 
 const props = defineProps<{
     label: string
@@ -29,6 +30,4 @@ const props = defineProps<{
 }>()
 
 const { errorMessage, value, setValue } = useField<boolean>(() => props.name)
-
-const inputID = computed(() => `input-number-${props.name}`)
 </script>

@@ -1,16 +1,21 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed, unref } from 'vue'
 import type { DataTablePageEvent, DataTableRowDoubleClickEvent } from 'primevue/datatable'
 import {
     CreateRestaurant,
-    DeleteRestaurant,
     UpdateRestaurant,
-    useRestaurants,
-    type IRestaurant
+    useDeleteRestaurant,
+    RestsQueries,
+    RestsSchemes
 } from '@/features/restaurants'
 import { useDialog } from 'primevue/usedialog'
 import { useDebounce } from '@vueuse/core'
 import dateFormat from '@/dateformat'
+import { useQuery } from '@tanstack/vue-query'
+import type { z } from 'zod'
+import { useConfirm } from 'primevue/useconfirm'
+
+type ListedEntity = z.infer<typeof RestsSchemes.ListedRestScheme>
 
 const rowsPerPage = ref(20)
 
@@ -18,15 +23,16 @@ const offset = ref(0)
 const limit = rowsPerPage
 const search = ref('')
 const debouncedSearch = useDebounce(search, 500)
-const selected = ref<IRestaurant>()
+const selected = ref<ListedEntity>()
 
-const { data, refetch, isFetching, isError } = useRestaurants(
-    {
-        limit,
-        offset,
-        search: debouncedSearch
-    },
-    (v) => v
+const { data, refetch, isFetching, isError } = useQuery(
+    computed(() =>
+        RestsQueries.list({
+            limit: unref(limit),
+            offset: unref(offset),
+            search: unref(debouncedSearch)
+        })
+    )
 )
 
 const onPage = (e: DataTablePageEvent) => {
@@ -45,10 +51,10 @@ const beginCreateRestaurantInteraction = () => {
         } as any
     })
 }
-const beginUpdateRestaurantInteraction = (restaurant: IRestaurant) => {
+const beginUpdateRestaurantInteraction = (entity: ListedEntity) => {
     dialog.open(UpdateRestaurant, {
         props: {
-            class: 'w-full max-w-4xl mx-4',
+            class: 'w-full max-w-4xl',
             modal: true,
             header: 'Изменить ресторан',
             dismissableMask: true
@@ -57,24 +63,23 @@ const beginUpdateRestaurantInteraction = (restaurant: IRestaurant) => {
             selected.value = undefined
         },
         data: {
-            restaurant
+            entity
         }
     })
 }
 
-const beginDeleteRestaurantInteraction = (restaurant: IRestaurant) => {
-    dialog.open(DeleteRestaurant, {
-        props: {
-            class: 'w-full max-w-xl mx-4',
-            modal: true,
-            header: 'Удалить ресторан',
-            dismissableMask: true
-        } as any,
-        onClose: () => {
+const { mutate: deleteRestaurant } = useDeleteRestaurant()
+const confirm = useConfirm()
+const beginDeleteRestaurantInteraction = (entity: ListedEntity) => {
+    confirm.require({
+        group: 'danger',
+        header: 'Вы уверены?',
+        message: `Подвердите удаление ресторана: ${entity.name}`,
+        acceptLabel: 'Удалить',
+        rejectLabel: 'Отмена',
+        accept: () => {
+            deleteRestaurant(entity)
             selected.value = undefined
-        },
-        data: {
-            restaurant
         }
     })
 }

@@ -1,34 +1,32 @@
 <template>
     <form @submit.prevent="onSubmit">
-        <div class="mb-6">
-            <MyInputNumber name="id" label="ID" disabled />
-            <MyInputText name="name" label="Название" />
-            <MyInputSwitch name="show_title" label="Показывать название категории" />
+        <MyInputNumber name="id" label="ID" disabled />
+        <MyInputText name="name" label="Название" />
+        <MyInputSwitch class="mb-5" name="show_title" label="Показывать название категории" />
 
-            <MyInputText name="subtitle" label="Подкатегория"/>
+        <MyInputText name="subtitle" label="Подкатегория" />
 
-            <DropdownSelect
-                name="active"
-                label="Активно"
-                :options="[
-                    {
-                        label: 'Не активна',
-                        code: false
-                    },
-                    {
-                        label: 'Активна',
-                        code: true
-                    }
-                ]"
-            >
-                <template #value="slotProps">
-                    <CategoryStatusBadge :code="slotProps.value.code" />
-                </template>
-                <template #option="slotProps">
-                    <CategoryStatusBadge :code="slotProps.option.code" />
-                </template>
-            </DropdownSelect>
-        </div>
+        <DropdownSelect
+            name="active"
+            label="Активно"
+            :options="[
+                {
+                    label: 'Не активна',
+                    code: false
+                },
+                {
+                    label: 'Активна',
+                    code: true
+                }
+            ]"
+        >
+            <template #value="slotProps">
+                <CategoryStatusBadge :code="slotProps.value.code" />
+            </template>
+            <template #option="slotProps">
+                <CategoryStatusBadge :code="slotProps.option.code" />
+            </template>
+        </DropdownSelect>
         <DropdownSelect
             name="type"
             label="Тип отображения"
@@ -55,7 +53,7 @@
             </template>
         </DropdownSelect>
 
-        <h2 class="mb-6 text-lg font-bold">SEO</h2>
+        <h2 class="section-header">SEO</h2>
         <div class="grid grid-flow-row grid-cols-1 gap-x-4">
             <MyInputText name="link" label="Ссылка" />
             <MyInputText name="keywords" label="Ключевые слова" />
@@ -67,8 +65,8 @@
             class="mt-4 flex w-full items-center"
             type="submit"
             label="Сохранить"
-            :loading="isLoading"
-            :disabled="isLoading"
+            :loading="isPending"
+            :disabled="isPending"
         />
     </form>
 </template>
@@ -81,13 +79,15 @@ import DropdownSelect from '@/components/DropdownSelect.vue'
 import { useForm } from 'vee-validate'
 import * as yup from 'yup'
 import { useUpdateCategory } from './composables'
-import type { ICategory } from './interfaces'
 import { CategoryStatusBadge, CategoryTypeBadge } from '.'
 import MyInputSwitch from '@/components/MyInputSwitch.vue'
+import { z } from 'zod'
+import type { ListedCategoryScheme } from './schemes'
 
+type Entity = z.infer<typeof ListedCategoryScheme>
 
 const dialogRef = inject('dialogRef') as any
-const category = dialogRef.value.data.category as ICategory
+const entity = dialogRef.value.data.entity as Entity
 
 const { handleSubmit } = useForm({
     validationSchema: yup.object({
@@ -103,20 +103,20 @@ const { handleSubmit } = useForm({
         show_title: yup.boolean().required().label('Показывать название категории')
     }),
     initialValues: {
-        id: category.id,
-        name: category.name,
-        active: category.active,
-        link: category.link,
-        keywords: category.keywords,
-        description_seo: category.description_seo,
-        title: category.title,
-        type: category.type,
-        show_title: category.show_title,
-        subtitle: category.subtitle
+        id: entity.id,
+        name: entity.name,
+        active: entity.active,
+        link: entity.link,
+        keywords: entity.keywords,
+        description_seo: entity.description_seo,
+        title: entity.title,
+        type: entity.type,
+        show_title: entity.show_title,
+        subtitle: entity.subtitle
     }
 })
 
-const { mutate, isLoading } = useUpdateCategory()
+const { mutate, isPending } = useUpdateCategory()
 
 const onSubmit = handleSubmit((vals) => {
     mutate(vals)

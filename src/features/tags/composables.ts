@@ -34,7 +34,7 @@ export const useTags = <SData>(
             return response.data
         },
         select: selector,
-        keepPreviousData: true
+        placeholderData: (v) => v
     })
 }
 
@@ -51,7 +51,7 @@ export const useCreateTag = () => {
                 summary: 'Успешно',
                 detail: `Создан тег ${vars.name}`
             })
-            queryClient.invalidateQueries(['tags'])
+            queryClient.invalidateQueries({ queryKey: ['tags'] })
         },
         onError(error: any) {
             toast.add({
@@ -77,7 +77,7 @@ export const useUpdateTag = () => {
                 summary: 'Успешно',
                 detail: `Изменен тег ${vars.name}`
             })
-            queryClient.invalidateQueries(['tags'])
+            queryClient.invalidateQueries({ queryKey: ['tags'] })
         },
         onError(error: any) {
             toast.add({
@@ -90,57 +90,33 @@ export const useUpdateTag = () => {
     })
 }
 
-// export const useDeleteRestaurant = () => {
-//   const toast = useToast()
-//   const queryClient = useQueryClient()
+export const useDeleteTag = () => {
+    const toast = useToast()
+    const queryClient = useQueryClient()
 
-//   return useMutation({
-//     mutationFn: (vars: { id: number; name: string }) =>
-//       new Promise((res, rej) =>
-//         setTimeout(() => res('Restaurant deletion route is not implemented.'), 1000)
-//       ),
-//     onSuccess(_, vars) {
-//       toast.add({
-//         severity: 'success',
-//         life: 3000,
-//         summary: 'Успешно',
-//         detail: `Удален ресторан ${vars.name} (id: ${vars.id})`
-//       })
-//       queryClient.invalidateQueries(['rests'])
-//     },
-//     onError(error: any) {
-//       toast.add({
-//         severity: 'error',
-//         life: 3000,
-//         summary: 'Не удалось удалить ресторан',
-//         detail: error
-//       })
-//     }
-//   })
-// }
-
-// export const useUpdateRestaurant = () => {
-//   const toast = useToast()
-//   const queryClient = useQueryClient()
-
-//   return useMutation({
-//     mutationFn: async (vars: any) => Promise.reject('Restaurant update route is not implemented.'),
-//     onSuccess(_, vars) {
-//       toast.add({
-//         severity: 'success',
-//         life: 3000,
-//         summary: 'Успешно',
-//         detail: `Изменен ресторан ${vars.name} (id: ${vars.id})`
-//       })
-//       queryClient.invalidateQueries(['rests'])
-//     },
-//     onError(error: any) {
-//       toast.add({
-//         severity: 'error',
-//         life: 3000,
-//         summary: 'Не удалось изменить ресторан',
-//         detail: error
-//       })
-//     }
-//   })
-// }
+    return useMutation({
+        mutationFn: (vars: { id: number; name: string }) =>
+            axiosPrivate.delete('admin/tag', {
+                params: {
+                    id: vars.id
+                }
+            }),
+        onSuccess(_, vars) {
+            toast.add({
+                severity: 'success',
+                life: 3000,
+                summary: 'Успешно',
+                detail: `Удален тег ${vars.name} (id: ${vars.id})`
+            })
+            queryClient.invalidateQueries({ queryKey: ['tags'] })
+        },
+        onError(error: any) {
+            toast.add({
+                severity: 'error',
+                life: 3000,
+                summary: 'Не удалось удалить тег',
+                detail: error
+            })
+        }
+    })
+}

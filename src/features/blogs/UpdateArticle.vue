@@ -75,7 +75,7 @@
 
         <MyEditor class="mb-6 h-full flex-1" name="text" label="Контент" />
 
-        <h2 class="mb-6 text-lg font-bold">SEO</h2>
+        <h2 class="section-header">SEO</h2>
         <div class="grid grid-flow-row grid-cols-1 gap-x-4 lg:grid-cols-2">
             <MyInputText name="link" label="Ссылка" />
             <MyInputText name="title" label="Title" />
@@ -87,8 +87,8 @@
             class="mt-8 flex w-full items-center p-4"
             type="submit"
             label="Сохранить"
-            :loading="isLoading"
-            :disabled="isLoading"
+            :loading="isPending"
+            :disabled="isPending"
         />
     </form>
 </template>
@@ -129,7 +129,7 @@ const { handleSubmit } = useForm({
     initialValues: articleData
 })
 
-const { mutate, isLoading } = useUpdateArticle()
+const { mutate, isPending } = useUpdateArticle()
 
 const onSubmit = handleSubmit((vals) => {
     mutate(vals)

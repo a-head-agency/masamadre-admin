@@ -31,8 +31,8 @@
                     class="mt-8 flex w-full items-center p-4"
                     type="submit"
                     label="Создать"
-                    :loading="createMutation.isLoading"
-                    :disabled="createMutation.isLoading"
+                    :loading="createMutation.isPending"
+                    :disabled="createMutation.isPending"
                 />
             </form>
         </Dialog>

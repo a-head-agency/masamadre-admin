@@ -7,8 +7,8 @@
             class="mt-8 flex w-full items-center p-4"
             type="submit"
             label="Подарить"
-            :loading="isLoading"
-            :disabled="isLoading"
+            :loading="isPending"
+            :disabled="isPending"
         />
     </form>
 </template>
@@ -35,7 +35,7 @@ const { handleSubmit } = useForm({
     }
 })
 
-const { mutateAsync, isLoading } = useGiftBonusesToUser()
+const { mutateAsync, isPending } = useGiftBonusesToUser()
 
 const onSubmit = handleSubmit((vals) => {
     mutateAsync(vals).then(dialogRef.value.close)

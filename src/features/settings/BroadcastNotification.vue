@@ -13,8 +13,8 @@
             class="mt-8 flex w-full items-center p-4"
             type="submit"
             label="Отправить"
-            :loading="isLoading"
-            :disabled="isLoading"
+            :loading="isPending"
+            :disabled="isPending"
         />
     </form>
 </template>
@@ -49,7 +49,7 @@ const { handleSubmit, errors } = useForm({
     }
 })
 
-const { mutate, isLoading } = useSendNotification()
+const { mutate, isPending } = useSendNotification()
 
 const onSubmit = handleSubmit((vals) => {
     mutate(vals)

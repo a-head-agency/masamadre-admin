@@ -1,28 +1,35 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed, unref } from 'vue'
 import type { DataTablePageEvent, DataTableRowDoubleClickEvent } from 'primevue/datatable'
 
 import { useDialog } from 'primevue/usedialog'
+import { useConfirm } from 'primevue/useconfirm'
 import { useDebounce } from '@vueuse/core'
 import dateFormat from '@/dateformat'
-import { useMods, type IMod, CreateMod, DeleteMod, UpdateMod, ModStatusBadge } from '@/features/mods'
+import { CreateMod, UpdateMod, ModStatusBadge, useDeleteMod, ModsQueries } from '@/features/mods'
+import { useQuery } from '@tanstack/vue-query'
+import { z } from 'zod'
+import type { ModsSchemes } from '@/features/mods'
+
+type ListedEntity = z.infer<typeof ModsSchemes.ListedModScheme>
 
 const rowsPerPage = ref(20)
 
 const offset = ref(0)
 const limit = rowsPerPage
-const selected = ref<IMod>()
+const selected = ref<ListedEntity>()
 
 const search = ref('')
 const debouncedSearch = useDebounce(search, 500)
 
-const { data, refetch, isFetching, isError } = useMods(
-    {
-        limit,
-        offset,
-        search: debouncedSearch
-    },
-    (r) => r
+const { data, refetch, isFetching, isError } = useQuery(
+    computed(() =>
+        ModsQueries.list({
+            limit: unref(limit),
+            offset: unref(offset),
+            search: unref(debouncedSearch)
+        })
+    )
 )
 
 const onPage = (e: DataTablePageEvent) => {
@@ -42,24 +49,23 @@ const beginCreateModInteraction = () => {
     })
 }
 
-const beginDeleteModInteraction = (mod: IMod) => {
-    dialog.open(DeleteMod, {
-        props: {
-            class: 'w-full max-w-xl mx-4',
-            modal: true,
-            header: 'Удалить модификатор',
-            dismissableMask: true
-        } as any,
-        onClose: () => {
+const { mutate: deleteMod } = useDeleteMod()
+const confirm = useConfirm()
+const beginDeleteModInteraction = (mod: ListedEntity) => {
+    confirm.require({
+        group: 'danger',
+        header: 'Вы уверены?',
+        message: `Подвердите удаление модификатора: ${mod.name}`,
+        acceptLabel: 'Удалить',
+        rejectLabel: 'Отмена',
+        accept: () => {
+            deleteMod(mod)
             selected.value = undefined
-        },
-        data: {
-            mod
         }
     })
 }
 
-const beginUpdateModInteraction = (mod: IMod) => {
+const beginUpdateModInteraction = (mod: ListedEntity) => {
     dialog.open(UpdateMod, {
         props: {
             class: 'w-full max-w-xl mx-4',
@@ -123,7 +129,9 @@ onMounted(() => {
 
 <template>
     <main class="flex h-screen flex-col items-stretch px-4" ref="root">
-        <h1 class="my-12 text-center text-3xl font-semibold leading-none text-black">Модификаторы</h1>
+        <h1 class="my-12 text-center text-3xl font-semibold leading-none text-black">
+            Модификаторы
+        </h1>
 
         <ContextMenu ref="cm" :model="menuModel" @hide="selected = undefined" />
 
@@ -204,7 +212,7 @@ onMounted(() => {
                 <Column field="price" header="Цена" />
                 <Column field="active" header="Статус">
                     <template #body="slotProps">
-                        <ModStatusBadge :code="slotProps.data.active"/>
+                        <ModStatusBadge :code="slotProps.data.active" />
                     </template>
                 </Column>
                 <Column field="rkeeper_id" header="RKeeper ID" />

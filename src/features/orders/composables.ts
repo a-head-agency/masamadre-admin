@@ -34,7 +34,7 @@ export const useOrders = <SData>(
             return response.data
         },
         select: selector,
-        keepPreviousData: true
+        placeholderData: (v) => v
     })
 }
 
@@ -51,7 +51,7 @@ export const useUpdateOrderStatus = () => {
                 summary: 'Успешно',
                 detail: `Изменен статус заказа (id: ${vars.id})`
             })
-            queryClient.invalidateQueries(['orders'])
+            queryClient.invalidateQueries({queryKey: ['orders']})
         },
         onError(error: any) {
             toast.add({

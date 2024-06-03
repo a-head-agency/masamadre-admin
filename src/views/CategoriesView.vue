@@ -1,42 +1,39 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref, unref, watch } from 'vue'
 
 import {
     CreateCategory,
-    DeleteCategory,
     UpdateCategory,
-    type ICategory,
     CategoryStatusBadge,
     type SaveCategoriesOrderingMutation,
     useSaveCategoriesOrdering,
-    useCategories,
-    CategoryTypeBadge
+    CategoryTypeBadge,
+    CategoriesSchemes,
+    CategoriesQueries,
+    useDeleteCategory
 } from '@/features/categories'
 import { useDialog } from 'primevue/usedialog'
 import { useDebounce } from '@vueuse/core'
 import dateFormat from '@/dateformat'
 
 import draggable from 'vuedraggable'
-import { useMutation } from '@tanstack/vue-query'
-import { axiosPrivate } from '@/network'
-import { useToast } from 'primevue/usetoast'
-import type { DataTableRowDoubleClickEvent } from 'primevue/datatable'
+import { z } from 'zod'
+import { useQuery } from '@tanstack/vue-query'
+import { useConfirm } from 'primevue/useconfirm'
 
-const toast = useToast()
+type ListedEntity = z.infer<typeof CategoriesSchemes.ListedCategoryScheme>
 
-const offset = ref(0)
-const limit = ref(999999999)
-const selected = ref<ICategory>()
+const selected = ref<ListedEntity>()
 const search = ref('')
 const debouncedSearch = useDebounce(search, 500)
 const reorderMode = ref(false)
 const canReorderMode = computed(() => !search.value)
 
-const { data, isFetching, isError, refetch } = useCategories(
-    { offset, limit, search: debouncedSearch },
-    (v) => v
+const { data, isFetching, isError, refetch } = useQuery(
+    computed(() => CategoriesQueries.list({ search: unref(debouncedSearch) }))
 )
-const ordered = ref<ICategory[]>([])
+
+const ordered = ref<ListedEntity[]>([])
 watch(
     [data],
     () => {
@@ -88,24 +85,23 @@ const beginCreateCategoryInteraction = () => {
     })
 }
 
-const beginDeleteCategoryInteraction = (category: ICategory) => {
-    dialog.open(DeleteCategory, {
-        props: {
-            class: 'max-w-xl w-full mx-4',
-            modal: true,
-            header: 'Подтвердите удаление',
-            dismissableMask: true
-        } as any,
-        onClose: () => {
+const { mutate: deleteCategory } = useDeleteCategory()
+const confirm = useConfirm()
+const beginDeleteCategoryInteraction = (entity: ListedEntity) => {
+    confirm.require({
+        group: 'danger',
+        header: 'Вы уверены?',
+        message: `Подвердите удаление категории: ${entity.name}`,
+        acceptLabel: 'Удалить',
+        rejectLabel: 'Отмена',
+        accept: () => {
+            deleteCategory(entity)
             selected.value = undefined
-        },
-        data: {
-            category
         }
     })
 }
 
-const beginUpdateCategoryInteraction = (category: ICategory) => {
+const beginUpdateCategoryInteraction = (entity: ListedEntity) => {
     dialog.open(UpdateCategory, {
         props: {
             class: 'max-w-xl w-full mx-4',
@@ -117,7 +113,7 @@ const beginUpdateCategoryInteraction = (category: ICategory) => {
             selected.value = undefined
         },
         data: {
-            category
+            entity
         }
     })
 }
@@ -127,7 +123,7 @@ const refresh = () => {
 }
 
 const cm = ref()
-const onRowContextMenu = (event: any, item: ICategory) => {
+const onRowContextMenu = (event: any, item: ListedEntity) => {
     selected.value = item
     if (!reorderMode.value) {
         cm.value.show(event)
@@ -156,7 +152,7 @@ const menuModel = ref([
     }
 ])
 
-const onItemClick = (item: ICategory) => {
+const onItemClick = (item: ListedEntity) => {
     if (selected.value?.id === item.id) {
         selected.value = undefined
     } else {
@@ -169,18 +165,18 @@ const root = ref<HTMLElement>()
 
 <template>
     <main class="flex flex-col items-stretch px-4" ref="root">
-        <h1 class="text-pv-text-color my-12 text-center text-3xl font-semibold leading-none">
+        <h1 class="my-12 text-center text-3xl font-semibold leading-none text-pv-text-color">
             Категории
         </h1>
 
         <ContextMenu ref="cm" :model="menuModel" @hide="selected = undefined" />
 
         <div
-            class="fixed bottom-6 pointer-events-none left-0 right-0 mx-4 flex h-12 justify-center gap-2 lg:justify-end xl:left-64"
+            class="pointer-events-none fixed bottom-6 left-0 right-0 mx-4 flex h-12 justify-center gap-2 lg:justify-end xl:left-64"
         >
             <button
                 :disabled="!canReorderMode"
-                class="text-pv-primary-color-text pointer-events-auto disabled:bg-pv-primary-color rounded-full px-8 shadow-xl shadow-black/10 transition-all"
+                class="pointer-events-auto rounded-full px-8 text-pv-primary-color-text shadow-xl shadow-black/10 transition-all disabled:bg-pv-primary-color"
                 :class="{
                     'bg-green-500 !shadow-green-400/25': canReorderMode && reorderMode,
                     'bg-indigo-500 !shadow-indigo-400/25': canReorderMode && !reorderMode
@@ -192,7 +188,7 @@ const root = ref<HTMLElement>()
             </button>
             <button
                 v-if="reorderMode"
-                class="text-pv-primary-color-text pointer-events-auto flex justify-center items-center rounded-full bg-red-500 px-8 shadow-xl shadow-red-400/25 transition-all"
+                class="pointer-events-auto flex items-center justify-center rounded-full bg-red-500 px-8 text-pv-primary-color-text shadow-xl shadow-red-400/25 transition-all"
                 @click="cancelReorder"
             >
                 <i class="pi pi-times" />
@@ -266,9 +262,10 @@ const root = ref<HTMLElement>()
                 >
                     <template #item="{ element }">
                         <button
-                            class="focus:text-pv-text-color mb-2 w-full rounded-lg bg-black/5 p-4 text-start outline-none transition-all focus:bg-black/10"
+                            class="mb-2 w-full rounded-lg bg-black/5 p-4 text-start outline-none transition-all focus:bg-black/10 focus:text-pv-text-color"
                             :class="{
-                                '!bg-pv-primary-color !text-pv-primary-color-text shadow-lg shadow-black/10': selected?.id === element.id
+                                '!bg-pv-primary-color !text-pv-primary-color-text shadow-lg shadow-black/10':
+                                    selected?.id === element.id
                             }"
                             @click="onItemClick(element)"
                             @contextmenu="onRowContextMenu($event, element)"

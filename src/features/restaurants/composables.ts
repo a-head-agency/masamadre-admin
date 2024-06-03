@@ -1,42 +1,7 @@
-import { type MaybeRef } from 'vue'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
-import type { IRestaurant } from './interfaces'
+import { useMutation, useQueryClient } from '@tanstack/vue-query'
 
 import { axiosPrivate } from '@/network'
 import { useToast } from 'primevue/usetoast'
-
-interface GetRestaurantsResponse {
-    list: IRestaurant[]
-    total: number
-}
-
-interface QueryConfig {
-    offset: MaybeRef<number>
-    limit: MaybeRef<number>
-    search: MaybeRef<string>
-}
-
-export const useRestaurants = <SData>(
-    queryConfig: QueryConfig,
-    selector?: (response: GetRestaurantsResponse) => SData
-) => {
-    const { offset, limit, search } = queryConfig
-    return useQuery({
-        queryKey: ['rests', { offset, limit, search }] as any,
-        queryFn: async ({ queryKey }) => {
-            const response = await axiosPrivate.get<GetRestaurantsResponse>('admin/rests', {
-                params: {
-                    offset: (queryKey[1] as any).offset as number,
-                    limit: (queryKey[1] as any).limit as number,
-                    search: (queryKey[1] as any).search as string
-                }
-            })
-            return response.data
-        },
-        select: selector,
-        keepPreviousData: true
-    })
-}
 
 export const useCreateRestaurant = () => {
     const toast = useToast()
@@ -51,7 +16,7 @@ export const useCreateRestaurant = () => {
                 summary: 'Успешно',
                 detail: `Добавлен ресторан ${vars.name}`
             })
-            queryClient.invalidateQueries(['rests'])
+            queryClient.invalidateQueries({ queryKey: ['rests'] })
         },
         onError(error: any) {
             toast.add({
@@ -69,10 +34,12 @@ export const useDeleteRestaurant = () => {
     const queryClient = useQueryClient()
 
     return useMutation({
-        mutationFn: (vars: { id: number; name: string }) =>
-            new Promise((res, rej) =>
-                setTimeout(() => res('Restaurant deletion route is not implemented.'), 1000)
-            ),
+        mutationFn: (vars: { id: number; name: string }) => {
+            const response = axiosPrivate.delete('admin/rest', {
+                params: { id: vars.id }
+            })
+            return response
+        },
         onSuccess(_, vars) {
             toast.add({
                 severity: 'success',
@@ -80,7 +47,7 @@ export const useDeleteRestaurant = () => {
                 summary: 'Успешно',
                 detail: `Удален ресторан ${vars.name} (id: ${vars.id})`
             })
-            queryClient.invalidateQueries(['rests'])
+            queryClient.invalidateQueries({ queryKey: ['rests'] })
         },
         onError(error: any) {
             toast.add({
@@ -107,7 +74,7 @@ export const useUpdateRestaurant = () => {
                 summary: 'Успешно',
                 detail: `Изменен ресторан ${vars.name} (id: ${vars.id})`
             })
-            queryClient.invalidateQueries(['rests'])
+            queryClient.invalidateQueries({ queryKey: ['rests'] })
         },
         onError(error: any) {
             toast.add({

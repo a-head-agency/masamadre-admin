@@ -27,7 +27,7 @@
             label="Подарок"
         />
 
-        <Button label="Сохранить" class="mt-4 w-full" type="submit" :disabled="isLoading" />
+        <Button label="Сохранить" class="mt-4 w-full" type="submit" :disabled="isPending" />
     </form>
 </template>
 
@@ -116,7 +116,7 @@ const promo = useFieldValue('promo')
 const toast = useToast()
 const queryClient = useQueryClient()
 
-const { mutate: mutate, isLoading } = useMutation({
+const { mutate: mutate, isPending } = useMutation({
     mutationFn: (vars: any) => axiosPrivate.put('admin/settings', vars),
     onSuccess: () => {
         toast.add({
@@ -124,7 +124,7 @@ const { mutate: mutate, isLoading } = useMutation({
             severity: 'success',
             life: 3000
         })
-        queryClient.invalidateQueries(['settings'])
+        queryClient.invalidateQueries({queryKey: ['settings']})
     },
     onError: (error) => {
         toast.add({

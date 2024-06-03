@@ -55,7 +55,7 @@
             </DropdownSelect>
         </div>
 
-        <h2 class="mb-6 text-lg font-bold">SEO</h2>
+        <h2 class="section-header">SEO</h2>
         <div class="grid grid-flow-row grid-cols-1 gap-x-4">
             <MyInputText name="link" label="Ссылка" />
             <MyInputText name="keywords" label="Ключевые слова" />
@@ -67,8 +67,8 @@
             class="mt-4 flex w-full items-center"
             type="submit"
             label="Создать"
-            :loading="isLoading"
-            :disabled="isLoading"
+            :loading="isPending"
+            :disabled="isPending"
         />
     </form>
 </template>
@@ -101,7 +101,7 @@ const { handleSubmit } = useForm({
     }
 })
 
-const { mutate, isLoading } = useCreateCategory()
+const { mutate, isPending } = useCreateCategory()
 
 const onSubmit = handleSubmit((vals) => {
     mutate({

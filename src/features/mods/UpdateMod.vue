@@ -38,8 +38,8 @@
             class="mt-8 flex w-full items-center p-4"
             type="submit"
             label="Сохранить"
-            :loading="isLoading"
-            :disabled="isLoading"
+            :loading="isPending"
+            :disabled="isPending"
         />
     </form>
 </template>
@@ -70,7 +70,7 @@ const { handleSubmit } = useForm({
     initialValues: mod
 })
 
-const { mutate, isLoading } = useUpdateMod()
+const { mutate, isPending } = useUpdateMod()
 
 const onSubmit = handleSubmit((v) => {
     mutate(v)

@@ -54,7 +54,7 @@ export const useStats = <SData>(
             return response.data
         },
         select: selector,
-        keepPreviousData: true
+        placeholderData: (v) => v
     })
 }
 
@@ -62,6 +62,6 @@ export const useInvalidateStats = () => {
     const queryClient = useQueryClient()
 
     return () => {
-        queryClient.invalidateQueries(['stats'])
+        queryClient.invalidateQueries({queryKey: ['stats']})
     }
 }
