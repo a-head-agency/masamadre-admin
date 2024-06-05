@@ -100,14 +100,14 @@
                     class="flex aspect-square h-8 items-center justify-center rounded-md bg-black bg-opacity-50 transition-all hover:bg-opacity-75"
                     @click="rotate(90)"
                 >
-                    <i class="pi pi-refresh text-lg text-pv-text-color"></i>
+                    <i class="pi pi-refresh text-lg text-white"></i>
                 </button>
                 <button
                     type="button"
                     class="flex aspect-square h-8 items-center justify-center rounded-md bg-black bg-opacity-50 transition-all hover:bg-opacity-75"
                     @click="rotate(-90)"
                 >
-                    <i class="pi pi-replay text-lg text-pv-text-color"></i>
+                    <i class="pi pi-replay text-lg text-white"></i>
                 </button>
             </div>
         </Transition>

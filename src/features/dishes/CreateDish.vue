@@ -12,7 +12,7 @@
                 </div>
 
                 <div
-                    class="flex justify-center"
+                    class="w-full"
                     :style="{
                         aspectRatio: imageAspectRatio.value,
                         height: imageAspectRatio.code === 'square' ? '20rem' : '25rem'
@@ -190,7 +190,7 @@
                         currency="RUB"
                     />
                 </div>
-                <div class="flex flex-wrap items-center justify-center gap-x-12">
+                <div class="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
                     <MyInputSwitch label="В наличии" :name="`vars[${idx}].have`" />
                     <MyInputSwitch label="Можно доставить" :name="`vars[${idx}].can_deliver`" />
                     <MyInputSwitch label="Активно" :name="`vars[${idx}].active`" />
@@ -256,7 +256,7 @@ const { handleSubmit, setFieldValue } = useForm<any>({
         link: yup.string().required().label('Ссылка'),
         keywords: yup.string().label('Ключевые слова'),
         description_seo: yup.string().label('Описание'),
-        title: yup.string().label('Title'),
+        title: yup.string().required().label('Title'),
         images: yup.array().of(yup.string()).label('Слайдер'),
 
         short_description: yup.string().required().label('Краткое описание'),
