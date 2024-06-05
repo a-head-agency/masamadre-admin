@@ -3,7 +3,6 @@ export interface IMod {
     name: string
     price: number
     rkeeper_id: string
-    rkeeper_group_id: string
     active: boolean
     created_at: string
     updated_at: string

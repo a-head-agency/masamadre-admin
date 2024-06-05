@@ -216,7 +216,6 @@ onMounted(() => {
                     </template>
                 </Column>
                 <Column field="rkeeper_id" header="RKeeper ID" />
-                <Column field="rkeeper_group_id" header="RKeeper Group ID" />
                 <Column field="created_at" header="Создано">
                     <template #body="slotProps">
                         {{ dateFormat(slotProps.data.created_at) }}

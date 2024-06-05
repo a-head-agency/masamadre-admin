@@ -31,7 +31,6 @@
                 <MyInputNumber name="price" label="Цена"/>
 
                 <MyInputText name="rkeeper_id" label="RKeeper ID" />
-                <MyInputText name="rkeeper_group_id" label="RKeeper Group ID" />
             </div>
         </div>
 
@@ -61,7 +60,6 @@ const { handleSubmit } = useForm({
         active: yup.boolean().required().label('Статус'),
         price: yup.number().required().label('Цена'),
         rkeeper_id: yup.string().required().label('RKeeper ID'),
-        rkeeper_group_id: yup.string().required().label('RKeeper Group ID'),
     }),
     initialValues: {
         active: false
