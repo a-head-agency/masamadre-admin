@@ -47,6 +47,7 @@ export const DetailedDishScheme = ListedDishScheme.extend({
     images: z.string().array(),
     mods: ModsSchemes.ListedModScheme.array(),
     tags: TagsSchemes.ListedTagScheme.array(),
+    max_modes: z.number(),
     vars: CUDScheme.extend({
         id: z.number(),
         active: z.boolean(),

@@ -70,6 +70,7 @@
                 :options="possibleTags || []"
             />
 
+            <MyInputNumber name="max_modes" label="Макс. количество модификаторов"/>
             <MyMultiSelect
                 class="w-full"
                 name="mods"
@@ -286,6 +287,8 @@ const validationSchema = yup.object({
     flag: yup.string().label('Флаг страны'),
     malbec: yup.string().label('Сорт винограда'),
     maker: yup.string().label('Страна изготовитель'),
+
+    max_modes: yup.number().required().label('Максимальное количество модификаторов'),
 
     vars: yup.array().of(
         yup.object({
