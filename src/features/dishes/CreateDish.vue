@@ -15,7 +15,7 @@
                     class="w-full"
                     :style="{
                         aspectRatio: imageAspectRatio.value,
-                        height: imageAspectRatio.code === 'square' ? '20rem' : '25rem'
+                        maxWidth: imageAspectRatio.code === 'square' ? '20rem' : '6.5rem'
                     }"
                     :key="imageAspectRatio.code"
                 >
