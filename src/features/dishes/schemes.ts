@@ -1,9 +1,16 @@
 import { z } from 'zod'
 
-import { ModsSchemes } from '@/features/mods'
 import { TagsSchemes } from '@/features/tags'
 
 import { CUDScheme } from '@/common/schemes'
+import { ModsSchemes } from '../mods'
+
+export const ModGroupScheme = z.object({
+    id: z.number(),
+    name: z.string(),
+    modificators: ModsSchemes.ListedModScheme.array(),
+    type: z.string()
+})
 
 export const ListedDishScheme = CUDScheme.extend({
     active: z.boolean(),
@@ -45,9 +52,7 @@ export const ListedDishScheme = CUDScheme.extend({
 export const DetailedDishScheme = ListedDishScheme.extend({
     categories: z.number().array(),
     images: z.string().array(),
-    mods: ModsSchemes.ListedModScheme.array(),
     tags: TagsSchemes.ListedTagScheme.array(),
-    max_modes: z.number(),
     vars: CUDScheme.extend({
         id: z.number(),
         active: z.boolean(),
@@ -60,5 +65,6 @@ export const DetailedDishScheme = ListedDishScheme.extend({
         rest_id: z.number(),
         rest_name: z.string().optional(),
         rest_address: z.string().optional()
-    }).array()
+    }).array(),
+    mod_group: ModGroupScheme.array()
 })

@@ -67,16 +67,6 @@
                 label="Теги"
                 :options="possibleTags || []"
             />
-
-
-            <MyInputNumber name="max_modes" label="Максимальное количество модификаторов"/>
-            <MyMultiSelect
-                class="w-full"
-                name="mods"
-                placeholder="Выберите"
-                label="Модификаторы"
-                :options="possibleMods || []"
-            />
         </div>
 
         <h2 class="section-header">Слайдер</h2>
@@ -150,10 +140,71 @@
             <MyCalendar name="to_hour" time-only />
         </div>
 
-        <div class="mb-8 flex flex-wrap items-center justify-center gap-12">
+        <div class="mb-16 flex flex-wrap items-center justify-center gap-12">
             <MyInputSwitch label="В наличии" :name="`have`" />
             <MyInputSwitch label="Можно доставить" :name="`can_deliver`" />
             <MyInputSwitch label="Активно" :name="`active`" />
+        </div>
+
+        <h2 class="section-header">Модификаторы</h2>
+        <div class="mb-8">
+            <fieldset
+                class="relative mb-2 flex flex-col gap-4 rounded-lg border-2 border-gray-200 p-4"
+                v-for="(field, idx) in fieldsModGroups"
+                :key="field.key"
+            >
+                <button class="absolute right-2 top-2" type="button" @click="removeModGroup(idx)">
+                    <i class="pi pi-times-circle" style="font-size: 1rem"></i>
+                </button>
+                <div class="w-full">
+                    <label class="text-900 mb-2 block font-medium">Название группы</label>
+                    <InputText v-model="field.value.name" class="w-full" />
+                </div>
+
+                <div class="w-full">
+                    <label class="text-900 mb-2 block font-medium">Тип</label>
+                    <Dropdown
+                        class="w-full"
+                        option-value="code"
+                        option-label="label"
+                        v-model="field.value.type"
+                        :options="[
+                            {
+                                code: 'options',
+                                label: 'Опции'
+                            },
+                            {
+                                code: 'additions',
+                                label: 'Добавки'
+                            }
+                        ]"
+                    />
+                </div>
+                <div class="w-full">
+                    <label class="text-900 mb-2 block font-medium">Модификаторы</label>
+                    <MultiSelect
+                        class="w-full"
+                        :options="possibleMods"
+                        v-model="field.value.modificators"
+                        option-value="code"
+                        option-label="label"
+                    />
+                </div>
+            </fieldset>
+            <button
+                class="group flex w-full items-center gap-4"
+                @click="pushModGroup({ name: '', modificators: [], type: 'options' })"
+            >
+                <div class="grow border-b-2"></div>
+                <span class="flex items-center gap-2">
+                    <i
+                        class="pi pi-plus transition-transform group-hover:rotate-90"
+                        style="font-size: 0.8em"
+                    ></i>
+                    Добавить группу
+                </span>
+                <div class="grow border-b-2"></div>
+            </button>
         </div>
 
         <h2 class="section-header">По ресторанам</h2>
@@ -249,7 +300,6 @@ const { handleSubmit, setFieldValue } = useForm<any>({
         count: yup.number().required().label('Количество кусочков'),
         rkeeper_id: yup.string().required().label('RKeeper ID'),
         tags: yup.array().label('Теги'),
-        mods: yup.array().label('Модификаторы'),
         active: yup.boolean().label('Активно'),
         can_deliver: yup.boolean().label('Можно доставить'),
         have: yup.boolean().label('В наличии'),
@@ -271,7 +321,13 @@ const { handleSubmit, setFieldValue } = useForm<any>({
         malbec: yup.string().label('Сорт винограда'),
         maker: yup.string().label('Страна изготовитель'),
 
-        max_modes: yup.number().required().label('Максимальное количество модификаторов'),
+        mod_group: yup.array().of(
+            yup.object({
+                name: yup.string().required().label('Название группы'),
+                modificators: yup.array().required().of(yup.number()).label('Модификаторы'),
+                type: yup.string().required()
+            })
+        ),
 
         vars: yup.array().of(
             yup.object({
@@ -393,6 +449,17 @@ watch(
         immediate: true
     }
 )
+
+interface ModGroupItem {
+    name: string
+    modificators: number[]
+    type: string
+}
+const {
+    fields: fieldsModGroups,
+    push: pushModGroup,
+    remove: removeModGroup
+} = useFieldArray<ModGroupItem>('mod_group')
 
 const onSubmit = handleSubmit(async (vals) => {
     // upload object files
