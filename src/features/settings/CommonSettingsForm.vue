@@ -33,6 +33,8 @@
         <MyInputText name="description" label="Описание" />
         <MyInputText name="keywords" label="Ключевые слова" />
 
+        <MyEditor label="Время работы" name="time_work" />
+
         <Button label="Обновить настройки" class="mt-4 w-full" type="submit" />
     </form>
 </template>
@@ -46,6 +48,7 @@ import { useForm } from 'vee-validate'
 
 import MyInputText from '@/components/MyInputText.vue'
 import MyInputNumber from '@/components/MyInputNumber.vue'
+import MyEditor from '@/components/MyEditor.vue'
 
 const toast = useToast()
 const queryClient = useQueryClient()
@@ -71,7 +74,8 @@ const { handleSubmit } = useForm({
 
         title: yup.string().label('Title'),
         description: yup.string().label('Описание'),
-        keywords: yup.string().label('Ключевые слова')
+        keywords: yup.string().label('Ключевые слова'),
+        time_work: yup.string().required().label('Время работы')
     }),
     initialValues: data
 })
@@ -84,7 +88,7 @@ const { mutate: mutate } = useMutation({
             severity: 'success',
             life: 3000
         })
-        queryClient.invalidateQueries({queryKey: ['settings']})
+        queryClient.invalidateQueries({ queryKey: ['settings'] })
     },
     onError: (error) => {
         toast.add({
