@@ -50,7 +50,7 @@ const { isPending, mutate } = useMutation({
                 detail: 'Неверный логин или пароль'
             })
         }
-        if (error instanceof AuthUserService.SignInErrors.UnknownError) {
+        if (error instanceof AuthUserService.UnknownError) {
             toast.add({
                 severity: 'error',
                 life: 3000,

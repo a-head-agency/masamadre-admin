@@ -4,10 +4,11 @@ import { z, ZodError } from 'zod'
 
 import { axiosPublic } from '@/common/network'
 
+export class UnknownError extends Error {}
+
 export namespace SignInErrors {
     export class InvalidCredentials extends Error {}
     export class InvalidData extends Error {}
-    export class UnknownError extends Error {}
 }
 
 export async function signIn(input: { login: string; password: string }) {
@@ -27,7 +28,7 @@ export async function signIn(input: { login: string; password: string }) {
                 throw SignInErrors.InvalidCredentials
             } else {
                 const body = error.response?.data
-                throw new SignInErrors.UnknownError(body)
+                throw new UnknownError(body)
             }
         }
         if (error instanceof ZodError) {
