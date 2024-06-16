@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useMutation } from '@tanstack/vue-query'
-import { md5 } from 'js-md5'
+import { toTypedSchema } from '@vee-validate/yup'
 import { storeToRefs } from 'pinia'
 import { useForm } from 'vee-validate'
 import { useRouter } from 'vue-router'
@@ -10,11 +10,11 @@ import { useToast } from 'primevue/usetoast'
 
 import logoSrc from '@/assets/logo.svg'
 
-import { axiosPublic } from '@/common/network'
-
 import MyInputText from '@/components/MyInputText.vue'
 
 import { useUserStore } from '@/stores/user'
+
+import { AuthUserService } from '@/features/auth/user'
 
 const toast = useToast()
 
@@ -23,39 +23,47 @@ const userStore = useUserStore()
 const { isAuthenticated, accessToken, refreshToken } = storeToRefs(userStore)
 
 const { handleSubmit } = useForm({
-    validationSchema: yup.object({
-        login: yup.string().required().label('Логин'),
-        password: yup.string().required().label('Пароль')
-    })
+    validationSchema: toTypedSchema(
+        yup.object({
+            login: yup.string().required().label('Логин'),
+            password: yup.string().required().label('Пароль')
+        })
+    )
 })
 
-const { isPending, mutate } = useMutation<any, any, any>({
-    mutationFn: async (payload: any) => {
-        payload.password = md5(payload.password)
-        return axiosPublic.post('admin/auth', payload)
+const { isPending, mutate } = useMutation({
+    mutationFn: AuthUserService.signIn,
+    onSuccess(data) {
+        if (data) {
+            accessToken.value = data.token
+            refreshToken.value = data.refreshToken
+            isAuthenticated.value = true
+            router.push({ name: 'dashboard' })
+        }
     },
-    onSuccess({ data }) {
-        accessToken.value = data.token
-        refreshToken.value = data.refreshToken
-        isAuthenticated.value = true
-        router.push({ name: 'dashboard' })
-    },
-    onError(error: any) {
-        const body = error.response.data
-
-        if (error.response.status === 401) {
+    onError(error) {
+        if (error instanceof AuthUserService.SignInErrors.InvalidCredentials) {
             toast.add({
                 severity: 'error',
                 life: 3000,
                 summary: 'Ошибка',
                 detail: 'Неверный логин или пароль'
             })
-        } else {
+        }
+        if (error instanceof AuthUserService.SignInErrors.UnknownError) {
+            toast.add({
+                severity: 'error',
+                life: 3000,
+                summary: 'Неизвестная ошибка',
+                detail: error.message
+            })
+        }
+        if (error instanceof AuthUserService.SignInErrors.InvalidData) {
             toast.add({
                 severity: 'error',
                 life: 3000,
                 summary: 'Ошибка',
-                detail: body
+                detail: 'Некорректные данные с API'
             })
         }
     }
