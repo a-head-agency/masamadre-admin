@@ -230,7 +230,11 @@ const { data, isSuccess } = useOrder(orderId)
                 <div v-for="(v, i) in data.basket" :key="[v.name, i].join('-')" class="mb-2">
                     <div class="flex justify-between rounded-lg bg-gray-100 p-2">
                         <div class="flex items-center gap-2">
-                            <img class="h-12 w-12 rounded-lg" :src="v.photo" alt="" />
+                            <img
+                                class="h-14 w-14 rounded-lg shrink-0 bg-gray-200 border-2 border-gray-300 object-contain object-center"
+                                :src="v.photo"
+                                alt=""
+                            />
                             {{ v.name }}
                         </div>
                         <div class="text-end">
