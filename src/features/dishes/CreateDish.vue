@@ -248,7 +248,6 @@ const onSubmit = handleSubmit(async (vals) => {
                         :allow-empty="false"
                     />
                 </div>
-
                 <div
                     :key="imageAspectRatio.code"
                     class="w-full"
@@ -268,7 +267,9 @@ const onSubmit = handleSubmit(async (vals) => {
                 </div>
             </div>
         </div>
-        <div class="mb-8 grid grid-cols-3 items-center justify-items-center gap-4">
+        <div
+            class="mb-8 grid grid-cols-1 items-center justify-items-center gap-x-4 md:grid-cols-2 lg:grid-cols-3"
+        >
             <MyInputText name="name" label="Название" />
             <MyInputText label="RKeeper ID" name="rkeeper_id" />
             <MyInputNumber label="Вес" name="weight" />
@@ -363,7 +364,7 @@ const onSubmit = handleSubmit(async (vals) => {
         </div>
 
         <h2 class="section-header">SEO</h2>
-        <div class="mb-6 grid grid-flow-row grid-cols-2 gap-x-4">
+        <div class="mb-6 grid grid-flow-row grid-cols-1 gap-x-4 md:grid-cols-2">
             <MyInputText name="alt" label="Альтернативный текст" />
             <MyInputText name="link" label="Ссылка" />
             <MyInputText name="description_seo" label="Описание" />
@@ -372,13 +373,12 @@ const onSubmit = handleSubmit(async (vals) => {
         </div>
 
         <h2 class="section-header">Время показа</h2>
-        <div class="mb-8 flex items-center justify-center gap-8">
-            <MyCalendar name="from_hour" time-only />
-            <div class="h-px w-8 bg-black"></div>
-            <MyCalendar name="to_hour" time-only />
+        <div class="mb-8">
+            <MyCalendar class="w-full" label="Время начала" name="from_hour" time-only />
+            <MyCalendar class="w-full" label="Время окончания" name="to_hour" time-only />
         </div>
 
-        <div class="mb-16 flex flex-wrap items-center justify-center gap-12">
+        <div class="mb-8 flex flex-col gap-2">
             <MyInputSwitch label="В наличии" :name="`have`" />
             <MyInputSwitch label="Можно доставить" :name="`can_deliver`" />
             <MyInputSwitch label="Активно" :name="`active`" />
@@ -465,9 +465,12 @@ const onSubmit = handleSubmit(async (vals) => {
                 <h3
                     class="absolute top-0 -translate-y-1/2 bg-white px-3 font-semibold text-pv-text-color"
                 >
-                    "{{ field.value.rest_name }}" - {{ field.value.rest_address }}
+                    "{{ field.value.rest_name }}"
+                    <template v-if="field.value.rest_address">
+                        - {{ field.value.rest_address }}
+                    </template>
                 </h3>
-                <div class="flex gap-4">
+                <div class="grid grid-cols-1 gap-x-2 md:grid-cols-2">
                     <MyInputNumber
                         class="flex-1"
                         :name="`vars[${idx}].rest_id`"
