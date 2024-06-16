@@ -480,6 +480,7 @@ const onSubmit = handleSubmit(async (vals: any) => {
             </fieldset>
             <button
                 class="group flex w-full items-center gap-4"
+                type="button"
                 @click="pushModGroup({ name: '', modificators: [], type: 'options' })"
             >
                 <div class="grow border-b-2"></div>
