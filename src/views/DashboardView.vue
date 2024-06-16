@@ -32,9 +32,7 @@ const newUsersCount = computed(() => stats.value?.stats.map((v) => v.new_users) 
 
 <template>
     <main class="flex flex-col items-stretch px-4 pb-12">
-        <h1 class="mb-4 mt-12 text-center text-3xl font-semibold leading-none">
-            Дашборд
-        </h1>
+        <h1 class="mb-4 mt-12 text-center text-3xl font-semibold leading-none">Дашборд</h1>
 
         <div class="mb-4 flex items-center justify-between gap-4">
             <div class="flex justify-center">
@@ -51,7 +49,7 @@ const newUsersCount = computed(() => stats.value?.stats.map((v) => v.new_users) 
             </div>
         </div>
         <div class="mb-16 flex flex-wrap items-stretch gap-4 text-pv-text-color">
-            <div class="flex-1 rounded-lg bg-white/10 border p-8">
+            <div class="flex-1 rounded-lg border bg-white/10 p-8">
                 <div class="mb-4 flex items-start justify-between gap-4">
                     <div class="shrink-0">
                         <div class="mb-2 font-medium">Заказы</div>
@@ -65,7 +63,7 @@ const newUsersCount = computed(() => stats.value?.stats.map((v) => v.new_users) 
                 </div>
             </div>
 
-            <div class="flex-1 rounded-lg bg-white/10 border p-8">
+            <div class="flex-1 rounded-lg border bg-white/10 p-8">
                 <div class="mb-4 flex items-start justify-between gap-4">
                     <div class="shrink-0">
                         <div class="mb-2 font-medium">Доход</div>
@@ -83,7 +81,7 @@ const newUsersCount = computed(() => stats.value?.stats.map((v) => v.new_users) 
                 </div>
             </div>
 
-            <div class="flex-1 rounded-lg bg-white/10 border p-8">
+            <div class="flex-1 rounded-lg border bg-white/10 p-8">
                 <div class="mb-4 flex items-start justify-between gap-4">
                     <div class="shrink-0">
                         <div class="mb-2 font-medium">Клиенты</div>
@@ -101,7 +99,7 @@ const newUsersCount = computed(() => stats.value?.stats.map((v) => v.new_users) 
                 </div>
             </div>
 
-            <div class="flex-1 rounded-lg bg-white/10 border p-8">
+            <div class="flex-1 rounded-lg border bg-white/10 p-8">
                 <div class="mb-4 flex items-start justify-between gap-4">
                     <div class="shrink-0">
                         <div class="mb-2 font-medium">Обращения</div>

@@ -84,7 +84,7 @@ export const useCreatePromotion = () => {
                 summary: 'Успешно',
                 detail: `Создана статья ${vars.name}`
             })
-            queryClient.invalidateQueries({queryKey: ['promotions']})
+            queryClient.invalidateQueries({ queryKey: ['promotions'] })
         },
         onError(error: any) {
             toast.add({
@@ -113,7 +113,7 @@ export const useUpdatePromotion = () => {
                 summary: 'Успешно',
                 detail: `Обновлена акция ${vars.name}`
             })
-            queryClient.invalidateQueries({queryKey: ['promotions']})
+            queryClient.invalidateQueries({ queryKey: ['promotions'] })
         },
         onError(error: any) {
             toast.add({

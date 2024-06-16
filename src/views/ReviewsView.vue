@@ -41,7 +41,7 @@ const menuModel = ref([
         label: 'Обновить',
         icon: 'pi pi-fw pi-refresh',
         command: () => refresh()
-    },
+    }
 ])
 
 const beginRespondToReviewInteraction = (review: IReview) => {

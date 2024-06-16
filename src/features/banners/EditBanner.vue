@@ -91,7 +91,7 @@ const { handleSubmit } = useForm({
         img: yup.string().required().label('Десктопная версия изображения'),
         phone_img: yup.string().required().label('Мобильная версия изображения'),
         active: yup.boolean().required().label('Активно'),
-        link: yup.string().required().label('Ссылка'),
+        link: yup.string().required().label('Ссылка')
     }),
     initialValues: banner
 })

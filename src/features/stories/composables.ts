@@ -1,9 +1,8 @@
 import { type MaybeRef } from 'vue'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
+import { useQuery } from '@tanstack/vue-query'
 import type { IStoryImage, IStoryVideo } from './interfaces'
 
 import { axiosPrivate } from '@/network'
-import { useToast } from 'primevue/usetoast'
 
 type IStory = IStoryImage | IStoryVideo
 

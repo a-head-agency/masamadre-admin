@@ -5,7 +5,7 @@ import 'primevue/resources/themes/aura-light-noir/theme.css'
 import 'primeicons/primeicons.css'
 
 import { createApp } from 'vue'
-import { VueQueryPlugin, type VueQueryPluginOptions } from '@tanstack/vue-query'
+import { VueQueryPlugin } from '@tanstack/vue-query'
 import { ru } from 'yup-locales'
 import { setLocale as YupSetLocale } from 'yup'
 import { i18n as dateformatI18N } from 'dateformat'

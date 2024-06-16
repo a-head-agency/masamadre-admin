@@ -28,12 +28,11 @@
                     </template>
                 </DropdownSelect>
 
-                <MyInputNumber name="price" label="Цена"/>
+                <MyInputNumber name="price" label="Цена" />
 
                 <MyInputText name="rkeeper_id" label="RKeeper ID" />
             </div>
         </div>
-
 
         <Button
             class="mt-8 flex w-full items-center p-4"
@@ -59,7 +58,7 @@ const { handleSubmit } = useForm({
         name: yup.string().required().label('Название'),
         active: yup.boolean().required().label('Статус'),
         price: yup.number().required().label('Цена'),
-        rkeeper_id: yup.string().required().label('RKeeper ID'),
+        rkeeper_id: yup.string().required().label('RKeeper ID')
     }),
     initialValues: {
         active: false

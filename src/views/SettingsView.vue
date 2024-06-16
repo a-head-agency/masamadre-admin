@@ -10,9 +10,5 @@
 </template>
 
 <script setup lang="ts">
-import {
-    CommonSettingsForm,
-    DocumentsForm,
-    BroadcastNotification,
-} from '@/features/settings'
+import { CommonSettingsForm, DocumentsForm, BroadcastNotification } from '@/features/settings'
 </script>

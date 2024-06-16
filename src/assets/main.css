@@ -50,11 +50,10 @@ input {
     @apply min-w-0 max-w-full;
 }
 
-
 .p-component-overlay {
     @apply p-4;
 }
 
 .section-header {
-    @apply first:mt-0 mt-10 mb-4 text-lg font-bold
+    @apply mb-4 mt-10 text-lg font-bold first:mt-0;
 }

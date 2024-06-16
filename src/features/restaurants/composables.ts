@@ -65,9 +65,8 @@ export const useUpdateRestaurant = () => {
     const queryClient = useQueryClient()
 
     return useMutation({
-        mutationFn: async (vars: any) =>
-            Promise.reject('Restaurant update route is not implemented.'),
-        onSuccess(_, vars) {
+        mutationFn: async () => Promise.reject('Restaurant update route is not implemented.'),
+        onSuccess(_, vars: any) {
             toast.add({
                 severity: 'success',
                 life: 3000,

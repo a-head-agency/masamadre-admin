@@ -81,7 +81,7 @@ export const useCreateArticle = () => {
                 summary: 'Успешно',
                 detail: `Создана статья ${vars.name}`
             })
-            queryClient.invalidateQueries({queryKey: ['blogs']})
+            queryClient.invalidateQueries({ queryKey: ['blogs'] })
         },
         onError(error: any) {
             toast.add({
@@ -110,7 +110,7 @@ export const useUpdateArticle = () => {
                 summary: 'Успешно',
                 detail: `Обновлена статья ${vars.name}`
             })
-            queryClient.invalidateQueries({queryKey: ['blogs']})
+            queryClient.invalidateQueries({ queryKey: ['blogs'] })
         },
         onError(error: any) {
             toast.add({

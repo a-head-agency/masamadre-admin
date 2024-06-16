@@ -62,6 +62,6 @@ export const useInvalidateStats = () => {
     const queryClient = useQueryClient()
 
     return () => {
-        queryClient.invalidateQueries({queryKey: ['stats']})
+        queryClient.invalidateQueries({ queryKey: ['stats'] })
     }
 }

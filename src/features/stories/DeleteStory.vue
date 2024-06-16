@@ -41,7 +41,7 @@ const deleteMutation = reactive(
                 summary: 'Успешно',
                 detail: `Удален история (id: ${story.id})`
             })
-            queryClient.invalidateQueries({queryKey: ['stories']})
+            queryClient.invalidateQueries({ queryKey: ['stories'] })
         },
         onError(error: any) {
             toast.add({

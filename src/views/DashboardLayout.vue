@@ -17,7 +17,7 @@
             <div class="flex min-h-full flex-col items-stretch text-black">
                 <ul class="flex grow flex-col gap-1">
                     <template v-for="g of menu" :key="g.name">
-                        <li class="text-pv-text-color mb-1 mt-2 text-sm font-bold">{{ g.name }}</li>
+                        <li class="mb-1 mt-2 text-sm font-bold text-pv-text-color">{{ g.name }}</li>
                         <li v-for="link of g.links" :key="link.name" class="min-w-max">
                             <RouterLink
                                 v-slot="{ isExactActive }"
@@ -25,7 +25,7 @@
                                 :to="link.to"
                             >
                                 <span
-                                    class="text-pv-text-color flex items-center gap-2 rounded-lg px-4 py-2 text-sm leading-none transition-all hover:bg-white/10"
+                                    class="flex items-center gap-2 rounded-lg px-4 py-2 text-sm leading-none text-pv-text-color transition-all hover:bg-white/10"
                                     :class="isExactActive ? '!bg-white !text-black' : ''"
                                 >
                                     <i :class="link.iconClass" />
@@ -37,7 +37,7 @@
                     <li class="mt-8 flex grow flex-col justify-end">
                         <button
                             @click="userStore.signOut"
-                            class="text-pv-text-color block rounded-lg p-3 text-start transition-all hover:bg-white/10"
+                            class="block rounded-lg p-3 text-start text-pv-text-color transition-all hover:bg-white/10"
                         >
                             <i class="pi pi-fw pi-sign-out" />
                             Выйти
@@ -47,7 +47,7 @@
             </div>
         </Sidebar>
         <button
-            class="fixed left-0 top-4 z-50 flex items-center gap-2 rounded-r-full bg-gray-100/60 backdrop-blur-sm border-2 border-gray-100 p-4 leading-none text-black shadow-lg shadow-white/10 xl:hidden"
+            class="fixed left-0 top-4 z-50 flex items-center gap-2 rounded-r-full border-2 border-gray-100 bg-gray-100/60 p-4 leading-none text-black shadow-lg shadow-white/10 backdrop-blur-sm xl:hidden"
             @click="menuSidebarVisible = true"
         >
             Меню
@@ -55,7 +55,7 @@
         </button>
 
         <div
-            class="fixed hidden border-r h-screen w-64 shrink-0 overflow-y-auto scrollbar-thin scrollbar-track-white/5 scrollbar-thumb-white/10 xl:block"
+            class="fixed hidden h-screen w-64 shrink-0 overflow-y-auto border-r scrollbar-thin scrollbar-track-white/5 scrollbar-thumb-white/10 xl:block"
         >
             <div class="flex min-h-full flex-col items-stretch px-6 py-4 text-black">
                 <a href="https://masamadre.ru">
@@ -68,7 +68,7 @@
 
                 <ul class="flex min-h-full grow flex-col gap-1">
                     <template v-for="g of menu" :key="g.name">
-                        <li class="text-pv-text-color mb-1 mt-2 text-sm font-bold">{{ g.name }}</li>
+                        <li class="mb-1 mt-2 text-sm font-bold text-pv-text-color">{{ g.name }}</li>
                         <li v-for="link of g.links" :key="link.name" class="min-w-max">
                             <RouterLink
                                 v-slot="{ isExactActive }"
@@ -76,7 +76,7 @@
                                 :to="link.to"
                             >
                                 <span
-                                    class="text-pv-text-color flex items-center gap-2 rounded-lg px-4 py-2 text-sm leading-none transition-all hover:bg-white/10"
+                                    class="flex items-center gap-2 rounded-lg px-4 py-2 text-sm leading-none text-pv-text-color transition-all hover:bg-white/10"
                                     :class="isExactActive ? '!bg-white !text-black' : ''"
                                 >
                                     <i :class="link.iconClass" />
@@ -88,7 +88,7 @@
                     <li class="mt-8 flex grow flex-col justify-end">
                         <button
                             @click="userStore.signOut"
-                            class="text-pv-text-color block rounded-lg p-3 text-start transition-all hover:bg-white/10"
+                            class="block rounded-lg p-3 text-start text-pv-text-color transition-all hover:bg-white/10"
                         >
                             <i class="pi pi-fw pi-sign-out" />
                             Выйти

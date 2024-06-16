@@ -1,7 +1,7 @@
 <template>
     <form class="p-2" @submit="onSubmit">
         <div class="w-full grow">
-            <MyInputNumber name="id" label="ID модификатора" disabled/>
+            <MyInputNumber name="id" label="ID модификатора" disabled />
 
             <MyInputText class="w-full" name="name" label="Название" />
             <DropdownSelect
@@ -63,7 +63,7 @@ const { handleSubmit } = useForm({
         name: yup.string().required().label('Название'),
         active: yup.boolean().required().label('Статус'),
         price: yup.number().required().label('Цена'),
-        rkeeper_id: yup.string().required().label('RKeeper ID'),
+        rkeeper_id: yup.string().required().label('RKeeper ID')
     }),
     initialValues: mod
 })

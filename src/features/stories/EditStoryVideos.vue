@@ -134,7 +134,7 @@ const { mutate } = useMutation({
             summary: 'Успешно',
             detail: `История изменена`
         })
-        queryClient.invalidateQueries({queryKey: ['stories']})
+        queryClient.invalidateQueries({ queryKey: ['stories'] })
     },
     onError(error: any) {
         toast.add({

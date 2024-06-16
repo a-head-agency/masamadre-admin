@@ -16,7 +16,7 @@ export const useCreateCategory = () => {
                 summary: 'Успешно',
                 detail: `Добавлена категория ${vars.name}`
             })
-            queryClient.invalidateQueries({queryKey: ['categories']})
+            queryClient.invalidateQueries({ queryKey: ['categories'] })
         },
         onError(error: any) {
             toast.add({
@@ -49,7 +49,7 @@ export const useDeleteCategory = () => {
                 summary: 'Успешно',
                 detail: `Удалена категория ${vars.name} (id: ${vars.id})`
             })
-            queryClient.invalidateQueries({queryKey: ['categories']})
+            queryClient.invalidateQueries({ queryKey: ['categories'] })
         },
         onError(error: any) {
             toast.add({
@@ -78,7 +78,7 @@ export const useUpdateCategory = () => {
                 summary: 'Успешно',
                 detail: `Изменена категория ${vars.name} (id: ${vars.id})`
             })
-            queryClient.invalidateQueries({queryKey: ['categories']})
+            queryClient.invalidateQueries({ queryKey: ['categories'] })
         },
         onError(error: any) {
             toast.add({
@@ -115,7 +115,7 @@ export const useSaveCategoriesOrdering = () => {
                 summary: 'Успешно',
                 detail: `Порядок категорий сохранён.`
             })
-            queryClient.invalidateQueries({queryKey: ['categories']})
+            queryClient.invalidateQueries({ queryKey: ['categories'] })
         },
         onError(error: any) {
             toast.add({

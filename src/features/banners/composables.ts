@@ -51,7 +51,7 @@ export const useCreateBanner = () => {
                 summary: 'Успешно',
                 detail: `Баннер создан`
             })
-            queryClient.invalidateQueries({queryKey: ['banners']})
+            queryClient.invalidateQueries({ queryKey: ['banners'] })
         },
         onError(error: any) {
             toast.add({
@@ -77,7 +77,7 @@ export const useUpdateBanner = () => {
                 summary: 'Успешно',
                 detail: `Баннер изменён`
             })
-            queryClient.invalidateQueries({queryKey: ['banners']})
+            queryClient.invalidateQueries({ queryKey: ['banners'] })
         },
         onError(error: any) {
             toast.add({
@@ -108,7 +108,7 @@ export const useDeleteBanner = () => {
                 summary: 'Успешно',
                 detail: `Удален баннер (id: ${vars.id})`
             })
-            queryClient.invalidateQueries({queryKey: ['banners']})
+            queryClient.invalidateQueries({ queryKey: ['banners'] })
         },
         onError(error: any) {
             toast.add({

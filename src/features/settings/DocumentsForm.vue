@@ -50,7 +50,7 @@ const { mutate: mutateDocuments } = useMutation({
             severity: 'success',
             life: 3000
         })
-        queryClient.invalidateQueries({queryKey: ['documents']})
+        queryClient.invalidateQueries({ queryKey: ['documents'] })
     },
     onError: (error) => {
         toast.add({

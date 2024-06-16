@@ -49,8 +49,8 @@
 
         <MyInputText class="mb-4" :name="`link`" label="Ссылка" />
 
-        <div class="mx-auto w-64 mb-8">
-            <p class="text-base mb-1 text-center font-medium">Превью</p>
+        <div class="mx-auto mb-8 w-64">
+            <p class="mb-1 text-center text-base font-medium">Превью</p>
             <MyUploadImage
                 name="preview"
                 class="rounded-lg"
@@ -125,7 +125,7 @@ const { mutate } = useMutation({
             summary: 'Успешно',
             detail: `История создана`
         })
-        queryClient.invalidateQueries({queryKey: ['stories']})
+        queryClient.invalidateQueries({ queryKey: ['stories'] })
     },
     onError(error: any) {
         toast.add({

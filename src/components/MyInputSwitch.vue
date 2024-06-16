@@ -1,5 +1,8 @@
 <template>
-    <div @click="setValue(!value)" class="block cursor-pointer rounded-lg border border-gray-300 p-3 font-medium">
+    <div
+        @click="setValue(!value)"
+        class="block cursor-pointer rounded-lg border border-gray-300 p-3 font-medium"
+    >
         <div class="flex items-center justify-between gap-4">
             <span>
                 {{ props.label }}

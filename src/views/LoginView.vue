@@ -68,9 +68,7 @@ const signIn = handleSubmit((vals) => {
         <div class="flex flex-col items-center">
             <div class="mb-4 flex w-full flex-col items-center justify-center text-center">
                 <img :src="logoSrc" alt="Image" class="mb-12 w-full max-w-xs" />
-                <div class="text-900 mb-3 text-3xl font-medium">
-                    Вход в панель администратора
-                </div>
+                <div class="text-900 mb-3 text-3xl font-medium">Вход в панель администратора</div>
             </div>
 
             <form class="w-full max-w-sm" @submit="signIn">
