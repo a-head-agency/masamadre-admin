@@ -1,9 +1,9 @@
 import { z } from 'zod'
 
-import { TagsSchemes } from '@/features/tags'
-
 import { CUDScheme } from '@/common/schemes'
-import { ModsSchemes } from '../mods'
+
+import { ModsSchemes } from '@/features/mods'
+import { TagsSchemes } from '@/features/tags'
 
 export const ModGroupScheme = z.object({
     id: z.number(),

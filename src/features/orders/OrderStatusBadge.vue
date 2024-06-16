@@ -1,3 +1,13 @@
+<script setup lang="ts">
+import { toRefs } from 'vue'
+
+const props = defineProps<{
+    code: string
+}>()
+
+const { code } = toRefs(props)
+</script>
+
 <template>
     <Tag
         v-if="code === 'success'"
@@ -45,13 +55,3 @@
         severity="danger"
     />
 </template>
-
-<script setup lang="ts">
-import { toRefs } from 'vue'
-
-const props = defineProps<{
-    code: string
-}>()
-
-const { code } = toRefs(props)
-</script>

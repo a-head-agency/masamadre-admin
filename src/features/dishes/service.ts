@@ -1,7 +1,9 @@
-import type { GetIden, GetListConfigWithSearch } from '@/common/types'
-import { axiosPrivate } from '@/network'
 import { z } from 'zod'
-import { DishesSchemes } from '.'
+
+import { axiosPrivate } from '@/common/network'
+import type { GetIden, GetListConfigWithSearch } from '@/common/types'
+
+import * as DishesSchemes from './schemes'
 
 export interface GetListConfigDishes extends GetListConfigWithSearch {
     categoryID: number

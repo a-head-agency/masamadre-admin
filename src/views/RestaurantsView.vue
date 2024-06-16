@@ -1,19 +1,23 @@
 <script setup lang="ts">
-import { ref, onMounted, computed, unref } from 'vue'
+import { computed, onMounted, ref, unref } from 'vue'
+
+import { useQuery } from '@tanstack/vue-query'
+import { useDebounce } from '@vueuse/core'
+import type { z } from 'zod'
+
 import type { DataTablePageEvent, DataTableRowDoubleClickEvent } from 'primevue/datatable'
+import { useConfirm } from 'primevue/useconfirm'
+import { useDialog } from 'primevue/usedialog'
+
+import dateFormat from '@/common/dateformat'
+
 import {
     CreateRestaurant,
-    UpdateRestaurant,
-    useDeleteRestaurant,
     RestsQueries,
-    RestsSchemes
+    RestsSchemes,
+    UpdateRestaurant,
+    useDeleteRestaurant
 } from '@/features/restaurants'
-import { useDialog } from 'primevue/usedialog'
-import { useDebounce } from '@vueuse/core'
-import dateFormat from '@/dateformat'
-import { useQuery } from '@tanstack/vue-query'
-import type { z } from 'zod'
-import { useConfirm } from 'primevue/useconfirm'
 
 type ListedEntity = z.infer<typeof RestsSchemes.ListedRestScheme>
 
@@ -130,7 +134,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <main class="flex h-screen flex-col items-stretch px-4" ref="root">
+    <main ref="root" class="flex h-screen flex-col items-stretch px-4">
         <h1 class="my-12 text-center text-3xl font-semibold leading-none text-black">Рестораны</h1>
 
         <ContextMenu ref="cm" :model="menuModel" @hide="selected = undefined" />
@@ -149,7 +153,7 @@ onMounted(() => {
                         icon="pi pi-plus"
                         @click="beginCreateRestaurantInteraction()"
                     />
-                    <IconField iconPosition="left" class="grow max-lg:order-1 max-lg:w-full">
+                    <IconField icon-position="left" class="grow max-lg:order-1 max-lg:w-full">
                         <InputIcon class="pi pi-search"></InputIcon>
                         <InputText v-model="search" placeholder="Поиск" class="w-full" />
                     </IconField>
@@ -176,15 +180,13 @@ onMounted(() => {
             </Message>
             <DataTable
                 v-else
+                v-model:selection="selected"
+                v-model:contextMenuSelection="selected"
                 size="small"
                 scrollable
                 :scroll-height="scrollHeight"
-                v-model:selection="selected"
                 selection-mode="single"
-                contextMenu
-                v-model:contextMenuSelection="selected"
-                @rowContextmenu="onRowContextMenu"
-                @row-dblclick="onRowDoubleClick"
+                context-menu
                 :meta-key-selection="false"
                 class="h-full overflow-hidden rounded-lg border border-white/10"
                 :value="data?.list"
@@ -192,10 +194,9 @@ onMounted(() => {
                 paginator
                 :first="0"
                 :rows="rowsPerPage"
-                dataKey="id"
-                tableStyle="min-width: 50rem"
-                @page="onPage($event)"
-                :totalRecords="data?.total"
+                data-key="id"
+                table-style="min-width: 50rem"
+                :total-records="data?.total"
                 :page-link-size="5"
                 :paginator-template="{
                     '640px': 'PrevPageLink CurrentPageReport NextPageLink',
@@ -204,8 +205,11 @@ onMounted(() => {
                     '1300px': 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink'
                 }"
                 current-page-report-template="{currentPage} из {totalPages}"
+                @row-contextmenu="onRowContextMenu"
+                @row-dblclick="onRowDoubleClick"
+                @page="onPage($event)"
             >
-                <Column selectionMode="single" headerStyle="width: 3rem" />
+                <Column selection-mode="single" header-style="width: 3rem" />
                 <Column field="id" header="ID" />
                 <Column field="name" header="Название" />
                 <Column field="adres" header="Адрес" />

@@ -1,23 +1,12 @@
-<template>
-    <div>
-        <div class="flex justify-end gap-4">
-            <Button
-                label="Удалить баннер"
-                :disabled="disabled"
-                icon="pi pi-times"
-                severity="danger"
-                @click="confirmDelete"
-            />
-        </div>
-    </div>
-</template>
-
 <script setup lang="ts">
-import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import { reactive } from 'vue'
-import { axiosPrivate } from '@/network'
-import { useToast } from 'primevue/usetoast'
+
+import { useMutation, useQueryClient } from '@tanstack/vue-query'
+
 import { useConfirm } from 'primevue/useconfirm'
+import { useToast } from 'primevue/usetoast'
+
+import { axiosPrivate } from '@/common/network'
 
 const props = defineProps<{
     disabled?: boolean
@@ -69,3 +58,17 @@ const confirmDelete = () => {
     })
 }
 </script>
+
+<template>
+    <div>
+        <div class="flex justify-end gap-4">
+            <Button
+                label="Удалить баннер"
+                :disabled="disabled"
+                icon="pi pi-times"
+                severity="danger"
+                @click="confirmDelete"
+            />
+        </div>
+    </div>
+</template>

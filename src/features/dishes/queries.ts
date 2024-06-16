@@ -1,8 +1,11 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory'
-import { type GetListConfigDishes, getList, getDetailed } from './service'
+
+import { queryClient } from '@/common/query-client'
 import type { GetIden } from '@/common/types'
-import { queryClient } from '@/query-client'
+
 import { RestsQueries } from '@/features/restaurants'
+
+import { getDetailed, getList, type GetListConfigDishes } from './service'
 
 export const queries = createQueryKeys('dishes', {
     list: (config: GetListConfigDishes) => ({

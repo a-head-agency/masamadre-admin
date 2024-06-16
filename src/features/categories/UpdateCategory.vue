@@ -1,3 +1,59 @@
+<script setup lang="ts">
+import { inject } from 'vue'
+
+import { useForm } from 'vee-validate'
+import * as yup from 'yup'
+import { z } from 'zod'
+
+import DropdownSelect from '@/components/DropdownSelect.vue'
+import MyInputNumber from '@/components/MyInputNumber.vue'
+import MyInputSwitch from '@/components/MyInputSwitch.vue'
+import MyInputText from '@/components/MyInputText.vue'
+
+import CategoryStatusBadge from './CategoryStatusBadge.vue'
+import CategoryTypeBadge from './CategoryTypeBadge.vue'
+import { useUpdateCategory } from './composables'
+import type { ListedCategoryScheme } from './schemes'
+
+type Entity = z.infer<typeof ListedCategoryScheme>
+
+const dialogRef = inject('dialogRef') as any
+const entity = dialogRef.value.data.entity as Entity
+
+const { handleSubmit } = useForm({
+    validationSchema: yup.object({
+        id: yup.number().required().label('ID категории'),
+        name: yup.string().required().label('Название категории'),
+        active: yup.boolean().required().label('Активно'),
+        link: yup.string().required().label('Ссылка'),
+        keywords: yup.string().label('Ключевые слова'),
+        description_seo: yup.string().label('Описание'),
+        title: yup.string().label('Title'),
+        subtitle: yup.string().label('Подкатегория'),
+        type: yup.number().required().label('Тип категории'),
+        show_title: yup.boolean().required().label('Показывать название категории')
+    }),
+    initialValues: {
+        id: entity.id,
+        name: entity.name,
+        active: entity.active,
+        link: entity.link,
+        keywords: entity.keywords,
+        description_seo: entity.description_seo,
+        title: entity.title,
+        type: entity.type,
+        show_title: entity.show_title,
+        subtitle: entity.subtitle
+    }
+})
+
+const { mutate, isPending } = useUpdateCategory()
+
+const onSubmit = handleSubmit((vals) => {
+    mutate(vals)
+})
+</script>
+
 <template>
     <form @submit.prevent="onSubmit">
         <MyInputNumber name="id" label="ID" disabled />
@@ -70,55 +126,3 @@
         />
     </form>
 </template>
-
-<script setup lang="ts">
-import { inject } from 'vue'
-import MyInputNumber from '@/components/MyInputNumber.vue'
-import MyInputText from '@/components/MyInputText.vue'
-import DropdownSelect from '@/components/DropdownSelect.vue'
-import { useForm } from 'vee-validate'
-import * as yup from 'yup'
-import { useUpdateCategory } from './composables'
-import { CategoryStatusBadge, CategoryTypeBadge } from '.'
-import MyInputSwitch from '@/components/MyInputSwitch.vue'
-import { z } from 'zod'
-import type { ListedCategoryScheme } from './schemes'
-
-type Entity = z.infer<typeof ListedCategoryScheme>
-
-const dialogRef = inject('dialogRef') as any
-const entity = dialogRef.value.data.entity as Entity
-
-const { handleSubmit } = useForm({
-    validationSchema: yup.object({
-        id: yup.number().required().label('ID категории'),
-        name: yup.string().required().label('Название категории'),
-        active: yup.boolean().required().label('Активно'),
-        link: yup.string().required().label('Ссылка'),
-        keywords: yup.string().label('Ключевые слова'),
-        description_seo: yup.string().label('Описание'),
-        title: yup.string().label('Title'),
-        subtitle: yup.string().label('Подкатегория'),
-        type: yup.number().required().label('Тип категории'),
-        show_title: yup.boolean().required().label('Показывать название категории')
-    }),
-    initialValues: {
-        id: entity.id,
-        name: entity.name,
-        active: entity.active,
-        link: entity.link,
-        keywords: entity.keywords,
-        description_seo: entity.description_seo,
-        title: entity.title,
-        type: entity.type,
-        show_title: entity.show_title,
-        subtitle: entity.subtitle
-    }
-})
-
-const { mutate, isPending } = useUpdateCategory()
-
-const onSubmit = handleSubmit((vals) => {
-    mutate(vals)
-})
-</script>

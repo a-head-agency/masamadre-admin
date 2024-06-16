@@ -1,17 +1,20 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
+
+import { useDebounce } from '@vueuse/core'
+
 import type { DataTablePageEvent, DataTableRowDoubleClickEvent } from 'primevue/datatable'
+import { useDialog } from 'primevue/usedialog'
+
+import dateFormat from '@/common/dateformat'
 
 import {
     CreateBanner,
-    useBanners,
     DeleteBanner,
-    type IBanner,
-    EditBanner
+    EditBanner,
+    useBanners,
+    type IBanner
 } from '@/features/banners'
-import { useDialog } from 'primevue/usedialog'
-import { useDebounce } from '@vueuse/core'
-import dateFormat from '@/dateformat'
 
 const rowsPerPage = ref(20)
 
@@ -127,7 +130,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <main class="flex h-screen flex-col items-stretch px-4" ref="root">
+    <main ref="root" class="flex h-screen flex-col items-stretch px-4">
         <h1 class="my-12 text-center text-3xl font-semibold leading-none text-black">Баннеры</h1>
 
         <ContextMenu ref="cm" :model="menuModel" @hide="selected = undefined" />
@@ -146,7 +149,7 @@ onMounted(() => {
                         icon="pi pi-plus"
                         @click="beginCreateBannerInteraction()"
                     />
-                    <IconField iconPosition="left" class="grow max-lg:order-1 max-lg:w-full">
+                    <IconField icon-position="left" class="grow max-lg:order-1 max-lg:w-full">
                         <InputIcon class="pi pi-search"></InputIcon>
                         <InputText v-model="search" placeholder="Поиск" class="w-full" />
                     </IconField>
@@ -173,15 +176,13 @@ onMounted(() => {
             </Message>
             <DataTable
                 v-else
+                v-model:selection="selected"
+                v-model:contextMenuSelection="selected"
                 size="small"
                 scrollable
                 :scroll-height="scrollHeight"
-                v-model:selection="selected"
                 selection-mode="single"
-                contextMenu
-                v-model:contextMenuSelection="selected"
-                @rowContextmenu="onRowContextMenu"
-                @row-dblclick="onRowDoubleClick"
+                context-menu
                 :meta-key-selection="false"
                 class="h-full overflow-hidden rounded-lg border border-white/10"
                 :value="data?.list"
@@ -189,10 +190,9 @@ onMounted(() => {
                 paginator
                 :first="0"
                 :rows="rowsPerPage"
-                dataKey="id"
-                tableStyle="min-width: 50rem"
-                @page="onPage($event)"
-                :totalRecords="data?.total"
+                data-key="id"
+                table-style="min-width: 50rem"
+                :total-records="data?.total"
                 :page-link-size="5"
                 :paginator-template="{
                     '640px': 'PrevPageLink CurrentPageReport NextPageLink',
@@ -201,8 +201,11 @@ onMounted(() => {
                     '1300px': 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink'
                 }"
                 current-page-report-template="{currentPage} из {totalPages}"
+                @row-contextmenu="onRowContextMenu"
+                @row-dblclick="onRowDoubleClick"
+                @page="onPage($event)"
             >
-                <Column selectionMode="single" headerStyle="width: 3rem" />
+                <Column selection-mode="single" header-style="width: 3rem" />
                 <Column field="id" header="ID" />
                 <Column field="img" header="Картинка">
                     <template #body="slotProps">

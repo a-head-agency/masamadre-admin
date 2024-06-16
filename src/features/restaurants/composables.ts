@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
 
-import { axiosPrivate } from '@/network'
 import { useToast } from 'primevue/usetoast'
+
+import { axiosPrivate } from '@/common/network'
 
 export const useCreateRestaurant = () => {
     const toast = useToast()

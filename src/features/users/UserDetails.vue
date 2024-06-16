@@ -1,3 +1,14 @@
+<script setup lang="ts">
+import { inject } from 'vue'
+
+import type { IUser } from './interfaces'
+import UserRoleBadge from './UserRoleBadge.vue'
+import UserStatusBadge from './UserStatusBadge.vue'
+
+const dialogRef = inject('dialogRef') as any
+const user = dialogRef.value.data.user as IUser
+</script>
+
 <template>
     <div class="mt-4 flex flex-col items-stretch gap-4 text-black">
         <div class="flex items-end leading-none">
@@ -77,13 +88,3 @@
         </div>
     </div>
 </template>
-
-<script setup lang="ts">
-import type { IUser } from './interfaces'
-import { inject } from 'vue'
-import UserRoleBadge from './UserRoleBadge.vue'
-import UserStatusBadge from './UserStatusBadge.vue'
-
-const dialogRef = inject('dialogRef') as any
-const user = dialogRef.value.data.user as IUser
-</script>

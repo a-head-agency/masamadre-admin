@@ -1,7 +1,9 @@
-import type { GetIden, GetListConfigWithSearch } from '@/common/types'
-import { axiosPrivate } from '@/network'
 import { z } from 'zod'
-import { RestsSchemes } from '.'
+
+import { axiosPrivate } from '@/common/network'
+import type { GetIden, GetListConfigWithSearch } from '@/common/types'
+
+import * as RestsSchemes from './schemes'
 
 export async function getList(config: GetListConfigWithSearch) {
     const schema = z.object({

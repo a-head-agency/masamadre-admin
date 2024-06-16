@@ -1,3 +1,39 @@
+<script setup lang="ts">
+import { useForm } from 'vee-validate'
+import * as yup from 'yup'
+
+import DropdownSelect from '@/components/DropdownSelect.vue'
+import MyEditor from '@/components/MyEditor.vue'
+import MyInputNumber from '@/components/MyInputNumber.vue'
+import MyInputText from '@/components/MyInputText.vue'
+import MyUploadImage from '@/components/MyUploadImage.vue'
+
+import { useCreateArticle } from './composables'
+
+const { handleSubmit } = useForm({
+    validationSchema: yup.object({
+        name: yup.string().required().label('Название статьи'),
+        img: yup.string().required().label('Десктопная версия изображения'),
+        phone_img: yup.string().required().label('Мобильная версия изображения'),
+        text: yup.string().required().label('Контент'),
+        active: yup.boolean().required().label('Активность'),
+        link: yup.string().required().label('Ссылка'),
+        keywords: yup.string().label('Ключевые слова'),
+        description_seo: yup.string().label('Описание'),
+        title: yup.string().label('Title')
+    }),
+    initialValues: {
+        active: false
+    }
+})
+
+const { mutate, isPending } = useCreateArticle()
+
+const onSubmit = handleSubmit((vals) => {
+    mutate(vals)
+})
+</script>
+
 <template>
     <form @submit="onSubmit">
         <div class="grid grid-cols-1 gap-x-4 lg:grid-cols-2">
@@ -90,38 +126,3 @@
         />
     </form>
 </template>
-
-<script setup lang="ts">
-import { useForm } from 'vee-validate'
-import * as yup from 'yup'
-
-import MyUploadImage from '@/components/MyUploadImage.vue'
-import MyInputNumber from '@/components/MyInputNumber.vue'
-import MyInputText from '@/components/MyInputText.vue'
-import MyEditor from '@/components/MyEditor.vue'
-import DropdownSelect from '@/components/DropdownSelect.vue'
-import { useCreateArticle } from './composables'
-
-const { handleSubmit } = useForm({
-    validationSchema: yup.object({
-        name: yup.string().required().label('Название статьи'),
-        img: yup.string().required().label('Десктопная версия изображения'),
-        phone_img: yup.string().required().label('Мобильная версия изображения'),
-        text: yup.string().required().label('Контент'),
-        active: yup.boolean().required().label('Активность'),
-        link: yup.string().required().label('Ссылка'),
-        keywords: yup.string().label('Ключевые слова'),
-        description_seo: yup.string().label('Описание'),
-        title: yup.string().label('Title')
-    }),
-    initialValues: {
-        active: false
-    }
-})
-
-const { mutate, isPending } = useCreateArticle()
-
-const onSubmit = handleSubmit((vals) => {
-    mutate(vals)
-})
-</script>

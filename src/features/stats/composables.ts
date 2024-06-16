@@ -1,7 +1,9 @@
 import { computed, unref, type MaybeRef } from 'vue'
+
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
-import { axiosPrivate } from '@/network'
-import { pad } from '@/utils'
+
+import { axiosPrivate } from '@/common/network'
+import { pad } from '@/common/utils'
 
 interface GetStatsResponse {
     clients_count: number

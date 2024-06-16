@@ -1,3 +1,13 @@
+<script setup lang="ts">
+import { toRefs } from 'vue'
+
+const props = defineProps<{
+    code: number
+}>()
+
+const { code } = toRefs(props)
+</script>
+
 <template>
     <Tag v-if="code === -2" icon="pi pi-fw pi-money-bill" value="Наличные" />
     <Tag v-else-if="code === -1" icon="pi pi-fw pi-credit-card" value="Картой при получении" />
@@ -9,13 +19,3 @@
         severity="danger"
     />
 </template>
-
-<script setup lang="ts">
-import { toRefs } from 'vue'
-
-const props = defineProps<{
-    code: number
-}>()
-
-const { code } = toRefs(props)
-</script>

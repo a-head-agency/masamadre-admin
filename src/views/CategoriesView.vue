@@ -1,25 +1,27 @@
 <script setup lang="ts">
 import { computed, ref, unref, watch } from 'vue'
 
-import {
-    CreateCategory,
-    UpdateCategory,
-    CategoryStatusBadge,
-    type SaveCategoriesOrderingMutation,
-    useSaveCategoriesOrdering,
-    CategoryTypeBadge,
-    CategoriesSchemes,
-    CategoriesQueries,
-    useDeleteCategory
-} from '@/features/categories'
-import { useDialog } from 'primevue/usedialog'
+import { useQuery } from '@tanstack/vue-query'
 import { useDebounce } from '@vueuse/core'
-import dateFormat from '@/dateformat'
-
 import draggable from 'vuedraggable'
 import { z } from 'zod'
-import { useQuery } from '@tanstack/vue-query'
+
 import { useConfirm } from 'primevue/useconfirm'
+import { useDialog } from 'primevue/usedialog'
+
+import dateFormat from '@/common/dateformat'
+
+import {
+    CategoriesQueries,
+    CategoriesSchemes,
+    CategoryStatusBadge,
+    CategoryTypeBadge,
+    CreateCategory,
+    UpdateCategory,
+    useDeleteCategory,
+    useSaveCategoriesOrdering,
+    type SaveCategoriesOrderingMutation
+} from '@/features/categories'
 
 type ListedEntity = z.infer<typeof CategoriesSchemes.ListedCategoryScheme>
 
@@ -164,7 +166,7 @@ const root = ref<HTMLElement>()
 </script>
 
 <template>
-    <main class="flex flex-col items-stretch px-4" ref="root">
+    <main ref="root" class="flex flex-col items-stretch px-4">
         <h1 class="my-12 text-center text-3xl font-semibold leading-none text-pv-text-color">
             Категории
         </h1>
@@ -210,7 +212,7 @@ const root = ref<HTMLElement>()
                         icon="pi pi-plus"
                         @click="beginCreateCategoryInteraction()"
                     />
-                    <IconField iconPosition="left" class="grow max-lg:order-1 max-lg:w-full">
+                    <IconField icon-position="left" class="grow max-lg:order-1 max-lg:w-full">
                         <InputIcon class="pi pi-search"></InputIcon>
                         <InputText
                             v-model="search"
@@ -249,16 +251,16 @@ const root = ref<HTMLElement>()
 
             <div v-else>
                 <draggable
-                    :delayOnTouchOnly="true"
+                    v-model="ordered"
+                    :delay-on-touch-only="true"
                     :delay="100"
                     :disabled="!reorderMode"
-                    v-model="ordered"
-                    @start="drag = true"
-                    @end="drag = false"
                     item-key="id"
                     :animation="200"
-                    ghostClass="ghost"
+                    ghost-class="ghost"
                     :component-data="{ name: !drag ? 'flip-list' : undefined }"
+                    @start="drag = true"
+                    @end="drag = false"
                 >
                     <template #item="{ element }">
                         <button
@@ -267,9 +269,9 @@ const root = ref<HTMLElement>()
                                 '!bg-pv-primary-color !text-pv-primary-color-text shadow-lg shadow-black/10':
                                     selected?.id === element.id
                             }"
+                            aria-haspopup="true"
                             @click="onItemClick(element)"
                             @contextmenu="onRowContextMenu($event, element)"
-                            aria-haspopup="true"
                             @dblclick="beginUpdateCategoryInteraction(element)"
                         >
                             <div class="mb-2 lg:mb-0">

@@ -1,9 +1,12 @@
 import { type MaybeRef } from 'vue'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
-import type { IBanner } from './interfaces'
 
-import { axiosPrivate } from '@/network'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
+
 import { useToast } from 'primevue/usetoast'
+
+import { axiosPrivate } from '@/common/network'
+
+import type { IBanner } from './interfaces'
 
 interface GetBannersResponse {
     list: IBanner[]

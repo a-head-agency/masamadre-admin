@@ -1,6 +1,9 @@
-import { axiosPrivate } from '@/network'
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
+
 import { useToast } from 'primevue/usetoast'
+
+import { axiosPrivate } from '@/common/network'
+
 import { queries } from './queries'
 
 export const useCreateDish = () => {

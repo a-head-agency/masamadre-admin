@@ -1,6 +1,8 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory'
-import { RestsService } from '.'
+
 import type { GetIden, GetListConfigWithSearch } from '@/common/types'
+
+import * as RestsService from './service'
 
 export const queries = createQueryKeys('rests', {
     list: (config: GetListConfigWithSearch) => ({

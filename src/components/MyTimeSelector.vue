@@ -1,20 +1,7 @@
-<template>
-    <div>
-        <Calendar
-            class="w-full text-center"
-            v-model="model"
-            :class="{
-                'p-invalid': errorMessage
-            }"
-            time-only
-            :disabled="props.disabled"
-        ></Calendar>
-    </div>
-</template>
-
 <script setup lang="ts">
-import { useField } from 'vee-validate'
 import { ref, watch } from 'vue'
+
+import { useField } from 'vee-validate'
 
 const props = defineProps<{
     name: string
@@ -45,3 +32,17 @@ watch(
     }
 )
 </script>
+
+<template>
+    <div>
+        <Calendar
+            v-model="model"
+            class="w-full text-center"
+            :class="{
+                'p-invalid': errorMessage
+            }"
+            time-only
+            :disabled="props.disabled"
+        ></Calendar>
+    </div>
+</template>

@@ -1,3 +1,36 @@
+<script setup lang="ts">
+import { inject } from 'vue'
+
+import { useForm } from 'vee-validate'
+import * as yup from 'yup'
+
+import DropdownSelect from '@/components/DropdownSelect.vue'
+import MyInputNumber from '@/components/MyInputNumber.vue'
+
+import { useUpdateOrderStatus } from './composables'
+import type { IOrder } from './interfaces'
+
+const dialogRef = inject('dialogRef') as any
+const order = dialogRef.value.data.order as IOrder
+
+const { handleSubmit } = useForm({
+    validationSchema: yup.object({
+        id: yup.number().required().label('ID заказа'),
+        status: yup.string().required().label('Статус')
+    }),
+    initialValues: {
+        id: order.id,
+        status: order.status
+    }
+})
+
+const { mutate, isPending } = useUpdateOrderStatus()
+
+const onSubmit = handleSubmit((v) => {
+    mutate(v)
+})
+</script>
+
 <template>
     <form class="p-2" @submit="onSubmit">
         <MyInputNumber name="id" label="ID заказа" disabled />
@@ -176,33 +209,3 @@
         />
     </form>
 </template>
-
-<script setup lang="ts">
-import { useForm } from 'vee-validate'
-import * as yup from 'yup'
-import { useUpdateOrderStatus } from './composables'
-import { inject } from 'vue'
-import type { IOrder } from './interfaces'
-import MyInputNumber from '@/components/MyInputNumber.vue'
-import DropdownSelect from '@/components/DropdownSelect.vue'
-
-const dialogRef = inject('dialogRef') as any
-const order = dialogRef.value.data.order as IOrder
-
-const { handleSubmit } = useForm({
-    validationSchema: yup.object({
-        id: yup.number().required().label('ID заказа'),
-        status: yup.string().required().label('Статус')
-    }),
-    initialValues: {
-        id: order.id,
-        status: order.status
-    }
-})
-
-const { mutate, isPending } = useUpdateOrderStatus()
-
-const onSubmit = handleSubmit((v) => {
-    mutate(v)
-})
-</script>

@@ -1,3 +1,13 @@
+<script setup lang="ts">
+import { toRefs } from 'vue'
+
+const props = defineProps<{
+    code: number
+}>()
+
+const { code } = toRefs(props)
+</script>
+
 <template>
     <Tag v-if="code === 0" value="Обычная сетка" severity="info" />
     <Tag v-else-if="code === 1" value="Горизонтальный слайдер" severity="info" />
@@ -9,13 +19,3 @@
         severity="danger"
     />
 </template>
-
-<script setup lang="ts">
-import { toRefs } from 'vue'
-
-const props = defineProps<{
-    code: number
-}>()
-
-const { code } = toRefs(props)
-</script>

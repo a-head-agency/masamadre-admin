@@ -1,5 +1,38 @@
+<script setup lang="ts">
+import { inject } from 'vue'
+
+import { useForm } from 'vee-validate'
+import * as yup from 'yup'
+
+import DropdownSelect from '@/components/DropdownSelect.vue'
+import MyInputText from '@/components/MyInputText.vue'
+import MyUploadImage from '@/components/MyUploadImage.vue'
+
+import { useUpdateBanner } from './composables'
+import type { IBanner } from './interfaces'
+
+const dialogRef = inject('dialogRef') as any
+const banner = dialogRef.value.data.banner as IBanner
+
+const { handleSubmit } = useForm({
+    validationSchema: yup.object({
+        img: yup.string().required().label('Десктопная версия изображения'),
+        phone_img: yup.string().required().label('Мобильная версия изображения'),
+        active: yup.boolean().required().label('Активно'),
+        link: yup.string().required().label('Ссылка')
+    }),
+    initialValues: banner
+})
+
+const { mutate } = useUpdateBanner()
+
+const onSubmit = handleSubmit((vals) => {
+    mutate(vals)
+})
+</script>
+
 <template>
-    <form @submit="onSubmit" class="w-full">
+    <form class="w-full" @submit="onSubmit">
         <p class="mb-2 font-medium">Десктопная версия (11:3)</p>
         <MyUploadImage
             name="img"
@@ -72,33 +105,3 @@
         <Button class="mt-12 flex w-full justify-center p-4" type="submit">Создать</Button>
     </form>
 </template>
-
-<script setup lang="ts">
-import MyInputText from '@/components/MyInputText.vue'
-import MyUploadImage from '@/components/MyUploadImage.vue'
-import DropdownSelect from '@/components/DropdownSelect.vue'
-import { useForm } from 'vee-validate'
-import * as yup from 'yup'
-import { useUpdateBanner } from './composables'
-import type { IBanner } from './interfaces'
-import { inject } from 'vue'
-
-const dialogRef = inject('dialogRef') as any
-const banner = dialogRef.value.data.banner as IBanner
-
-const { handleSubmit } = useForm({
-    validationSchema: yup.object({
-        img: yup.string().required().label('Десктопная версия изображения'),
-        phone_img: yup.string().required().label('Мобильная версия изображения'),
-        active: yup.boolean().required().label('Активно'),
-        link: yup.string().required().label('Ссылка')
-    }),
-    initialValues: banner
-})
-
-const { mutate } = useUpdateBanner()
-
-const onSubmit = handleSubmit((vals) => {
-    mutate(vals)
-})
-</script>

@@ -1,3 +1,111 @@
+<script setup lang="ts">
+import { useFieldValue, useForm } from 'vee-validate'
+import * as yup from 'yup'
+
+import DropdownSelect from '@/components/DropdownSelect.vue'
+import MyInputCheckbox from '@/components/MyInputCheckbox.vue'
+import MyInputNumber from '@/components/MyInputNumber.vue'
+import MyInputText from '@/components/MyInputText.vue'
+import MyTimeSelector from '@/components/MyTimeSelector.vue'
+import MyUploadFile from '@/components/MyUploadFile.vue'
+
+import { useCreateRestaurant } from './composables'
+
+// prettier-ignore
+const schema = yup.object({
+    name: yup.string().required().label('Название ресторана'),
+    adres: yup.string().required().label('Адрес ресторана'),
+    lat: yup.number().required().label('Широта'),
+    lng: yup.number().required().label('Долгота'),
+    geo: yup.string().label('GeoJson'),
+    org_id: yup.string().required().label('ID организации'),
+    terminal_id: yup.string().label('ID терминала'),
+    curier_card: yup.string().label('ID оплаты картой курьеру'),
+    online: yup.string().label('ID оплаты онлайн'),
+    cash: yup.string().label('ID оплаты наличными'),
+    type_rest: yup.string().label('Тип заказа ресторана'),
+    type_curier: yup.string().label('Тип доставки ресторана'),
+
+    yookassa_id: yup.string().label('ЮКасса ID'),
+    yookassa_key: yup.string().label('ЮКасса Key'),
+
+    setMon: yup.boolean(),
+    setThu: yup.boolean(),
+    setWed: yup.boolean(),
+    setThurs: yup.boolean(),
+    setFri: yup.boolean(),
+    setSat: yup.boolean(),
+    setSun: yup.boolean(),
+
+    mon_from: yup.date().when('setMon', { is: true, then: (schema) => schema.required() }),
+    mon_to: yup.date().when('setMon', { is: true, then: (schema) => schema.required() }),
+
+    thu_from: yup.date().when('setThu', { is: true, then: (schema) => schema.required() }),
+    thu_to: yup.date().when('setThu', { is: true, then: (schema) => schema.required() }),
+
+    wed_from: yup.date().when('setWed', { is: true, then: (schema) => schema.required() }),
+    wed_to: yup.date().when('setWed', { is: true, then: (schema) => schema.required() }),
+
+    thurs_from: yup.date().when('setThurs', { is: true, then: (schema) => schema.required() }),
+    thurs_to: yup.date().when('setThurs', { is: true, then: (schema) => schema.required() }),
+
+    fri_from: yup.date().when('setFri', { is: true, then: (schema) => schema.required() }),
+    fri_to: yup.date().when('setFri', { is: true, then: (schema) => schema.required() }),
+
+    sat_from: yup.date().when('setSat', { is: true, then: (schema) => schema.required() }),
+    sat_to: yup.date().when('setSat', { is: true, then: (schema) => schema.required() }),
+
+    sun_from: yup.date().when('setSun', { is: true, then: (schema) => schema.required() }),
+    sun_to: yup.date().when('setSun', { is: true, then: (schema) => schema.required() })
+})
+
+const { handleSubmit } = useForm<any>({
+    validationSchema: schema,
+    initialValues: {
+        setMon: false,
+        setThu: false,
+        setWed: false,
+        setThurs: false,
+        setFri: false,
+        setSat: false,
+        setSun: false
+    }
+})
+
+const setMon = useFieldValue<boolean>('setMon')
+const setThu = useFieldValue<boolean>('setThu')
+const setWed = useFieldValue<boolean>('setWed')
+const setThurs = useFieldValue<boolean>('setThurs')
+const setFri = useFieldValue<boolean>('setFri')
+const setSat = useFieldValue<boolean>('setSat')
+const setSun = useFieldValue<boolean>('setSun')
+
+const { mutate, isPending } = useCreateRestaurant()
+
+const onSubmit = handleSubmit((v) => {
+    // prettier-ignore
+    {
+        if (!v.setMon) { v.mon_from = -1; v.mon_to = -1 }
+        if (!v.setThu) { v.thu_from = -1; v.thu_to = -1 }
+        if (!v.setWed) { v.wed_from = -1; v.wed_to = -1 }
+        if (!v.setThurs) { v.thurs_from = -1; v.thurs_to = -1 }
+        if (!v.setFri) { v.fri_from = -1; v.fri_to = -1 }
+        if (!v.setSat) { v.sat_from = -1; v.sat_to = -1 }
+        if (!v.setSun) { v.sun_from = -1; v.sun_to = -1 }
+    }
+
+    delete v.setMon
+    delete v.setThu
+    delete v.setWed
+    delete v.setThurs
+    delete v.setFri
+    delete v.setSat
+    delete v.setSun
+
+    mutate(v)
+})
+</script>
+
 <template>
     <form class="p-2" @submit.prevent="onSubmit">
         <h2 class="section-header">Общая информация</h2>
@@ -24,14 +132,14 @@
             <MyInputNumber
                 name="lat"
                 label="Широта"
-                :minFractionDigits="2"
-                :maxFractionDigits="6"
+                :min-fraction-digits="2"
+                :max-fraction-digits="6"
             />
             <MyInputNumber
                 name="lng"
                 label="Долгота"
-                :minFractionDigits="2"
-                :maxFractionDigits="6"
+                :min-fraction-digits="2"
+                :max-fraction-digits="6"
             />
         </div>
 
@@ -39,9 +147,9 @@
         <MyUploadFile
             class="mb-8"
             name="geo"
-            uploadRoute="admin/upload"
-            filenamePropInRequest="file"
-            filenamePropInResponse="link"
+            upload-route="admin/upload"
+            filename-prop-in-request="file"
+            filename-prop-in-response="link"
         />
 
         <DropdownSelect
@@ -301,112 +409,6 @@
         />
     </form>
 </template>
-
-<script setup lang="ts">
-import { useFieldValue, useForm } from 'vee-validate'
-import * as yup from 'yup'
-import MyInputText from '@/components/MyInputText.vue'
-import MyInputNumber from '@/components/MyInputNumber.vue'
-import MyUploadFile from '@/components/MyUploadFile.vue'
-import DropdownSelect from '@/components/DropdownSelect.vue'
-import { useCreateRestaurant } from './composables'
-import MyTimeSelector from '@/components/MyTimeSelector.vue'
-import MyInputCheckbox from '@/components/MyInputCheckbox.vue'
-
-// prettier-ignore
-const schema = yup.object({
-    name: yup.string().required().label('Название ресторана'),
-    adres: yup.string().required().label('Адрес ресторана'),
-    lat: yup.number().required().label('Широта'),
-    lng: yup.number().required().label('Долгота'),
-    geo: yup.string().label('GeoJson'),
-    org_id: yup.string().required().label('ID организации'),
-    terminal_id: yup.string().label('ID терминала'),
-    curier_card: yup.string().label('ID оплаты картой курьеру'),
-    online: yup.string().label('ID оплаты онлайн'),
-    cash: yup.string().label('ID оплаты наличными'),
-    type_rest: yup.string().label('Тип заказа ресторана'),
-    type_curier: yup.string().label('Тип доставки ресторана'),
-
-    yookassa_id: yup.string().label('ЮКасса ID'),
-    yookassa_key: yup.string().label('ЮКасса Key'),
-
-    setMon: yup.boolean(),
-    setThu: yup.boolean(),
-    setWed: yup.boolean(),
-    setThurs: yup.boolean(),
-    setFri: yup.boolean(),
-    setSat: yup.boolean(),
-    setSun: yup.boolean(),
-
-    mon_from: yup.date().when('setMon', { is: true, then: (schema) => schema.required() }),
-    mon_to: yup.date().when('setMon', { is: true, then: (schema) => schema.required() }),
-
-    thu_from: yup.date().when('setThu', { is: true, then: (schema) => schema.required() }),
-    thu_to: yup.date().when('setThu', { is: true, then: (schema) => schema.required() }),
-
-    wed_from: yup.date().when('setWed', { is: true, then: (schema) => schema.required() }),
-    wed_to: yup.date().when('setWed', { is: true, then: (schema) => schema.required() }),
-
-    thurs_from: yup.date().when('setThurs', { is: true, then: (schema) => schema.required() }),
-    thurs_to: yup.date().when('setThurs', { is: true, then: (schema) => schema.required() }),
-
-    fri_from: yup.date().when('setFri', { is: true, then: (schema) => schema.required() }),
-    fri_to: yup.date().when('setFri', { is: true, then: (schema) => schema.required() }),
-
-    sat_from: yup.date().when('setSat', { is: true, then: (schema) => schema.required() }),
-    sat_to: yup.date().when('setSat', { is: true, then: (schema) => schema.required() }),
-
-    sun_from: yup.date().when('setSun', { is: true, then: (schema) => schema.required() }),
-    sun_to: yup.date().when('setSun', { is: true, then: (schema) => schema.required() })
-})
-
-const { handleSubmit } = useForm<any>({
-    validationSchema: schema,
-    initialValues: {
-        setMon: false,
-        setThu: false,
-        setWed: false,
-        setThurs: false,
-        setFri: false,
-        setSat: false,
-        setSun: false
-    }
-})
-
-const setMon = useFieldValue<boolean>('setMon')
-const setThu = useFieldValue<boolean>('setThu')
-const setWed = useFieldValue<boolean>('setWed')
-const setThurs = useFieldValue<boolean>('setThurs')
-const setFri = useFieldValue<boolean>('setFri')
-const setSat = useFieldValue<boolean>('setSat')
-const setSun = useFieldValue<boolean>('setSun')
-
-const { mutate, isPending } = useCreateRestaurant()
-
-const onSubmit = handleSubmit((v) => {
-    // prettier-ignore
-    {
-        if (!v.setMon) { v.mon_from = -1; v.mon_to = -1 }
-        if (!v.setThu) { v.thu_from = -1; v.thu_to = -1 }
-        if (!v.setWed) { v.wed_from = -1; v.wed_to = -1 }
-        if (!v.setThurs) { v.thurs_from = -1; v.thurs_to = -1 }
-        if (!v.setFri) { v.fri_from = -1; v.fri_to = -1 }
-        if (!v.setSat) { v.sat_from = -1; v.sat_to = -1 }
-        if (!v.setSun) { v.sun_from = -1; v.sun_to = -1 }
-    }
-
-    delete v.setMon
-    delete v.setThu
-    delete v.setWed
-    delete v.setThurs
-    delete v.setFri
-    delete v.setSat
-    delete v.setSun
-
-    mutate(v)
-})
-</script>
 
 <style>
 .input-text-center input {

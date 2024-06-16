@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { useIsFetching } from '@tanstack/vue-query'
 import { RouterView } from 'vue-router'
-import Toast from 'primevue/toast'
+
 import ConfirmDialog from 'primevue/confirmdialog'
 import DynamicDialog from 'primevue/dynamicdialog'
-
-import { useIsFetching } from '@tanstack/vue-query'
+import Toast from 'primevue/toast'
 
 const isFetching = useIsFetching()
 </script>

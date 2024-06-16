@@ -1,24 +1,11 @@
-<template>
-    <form @submit="onSubmitDocuments">
-        <h1 class="mb-6 text-xl font-bold">Документы</h1>
-        <MyEditor
-            class="mb-4"
-            label="Политика конфиденциальности в отношении обработки персональных данных"
-            name="policy"
-        />
-        <MyEditor class="mb-4" label="Публичная оферта" name="ofert" />
-        <MyEditor label="Пользовательское соглашение" name="users" />
-
-        <Button label="Сохранить документы" class="mt-4 w-full" type="submit" />
-    </form>
-</template>
-
 <script setup lang="ts">
-import * as yup from 'yup'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
-import { useToast } from 'primevue/usetoast'
-import { axiosPrivate } from '@/network'
 import { useForm } from 'vee-validate'
+import * as yup from 'yup'
+
+import { useToast } from 'primevue/usetoast'
+
+import { axiosPrivate } from '@/common/network'
 
 import MyEditor from '@/components/MyEditor.vue'
 
@@ -65,3 +52,18 @@ const onSubmitDocuments = handleSubmitDocuments((vals) => {
     mutateDocuments(vals)
 })
 </script>
+
+<template>
+    <form @submit="onSubmitDocuments">
+        <h1 class="mb-6 text-xl font-bold">Документы</h1>
+        <MyEditor
+            class="mb-4"
+            label="Политика конфиденциальности в отношении обработки персональных данных"
+            name="policy"
+        />
+        <MyEditor class="mb-4" label="Публичная оферта" name="ofert" />
+        <MyEditor label="Пользовательское соглашение" name="users" />
+
+        <Button label="Сохранить документы" class="mt-4 w-full" type="submit" />
+    </form>
+</template>

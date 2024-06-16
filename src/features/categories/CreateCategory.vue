@@ -1,3 +1,44 @@
+<script setup lang="ts">
+import { useForm } from 'vee-validate'
+import * as yup from 'yup'
+
+import DropdownSelect from '@/components/DropdownSelect.vue'
+import MyInputSwitch from '@/components/MyInputSwitch.vue'
+import MyInputText from '@/components/MyInputText.vue'
+
+import CategoryStatusBadge from './CategoryStatusBadge.vue'
+import CategoryTypeBadge from './CategoryTypeBadge.vue'
+import { useCreateCategory } from './composables'
+
+const { handleSubmit } = useForm({
+    validationSchema: yup.object({
+        name: yup.string().required().label('Название'),
+        active: yup.boolean().required().label('Активна'),
+        link: yup.string().required().label('Ссылка'),
+        keywords: yup.string().label('Ключевые слова'),
+        description_seo: yup.string().label('Описание'),
+        title: yup.string().label('Title'),
+        subtitle: yup.string().label('Подкатегория'),
+        type: yup.number().required().label('Тип категории'),
+        show_title: yup.boolean().required().label('Показывать название категории')
+    }),
+    initialValues: {
+        active: false,
+        type: 0,
+        show_title: true
+    }
+})
+
+const { mutate, isPending } = useCreateCategory()
+
+const onSubmit = handleSubmit((vals) => {
+    mutate({
+        ...vals,
+        addable: false
+    })
+})
+</script>
+
 <template>
     <form class="w-full" @submit.prevent="onSubmit">
         <div class="mb-6">
@@ -72,41 +113,3 @@
         />
     </form>
 </template>
-
-<script setup lang="ts">
-import MyInputText from '@/components/MyInputText.vue'
-import { useForm } from 'vee-validate'
-import * as yup from 'yup'
-import { useCreateCategory } from './composables'
-import DropdownSelect from '@/components/DropdownSelect.vue'
-import { CategoryTypeBadge, CategoryStatusBadge } from '.'
-import MyInputSwitch from '@/components/MyInputSwitch.vue'
-
-const { handleSubmit } = useForm({
-    validationSchema: yup.object({
-        name: yup.string().required().label('Название'),
-        active: yup.boolean().required().label('Активна'),
-        link: yup.string().required().label('Ссылка'),
-        keywords: yup.string().label('Ключевые слова'),
-        description_seo: yup.string().label('Описание'),
-        title: yup.string().label('Title'),
-        subtitle: yup.string().label('Подкатегория'),
-        type: yup.number().required().label('Тип категории'),
-        show_title: yup.boolean().required().label('Показывать название категории')
-    }),
-    initialValues: {
-        active: false,
-        type: 0,
-        show_title: true
-    }
-})
-
-const { mutate, isPending } = useCreateCategory()
-
-const onSubmit = handleSubmit((vals) => {
-    mutate({
-        ...vals,
-        addable: false
-    })
-})
-</script>

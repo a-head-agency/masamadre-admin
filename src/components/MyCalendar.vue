@@ -1,25 +1,7 @@
-<template>
-    <div>
-        <label v-if="props.label" :for="inputID">{{ props.label }}</label>
-
-        <Calendar
-            class="w-full text-center"
-            :id="inputID"
-            v-model="model"
-            inline
-            :class="{
-                'p-invalid': errorMessage
-            }"
-            :time-only="props.timeOnly"
-        ></Calendar>
-
-        <small class="p-error">{{ errorMessage || '&nbsp;' }}</small>
-    </div>
-</template>
-
 <script setup lang="ts">
-import { useField } from 'vee-validate'
 import { computed, ref, watch } from 'vue'
+
+import { useField } from 'vee-validate'
 
 const props = defineProps<{
     name: string
@@ -53,3 +35,22 @@ watch(
 
 const inputID = computed(() => `calendar-${props.name}`)
 </script>
+
+<template>
+    <div>
+        <label v-if="props.label" :for="inputID">{{ props.label }}</label>
+
+        <Calendar
+            :id="inputID"
+            v-model="model"
+            class="w-full text-center"
+            inline
+            :class="{
+                'p-invalid': errorMessage
+            }"
+            :time-only="props.timeOnly"
+        ></Calendar>
+
+        <small class="p-error">{{ errorMessage || '&nbsp;' }}</small>
+    </div>
+</template>

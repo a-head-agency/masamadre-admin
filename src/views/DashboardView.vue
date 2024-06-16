@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { useStats, useInvalidateStats } from '@/features/stats'
 import { computed, ref } from 'vue'
+
+import { useInvalidateStats, useStats } from '@/features/stats'
 
 // const dates = ref<Date[]>([])
 const defaultFrom = new Date(Date.now() - 2629746000)
@@ -37,11 +38,11 @@ const newUsersCount = computed(() => stats.value?.stats.map((v) => v.new_users) 
         <div class="mb-4 flex items-center justify-between gap-4">
             <div class="flex justify-center">
                 <Calendar
-                    showButtonBar
-                    class="w-full"
                     v-model="dates"
-                    selectionMode="range"
-                    :manualInput="false"
+                    show-button-bar
+                    class="w-full"
+                    selection-mode="range"
+                    :manual-input="false"
                 />
             </div>
             <div class="flex justify-end">

@@ -1,130 +1,14 @@
-<template>
-    <div
-        class="relative flex h-full w-full flex-col items-center overflow-hidden border-2 transition-colors"
-        :class="{
-            'border-red-400': errorMessage,
-            'border-gray': !errorMessage,
-            'border-black': isDragging
-        }"
-        @dragover="onDragOver"
-        @dragleave="onDragLeave"
-        @drop="onDrop"
-    >
-        <div class="relative z-0 h-full w-full">
-            <Transition name="fade" mode="out-in">
-                <div v-if="isSelected" class="h-full w-full overflow-hidden rounded-md">
-                    <Cropper
-                        class="h-full w-full"
-                        ref="cropper"
-                        :src="editingFileUrl || value"
-                        :stencil-props="{
-                            handlers: {},
-                            movable: false,
-                            resizable: false,
-                            aspectRatio: props.aspectRatio
-                        }"
-                        :moveImage="isEditingImage"
-                        defaultBoundaries="fill"
-                        :stencil-size="stencilSize"
-                        :resize-image="{
-                            touch: isEditingImage,
-                            wheel: isEditingImage,
-                            adjustStencil: false
-                        }"
-                        image-restriction="none"
-                    />
-                </div>
-                <div v-else class="h-full w-full">
-                    <input
-                        type="file"
-                        :id="inputID"
-                        @change="onChange"
-                        class="peer absolute h-px w-px opacity-0"
-                        ref="inputRef"
-                    />
-                    <label
-                        :for="inputID"
-                        class="flex h-full w-full cursor-pointer items-center justify-center rounded-md p-4 text-center ring-indigo-300 transition-shadow peer-focus:ring-2"
-                    >
-                        <span>
-                            Перетащите сюда картику, либо выберите кликнув
-                            <u>здесь</u>
-                        </span>
-                    </label>
-                </div>
-            </Transition>
-        </div>
-
-        <Transition name="fade" mode="out-in">
-            <div
-                v-if="isSelected"
-                class="absolute left-0 top-0 z-20 flex w-full flex-wrap items-center justify-center gap-2 p-2 text-white"
-            >
-                <button
-                    type="button"
-                    class="flex h-8 w-max max-w-[10rem] flex-1 basis-0 items-center justify-center rounded-md bg-black bg-opacity-50 px-2 text-sm leading-none transition-all hover:bg-opacity-75"
-                    @click="reset()"
-                >
-                    <i class="pi pi-times mr-1 text-sm"></i>
-                    Удалить
-                </button>
-
-                <button
-                    type="button"
-                    :disabled="isUploading"
-                    class="flex h-8 w-max max-w-[10rem] flex-1 basis-0 items-center justify-center rounded-md bg-black bg-opacity-50 px-2 text-sm leading-none transition-all hover:bg-opacity-75"
-                    @click="saveOrEditAction()"
-                >
-                    <Transition name="fade" mode="out-in" :duration="200">
-                        <span v-if="isUploading"><i class="pi pi-spin pi-spinner"></i></span>
-                        <span class="flex items-center" v-else-if="isEditingImage">
-                            <i class="pi pi-check mr-1 text-sm"></i>
-                            Сохранить
-                        </span>
-                        <span class="flex items-center" v-else>
-                            <i class="pi pi-pencil mr-1 text-sm"></i>
-                            Обрезать
-                        </span>
-                    </Transition>
-                </button>
-            </div>
-        </Transition>
-
-        <Transition name="fade" mode="out-in">
-            <div
-                v-if="isEditingImage"
-                class="absolute bottom-2 left-2 top-2 flex flex-col items-center justify-center gap-2"
-            >
-                <button
-                    type="button"
-                    class="flex aspect-square h-8 items-center justify-center rounded-md bg-black bg-opacity-50 transition-all hover:bg-opacity-75"
-                    @click="rotate(90)"
-                >
-                    <i class="pi pi-refresh text-lg text-white"></i>
-                </button>
-                <button
-                    type="button"
-                    class="flex aspect-square h-8 items-center justify-center rounded-md bg-black bg-opacity-50 transition-all hover:bg-opacity-75"
-                    @click="rotate(-90)"
-                >
-                    <i class="pi pi-replay text-lg text-white"></i>
-                </button>
-            </div>
-        </Transition>
-
-        <small class="p-error absolute bottom-2 z-20 max-w-full px-4 text-center font-medium">
-            {{ errorMessage || '&nbsp;' }}
-        </small>
-    </div>
-</template>
-
 <script setup lang="ts">
-import { axiosPrivate } from '@/network'
-import { useToast } from 'primevue/usetoast'
-import { useField } from 'vee-validate'
 import { computed, onUnmounted, ref, watch } from 'vue'
-import { Cropper } from 'vue-advanced-cropper'
+
 import { v4 as uuidv4 } from 'uuid'
+import { useField } from 'vee-validate'
+import { Cropper } from 'vue-advanced-cropper'
+
+import { useToast } from 'primevue/usetoast'
+
+import { axiosPrivate } from '@/common/network'
+
 import 'vue-advanced-cropper/dist/style.css'
 
 const props = defineProps<{
@@ -284,3 +168,123 @@ const onDrop = (e: DragEvent) => {
     isDragging.value = false
 }
 </script>
+
+<template>
+    <div
+        class="relative flex h-full w-full flex-col items-center overflow-hidden border-2 transition-colors"
+        :class="{
+            'border-red-400': errorMessage,
+            'border-gray': !errorMessage,
+            'border-black': isDragging
+        }"
+        @dragover="onDragOver"
+        @dragleave="onDragLeave"
+        @drop="onDrop"
+    >
+        <div class="relative z-0 h-full w-full">
+            <Transition name="fade" mode="out-in">
+                <div v-if="isSelected" class="h-full w-full overflow-hidden rounded-md">
+                    <Cropper
+                        ref="cropper"
+                        class="h-full w-full"
+                        :src="editingFileUrl || value"
+                        :stencil-props="{
+                            handlers: {},
+                            movable: false,
+                            resizable: false,
+                            aspectRatio: props.aspectRatio
+                        }"
+                        :move-image="isEditingImage"
+                        default-boundaries="fill"
+                        :stencil-size="stencilSize"
+                        :resize-image="{
+                            touch: isEditingImage,
+                            wheel: isEditingImage,
+                            adjustStencil: false
+                        }"
+                        image-restriction="none"
+                    />
+                </div>
+                <div v-else class="h-full w-full">
+                    <input
+                        :id="inputID"
+                        ref="inputRef"
+                        type="file"
+                        class="peer absolute h-px w-px opacity-0"
+                        @change="onChange"
+                    />
+                    <label
+                        :for="inputID"
+                        class="flex h-full w-full cursor-pointer items-center justify-center rounded-md p-4 text-center ring-indigo-300 transition-shadow peer-focus:ring-2"
+                    >
+                        <span>
+                            Перетащите сюда картику, либо выберите кликнув
+                            <u>здесь</u>
+                        </span>
+                    </label>
+                </div>
+            </Transition>
+        </div>
+
+        <Transition name="fade" mode="out-in">
+            <div
+                v-if="isSelected"
+                class="absolute left-0 top-0 z-20 flex w-full flex-wrap items-center justify-center gap-2 p-2 text-white"
+            >
+                <button
+                    type="button"
+                    class="flex h-8 w-max max-w-[10rem] flex-1 basis-0 items-center justify-center rounded-md bg-black bg-opacity-50 px-2 text-sm leading-none transition-all hover:bg-opacity-75"
+                    @click="reset()"
+                >
+                    <i class="pi pi-times mr-1 text-sm"></i>
+                    Удалить
+                </button>
+
+                <button
+                    type="button"
+                    :disabled="isUploading"
+                    class="flex h-8 w-max max-w-[10rem] flex-1 basis-0 items-center justify-center rounded-md bg-black bg-opacity-50 px-2 text-sm leading-none transition-all hover:bg-opacity-75"
+                    @click="saveOrEditAction()"
+                >
+                    <Transition name="fade" mode="out-in" :duration="200">
+                        <span v-if="isUploading"><i class="pi pi-spin pi-spinner"></i></span>
+                        <span v-else-if="isEditingImage" class="flex items-center">
+                            <i class="pi pi-check mr-1 text-sm"></i>
+                            Сохранить
+                        </span>
+                        <span v-else class="flex items-center">
+                            <i class="pi pi-pencil mr-1 text-sm"></i>
+                            Обрезать
+                        </span>
+                    </Transition>
+                </button>
+            </div>
+        </Transition>
+
+        <Transition name="fade" mode="out-in">
+            <div
+                v-if="isEditingImage"
+                class="absolute bottom-2 left-2 top-2 flex flex-col items-center justify-center gap-2"
+            >
+                <button
+                    type="button"
+                    class="flex aspect-square h-8 items-center justify-center rounded-md bg-black bg-opacity-50 transition-all hover:bg-opacity-75"
+                    @click="rotate(90)"
+                >
+                    <i class="pi pi-refresh text-lg text-white"></i>
+                </button>
+                <button
+                    type="button"
+                    class="flex aspect-square h-8 items-center justify-center rounded-md bg-black bg-opacity-50 transition-all hover:bg-opacity-75"
+                    @click="rotate(-90)"
+                >
+                    <i class="pi pi-replay text-lg text-white"></i>
+                </button>
+            </div>
+        </Transition>
+
+        <small class="p-error absolute bottom-2 z-20 max-w-full px-4 text-center font-medium">
+            {{ errorMessage || '&nbsp;' }}
+        </small>
+    </div>
+</template>

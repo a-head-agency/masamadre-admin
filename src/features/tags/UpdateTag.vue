@@ -1,3 +1,42 @@
+<script setup lang="ts">
+import { inject } from 'vue'
+
+import { useForm } from 'vee-validate'
+import * as yup from 'yup'
+
+import DropdownSelect from '@/components/DropdownSelect.vue'
+import MyInputNumber from '@/components/MyInputNumber.vue'
+import MyInputText from '@/components/MyInputText.vue'
+import MyUploadImage from '@/components/MyUploadImage.vue'
+
+import { useUpdateTag } from './composables'
+import type { ITag } from './interfaces'
+
+const dialogRef = inject('dialogRef') as any
+const tag = dialogRef.value.data.tag as ITag
+
+const { handleSubmit } = useForm({
+    validationSchema: yup.object({
+        id: yup.number().required().label('ID тэга'),
+        name: yup.string().required().label('Название тега'),
+        img: yup.string().required().label('Изображение'),
+        active: yup.boolean().required().label('Активен')
+    }),
+    initialValues: {
+        id: tag.id,
+        name: tag.name,
+        img: tag.img,
+        active: tag.active
+    }
+})
+
+const { mutate, isPending } = useUpdateTag()
+
+const onSubmit = handleSubmit((v) => {
+    mutate(v)
+})
+</script>
+
 <template>
     <form class="p-2" @submit="onSubmit">
         <div class="flex flex-col items-center justify-between gap-4 md:flex-row">
@@ -5,10 +44,10 @@
                 <MyUploadImage
                     name="img"
                     class="rounded-lg"
-                    :aspectRatio="1 / 1"
-                    uploadRoute="admin/upload"
-                    filenamePropInRequest="file"
-                    filenamePropInResponse="link"
+                    :aspect-ratio="1 / 1"
+                    upload-route="admin/upload"
+                    filename-prop-in-request="file"
+                    filename-prop-in-response="link"
                 />
             </div>
             <div class="w-full grow">
@@ -72,39 +111,3 @@
         />
     </form>
 </template>
-
-<script setup lang="ts">
-import { useForm } from 'vee-validate'
-import * as yup from 'yup'
-import MyInputText from '@/components/MyInputText.vue'
-import MyUploadImage from '@/components/MyUploadImage.vue'
-import { useUpdateTag } from './composables'
-import { inject } from 'vue'
-import type { ITag } from './interfaces'
-import MyInputNumber from '@/components/MyInputNumber.vue'
-import DropdownSelect from '@/components/DropdownSelect.vue'
-
-const dialogRef = inject('dialogRef') as any
-const tag = dialogRef.value.data.tag as ITag
-
-const { handleSubmit } = useForm({
-    validationSchema: yup.object({
-        id: yup.number().required().label('ID тэга'),
-        name: yup.string().required().label('Название тега'),
-        img: yup.string().required().label('Изображение'),
-        active: yup.boolean().required().label('Активен')
-    }),
-    initialValues: {
-        id: tag.id,
-        name: tag.name,
-        img: tag.img,
-        active: tag.active
-    }
-})
-
-const { mutate, isPending } = useUpdateTag()
-
-const onSubmit = handleSubmit((v) => {
-    mutate(v)
-})
-</script>

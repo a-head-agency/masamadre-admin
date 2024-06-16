@@ -1,33 +1,7 @@
-<template>
-    <div>
-        <label :for="inputID" class="text-900 mb-2 block font-medium">{{ props.label }}</label>
-        <MultiSelect
-            class="w-full"
-            :class="{ 'p-invalid': errorMessage }"
-            v-model="selected"
-            :input-id="inputID"
-            :options="props.options"
-            optionLabel="label"
-            :max-selected-labels="props.maxSelectedLabels"
-            :placeholder="props.placeholder"
-            @blur="handleBlur"
-            @change="handleChange"
-        >
-            <template #option="slotProps">
-                <slot name="option" v-bind="slotProps"></slot>
-            </template>
-
-            <template #value="slotProps">
-                <slot name="value" v-bind="slotProps"></slot>
-            </template>
-        </MultiSelect>
-        <small class="p-error">{{ errorMessage || '&nbsp;' }}</small>
-    </div>
-</template>
-
 <script setup lang="ts">
-import { useField } from 'vee-validate'
 import { computed, ref, watch } from 'vue'
+
+import { useField } from 'vee-validate'
 
 const props = defineProps<{
     options: { code: string | number; label: string | number }[]
@@ -62,3 +36,30 @@ watch(
     { immediate: true }
 )
 </script>
+
+<template>
+    <div>
+        <label :for="inputID" class="text-900 mb-2 block font-medium">{{ props.label }}</label>
+        <MultiSelect
+            v-model="selected"
+            class="w-full"
+            :class="{ 'p-invalid': errorMessage }"
+            :input-id="inputID"
+            :options="props.options"
+            option-label="label"
+            :max-selected-labels="props.maxSelectedLabels"
+            :placeholder="props.placeholder"
+            @blur="handleBlur"
+            @change="handleChange"
+        >
+            <template #option="slotProps">
+                <slot name="option" v-bind="slotProps"></slot>
+            </template>
+
+            <template #value="slotProps">
+                <slot name="value" v-bind="slotProps"></slot>
+            </template>
+        </MultiSelect>
+        <small class="p-error">{{ errorMessage || '&nbsp;' }}</small>
+    </div>
+</template>

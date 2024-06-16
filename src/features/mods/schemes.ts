@@ -1,5 +1,6 @@
-import { CUDScheme } from '@/common/schemes'
 import { z } from 'zod'
+
+import { CUDScheme } from '@/common/schemes'
 
 export const ListedModScheme = CUDScheme.extend({
     id: z.number(),

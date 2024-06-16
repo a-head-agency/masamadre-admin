@@ -1,6 +1,8 @@
-import type { GetListConfigWithSearch } from '@/common/types'
-import { axiosPrivate } from '@/network'
 import { z } from 'zod'
+
+import { axiosPrivate } from '@/common/network'
+import type { GetListConfigWithSearch } from '@/common/types'
+
 import { ListedModScheme } from './schemes'
 
 export type GetListConfig = GetListConfigWithSearch

@@ -1,6 +1,8 @@
-import type { GetListConfigWithSearch } from '@/common/types'
-import { axiosPrivate } from '@/network'
 import { z } from 'zod'
+
+import { axiosPrivate } from '@/common/network'
+import type { GetListConfigWithSearch } from '@/common/types'
+
 import { ListedCategoryScheme } from './schemes'
 
 export type GetListConfig = Omit<GetListConfigWithSearch, 'limit' | 'offset'>

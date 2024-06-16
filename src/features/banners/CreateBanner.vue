@@ -1,5 +1,34 @@
+<script setup lang="ts">
+import { useForm } from 'vee-validate'
+import * as yup from 'yup'
+
+import DropdownSelect from '@/components/DropdownSelect.vue'
+import MyInputText from '@/components/MyInputText.vue'
+import MyUploadImage from '@/components/MyUploadImage.vue'
+
+import { useCreateBanner } from './composables'
+
+const { handleSubmit } = useForm({
+    validationSchema: yup.object({
+        img: yup.string().required().label('Десктопная версия изображения'),
+        phone_img: yup.string().required().label('Мобильная версия изображения'),
+        active: yup.boolean().required().label('Активно'),
+        link: yup.string().required().label('Ссылка')
+    }),
+    initialValues: {
+        active: true
+    }
+})
+
+const { mutate } = useCreateBanner()
+
+const onSubmit = handleSubmit((vals) => {
+    mutate(vals)
+})
+</script>
+
 <template>
-    <form @submit="onSubmit" class="w-full">
+    <form class="w-full" @submit="onSubmit">
         <p class="mb-2 font-medium">Десктопная версия (11:3)</p>
         <MyUploadImage
             name="img"
@@ -72,30 +101,3 @@
         <Button class="mt-12 flex w-full justify-center p-4" type="submit">Создать</Button>
     </form>
 </template>
-
-<script setup lang="ts">
-import MyInputText from '@/components/MyInputText.vue'
-import MyUploadImage from '@/components/MyUploadImage.vue'
-import DropdownSelect from '@/components/DropdownSelect.vue'
-import { useForm } from 'vee-validate'
-import * as yup from 'yup'
-import { useCreateBanner } from './composables'
-
-const { handleSubmit } = useForm({
-    validationSchema: yup.object({
-        img: yup.string().required().label('Десктопная версия изображения'),
-        phone_img: yup.string().required().label('Мобильная версия изображения'),
-        active: yup.boolean().required().label('Активно'),
-        link: yup.string().required().label('Ссылка')
-    }),
-    initialValues: {
-        active: true
-    }
-})
-
-const { mutate } = useCreateBanner()
-
-const onSubmit = handleSubmit((vals) => {
-    mutate(vals)
-})
-</script>

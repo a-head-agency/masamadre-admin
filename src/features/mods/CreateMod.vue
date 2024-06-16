@@ -1,3 +1,33 @@
+<script setup lang="ts">
+import { useForm } from 'vee-validate'
+import * as yup from 'yup'
+
+import DropdownSelect from '@/components/DropdownSelect.vue'
+import MyInputNumber from '@/components/MyInputNumber.vue'
+import MyInputText from '@/components/MyInputText.vue'
+
+import { useCreateMod } from './composables'
+import ModStatusBadge from './ModStatusBadge.vue'
+
+const { handleSubmit } = useForm({
+    validationSchema: yup.object({
+        name: yup.string().required().label('Название'),
+        active: yup.boolean().required().label('Статус'),
+        price: yup.number().required().label('Цена'),
+        rkeeper_id: yup.string().required().label('RKeeper ID')
+    }),
+    initialValues: {
+        active: false
+    }
+})
+
+const { mutate, isPending } = useCreateMod()
+
+const onSubmit = handleSubmit((v) => {
+    mutate(v)
+})
+</script>
+
 <template>
     <form class="p-2" @submit="onSubmit">
         <div class="flex flex-col items-center justify-between gap-4 md:flex-row">
@@ -43,31 +73,3 @@
         />
     </form>
 </template>
-
-<script setup lang="ts">
-import { useForm } from 'vee-validate'
-import * as yup from 'yup'
-import MyInputText from '@/components/MyInputText.vue'
-import DropdownSelect from '@/components/DropdownSelect.vue'
-import { useCreateMod } from './composables'
-import ModStatusBadge from './ModStatusBadge.vue'
-import MyInputNumber from '@/components/MyInputNumber.vue'
-
-const { handleSubmit } = useForm({
-    validationSchema: yup.object({
-        name: yup.string().required().label('Название'),
-        active: yup.boolean().required().label('Статус'),
-        price: yup.number().required().label('Цена'),
-        rkeeper_id: yup.string().required().label('RKeeper ID')
-    }),
-    initialValues: {
-        active: false
-    }
-})
-
-const { mutate, isPending } = useCreateMod()
-
-const onSubmit = handleSubmit((v) => {
-    mutate(v)
-})
-</script>

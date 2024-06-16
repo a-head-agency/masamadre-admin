@@ -1,27 +1,29 @@
 <script setup lang="ts">
 import { computed, ref, unref, watchEffect } from 'vue'
-import { z } from 'zod'
 
-import dateFormat from '@/dateformat'
+import { useQuery } from '@tanstack/vue-query'
 import { useDebounce } from '@vueuse/core'
 import draggable from 'vuedraggable'
+import { z } from 'zod'
 
+import type { PageState } from 'primevue/paginator'
+import { useConfirm } from 'primevue/useconfirm'
+import { useDialog } from 'primevue/usedialog'
+
+import dateFormat from '@/common/dateformat'
+import type { QueryFnDataDynamic } from '@/common/types'
+
+import { CategoriesQueries } from '@/features/categories'
 import {
     CreateDish,
-    UpdateDish,
+    DishesQueries,
+    DishesSchemes,
     DishHavingBadge,
     DishStatusBadge,
-    useSaveDishesOrdering,
+    UpdateDish,
     useDeleteDish,
-    DishesQueries,
-    DishesSchemes
+    useSaveDishesOrdering
 } from '@/features/dishes'
-import { useDialog } from 'primevue/usedialog'
-import { CategoriesQueries } from '@/features/categories'
-import type { PageState } from 'primevue/paginator'
-import { useQuery } from '@tanstack/vue-query'
-import { useConfirm } from 'primevue/useconfirm'
-import type { QueryFnDataDynamic } from '@/common/types'
 
 type ListedEntity = z.infer<typeof DishesSchemes.ListedDishScheme>
 
@@ -194,7 +196,7 @@ const root = ref<HTMLElement>()
 </script>
 
 <template>
-    <main class="flex min-h-screen flex-col items-stretch px-4 pb-8" ref="root">
+    <main ref="root" class="flex min-h-screen flex-col items-stretch px-4 pb-8">
         <h1 class="my-12 text-center text-3xl font-semibold leading-none text-black">Блюда</h1>
 
         <ContextMenu ref="cm" :model="menuModel" @hide="selected = undefined" />
@@ -241,16 +243,16 @@ const root = ref<HTMLElement>()
                         @click="beginCreateDishInteraction()"
                     />
                     <Dropdown
+                        v-model="filterCategory"
                         class="w-full grow max-md:order-1 md:w-auto lg:max-w-xs"
                         placeholder="Категория"
                         option-label="label"
                         option-value="code"
                         :disabled="reorderMode"
-                        v-model="filterCategory"
                         :loading="isCategoriesOptionsLoading"
                         :options="categoriesOptions || []"
                     />
-                    <IconField iconPosition="left" class="grow max-lg:order-1 max-lg:w-full">
+                    <IconField icon-position="left" class="grow max-lg:order-1 max-lg:w-full">
                         <InputIcon class="pi pi-search"></InputIcon>
                         <InputText v-model="search" placeholder="Поиск" class="w-full" />
                     </IconField>
@@ -284,14 +286,14 @@ const root = ref<HTMLElement>()
 
             <div v-else class="pb-8">
                 <draggable
-                    :disabled="!reorderMode"
                     v-model="ordered"
-                    @start="drag = true"
-                    @end="drag = false"
+                    :disabled="!reorderMode"
                     item-key="id"
                     :animation="200"
-                    ghostClass="ghost"
+                    ghost-class="ghost"
                     :component-data="{ name: !drag ? 'flip-list' : undefined }"
+                    @start="drag = true"
+                    @end="drag = false"
                 >
                     <template #item="{ element }">
                         <button
@@ -300,10 +302,10 @@ const root = ref<HTMLElement>()
                                 '!bg-pv-primary-color !text-pv-primary-color-text shadow-lg shadow-black/10':
                                     selected?.id === element.id
                             }"
+                            aria-haspopup="true"
                             @click="onItemClick(element)"
                             @dblclick="beginUpdateDishInteraction(element)"
                             @contextmenu="onRowContextMenu($event, element)"
-                            aria-haspopup="true"
                         >
                             <img
                                 class="relative aspect-square w-32 shrink-0 self-center rounded-xl border-4 border-gray-400 bg-gray-50 object-contain object-center max-lg:w-52"
@@ -391,8 +393,7 @@ const root = ref<HTMLElement>()
                 <Paginator
                     v-if="!reorderMode && !canReorderMode"
                     v-model:rows="rowsPerPage"
-                    :totalRecords="data.total"
-                    @page="onPage"
+                    :total-records="data.total"
                     :page-link-size="5"
                     :template="{
                         '640px': 'PrevPageLink CurrentPageReport NextPageLink',
@@ -401,6 +402,7 @@ const root = ref<HTMLElement>()
                         '1300px': 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink'
                     }"
                     current-page-report-template="{currentPage} из {totalPages}"
+                    @page="onPage"
                 />
             </div>
         </div>

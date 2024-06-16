@@ -1,3 +1,28 @@
+<script setup lang="ts">
+import { computed, inject } from 'vue'
+
+import dateformat from '@/common/dateformat'
+
+import MySkeleton from '@/components/MySkeleton.vue'
+
+import { useOrder } from './composables'
+import type { IOrder } from './interfaces'
+import OrderStatusBadge from './OrderStatusBadge.vue'
+import PaymentStatusBadge from './PaymentStatusBadge.vue'
+
+const dialogRef = inject('dialogRef') as any
+console.log(dialogRef.value.data)
+const order = dialogRef.value.data.order as IOrder | undefined
+
+const orderId = computed(() => order?.id)
+
+const formatMoney = (money: number) => {
+    return money.toFixed(2)
+}
+
+const { data, isSuccess } = useOrder(orderId)
+</script>
+
 <template>
     <div class="mt-4 flex flex-col items-stretch gap-4 text-black">
         <div class="flex items-end leading-none">
@@ -200,9 +225,9 @@
         </MySkeleton>
 
         <MySkeleton :show-body="isSuccess" :skeleton="{}">
-            <div class="mt-10" v-if="data.basket && data.basket.length > 0">
+            <div v-if="data.basket && data.basket.length > 0" class="mt-10">
                 <h2 class="section-header">Состав</h2>
-                <div class="mb-2" v-for="(v, i) in data.basket" :key="[v.name, i].join('-')">
+                <div v-for="(v, i) in data.basket" :key="[v.name, i].join('-')" class="mb-2">
                     <div class="flex justify-between rounded-lg bg-gray-100 p-2">
                         <div class="flex items-center gap-2">
                             <img class="h-12 w-12 rounded-lg" :src="v.photo" alt="" />
@@ -218,25 +243,3 @@
         </MySkeleton>
     </div>
 </template>
-
-<script setup lang="ts">
-import { computed, inject } from 'vue'
-import type { IOrder } from './interfaces'
-import { useOrder } from './composables'
-import MySkeleton from '@/components/MySkeleton.vue'
-import OrderStatusBadge from './OrderStatusBadge.vue'
-import PaymentStatusBadge from './PaymentStatusBadge.vue'
-import dateformat from '@/dateformat'
-
-const dialogRef = inject('dialogRef') as any
-console.log(dialogRef.value.data)
-const order = dialogRef.value.data.order as IOrder | undefined
-
-const orderId = computed(() => order?.id)
-
-const formatMoney = (money: number) => {
-    return money.toFixed(2)
-}
-
-const { data, isSuccess } = useOrder(orderId)
-</script>

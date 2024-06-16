@@ -1,20 +1,23 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import type { DataTablePageEvent, DataTableRowDoubleClickEvent } from 'primevue/datatable'
+import { onMounted, ref } from 'vue'
+
 import { useDebounce } from '@vueuse/core'
 
-import dateFormat from '@/dateformat'
+import type { DataTablePageEvent, DataTableRowDoubleClickEvent } from 'primevue/datatable'
+import { useDialog } from 'primevue/usedialog'
+
+import dateFormat from '@/common/dateformat'
+
 import {
     ChangeStatus,
     GiftBonusesToUser,
     SendNotification,
-    useUsers,
-    type IUser,
     UserDetails,
     UserRoleBadge,
-    UserStatusBadge
+    UserStatusBadge,
+    useUsers,
+    type IUser
 } from '@/features/users'
-import { useDialog } from 'primevue/usedialog'
 
 const rowsPerPage = ref(20)
 
@@ -159,7 +162,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <main class="flex h-screen flex-col items-stretch px-4" ref="root">
+    <main ref="root" class="flex h-screen flex-col items-stretch px-4">
         <h1 class="my-12 text-center text-3xl font-semibold leading-none text-black">
             Пользователи
         </h1>
@@ -175,7 +178,7 @@ onMounted(() => {
                         :disabled="isFetching"
                         @click="refresh()"
                     />
-                    <IconField iconPosition="left" class="grow max-lg:order-1 max-lg:w-full">
+                    <IconField icon-position="left" class="grow max-lg:order-1 max-lg:w-full">
                         <InputIcon class="pi pi-search"></InputIcon>
                         <InputText v-model="search" placeholder="Поиск" class="w-full" />
                     </IconField>
@@ -209,14 +212,14 @@ onMounted(() => {
             </Message>
             <DataTable
                 v-else
+                v-model:selection="selected"
+                v-model:contextMenuSelection="selected"
                 size="small"
                 class="h-full overflow-hidden rounded-lg border border-white/10"
                 scrollable
                 :scroll-height="scrollHeight"
-                v-model:selection="selected"
                 selection-mode="single"
-                contextMenu
-                v-model:contextMenuSelection="selected"
+                context-menu
                 :page-link-size="5"
                 :paginator-template="{
                     '640px': 'PrevPageLink CurrentPageReport NextPageLink',
@@ -225,20 +228,20 @@ onMounted(() => {
                     '1300px': 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink'
                 }"
                 current-page-report-template="{currentPage} из {totalPages}"
-                @rowContextmenu="onRowContextMenu"
-                @row-dblclick="onRowDoubleClick"
                 :meta-key-selection="false"
                 :value="data?.users"
                 lazy
                 paginator
                 :first="0"
                 :rows="rowsPerPage"
-                dataKey="id"
-                tableStyle="min-width: 50rem"
+                data-key="id"
+                table-style="min-width: 50rem"
+                :total-records="data?.total"
+                @row-contextmenu="onRowContextMenu"
+                @row-dblclick="onRowDoubleClick"
                 @page="onPage($event)"
-                :totalRecords="data?.total"
             >
-                <Column selectionMode="single" headerStyle="width: 3rem" />
+                <Column selection-mode="single" header-style="width: 3rem" />
                 <Column field="id" header="ID" />
                 <Column field="name" header="Имя" />
                 <Column field="surname" header="Фамилия" />

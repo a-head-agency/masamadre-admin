@@ -1,5 +1,75 @@
+<script setup lang="ts">
+import { useMutation, useQueryClient } from '@tanstack/vue-query'
+import { useFieldArray, useForm } from 'vee-validate'
+import * as yup from 'yup'
+
+import { useToast } from 'primevue/usetoast'
+
+import { axiosPrivate } from '@/common/network'
+
+import DropdownSelect from '@/components/DropdownSelect.vue'
+import MyInputText from '@/components/MyInputText.vue'
+import MyTextarea from '@/components/MyTextarea.vue'
+import MyUploadImage from '@/components/MyUploadImage.vue'
+
+const toast = useToast()
+const queryClient = useQueryClient()
+
+const { handleSubmit } = useForm({
+    validationSchema: yup.object({
+        active: yup.boolean().required().label('Статус'),
+        preview: yup.string().required().label('Превью'),
+        story_items: yup
+            .array()
+            .of(
+                yup.object({
+                    text: yup.string().required().label('Текст'),
+                    img: yup.string().required().label('Изображение')
+                })
+            )
+            .required()
+            .min(1, 'Нельзя создать пустую историю. Добавьте слайдов.')
+    }),
+    initialValues: {
+        story_items: [],
+        active: false
+    }
+})
+
+const { push, remove, fields } = useFieldArray('story_items')
+
+const { mutate } = useMutation({
+    mutationFn: (vars: any) =>
+        axiosPrivate.post('admin/story', {
+            type: 1,
+            ...vars
+        }),
+    onSuccess() {
+        toast.add({
+            severity: 'success',
+            life: 3000,
+            summary: 'Успешно',
+            detail: `История создана`
+        })
+        queryClient.invalidateQueries({ queryKey: ['stories'] })
+    },
+    onError(error: any) {
+        toast.add({
+            severity: 'error',
+            life: 3000,
+            summary: 'Не удалось создать историю',
+            detail: error
+        })
+    }
+})
+
+const onSubmit = handleSubmit((vals) => {
+    mutate(vals)
+})
+</script>
+
 <template>
-    <form @submit="onSubmit" class="w-full">
+    <form class="w-full" @submit="onSubmit">
         <DropdownSelect
             class="mb-4"
             name="active"
@@ -107,70 +177,3 @@
         </Button>
     </form>
 </template>
-
-<script setup lang="ts">
-import MyTextarea from '@/components/MyTextarea.vue'
-import MyUploadImage from '@/components/MyUploadImage.vue'
-import DropdownSelect from '@/components/DropdownSelect.vue'
-import { useMutation, useQueryClient } from '@tanstack/vue-query'
-import { useToast } from 'primevue/usetoast'
-import { useForm, useFieldArray } from 'vee-validate'
-import * as yup from 'yup'
-import { axiosPrivate } from '@/network'
-import MyInputText from '@/components/MyInputText.vue'
-
-const toast = useToast()
-const queryClient = useQueryClient()
-
-const { handleSubmit } = useForm({
-    validationSchema: yup.object({
-        active: yup.boolean().required().label('Статус'),
-        preview: yup.string().required().label('Превью'),
-        story_items: yup
-            .array()
-            .of(
-                yup.object({
-                    text: yup.string().required().label('Текст'),
-                    img: yup.string().required().label('Изображение')
-                })
-            )
-            .required()
-            .min(1, 'Нельзя создать пустую историю. Добавьте слайдов.')
-    }),
-    initialValues: {
-        story_items: [],
-        active: false
-    }
-})
-
-const { push, remove, fields } = useFieldArray('story_items')
-
-const { mutate } = useMutation({
-    mutationFn: (vars: any) =>
-        axiosPrivate.post('admin/story', {
-            type: 1,
-            ...vars
-        }),
-    onSuccess() {
-        toast.add({
-            severity: 'success',
-            life: 3000,
-            summary: 'Успешно',
-            detail: `История создана`
-        })
-        queryClient.invalidateQueries({ queryKey: ['stories'] })
-    },
-    onError(error: any) {
-        toast.add({
-            severity: 'error',
-            life: 3000,
-            summary: 'Не удалось создать историю',
-            detail: error
-        })
-    }
-})
-
-const onSubmit = handleSubmit((vals) => {
-    mutate(vals)
-})
-</script>

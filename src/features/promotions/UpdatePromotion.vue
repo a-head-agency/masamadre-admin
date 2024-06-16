@@ -1,3 +1,70 @@
+<script setup lang="ts">
+import { inject } from 'vue'
+
+import { useForm } from 'vee-validate'
+import * as yup from 'yup'
+
+import { pad } from '@/common/utils'
+
+import DropdownSelect from '@/components/DropdownSelect.vue'
+import MyCalendarRange from '@/components/MyCalendarRange.vue'
+import MyEditor from '@/components/MyEditor.vue'
+import MyInputNumber from '@/components/MyInputNumber.vue'
+import MyInputText from '@/components/MyInputText.vue'
+import MyUploadImage from '@/components/MyUploadImage.vue'
+
+import { usePromotion, useUpdatePromotion, type IPromotion } from './composables'
+
+const dialogRef = inject('dialogRef') as any
+const promotion = dialogRef.value.data.promotion as IPromotion
+
+const { data: promotionData } = usePromotion(promotion.id, (v) => {
+    const obj = v as any
+    const date_range = [new Date(obj.start), new Date(obj.end)]
+
+    delete obj.start
+    delete obj.end
+    obj.date_range = date_range
+
+    return obj
+})
+
+const { handleSubmit } = useForm({
+    validationSchema: yup.object({
+        id: yup.number().required().label('ID акции'),
+        name: yup.string().required().label('Название акции'),
+        img: yup.string().required().label('Десктопная версия изображения'),
+        phone_img: yup.string().required().label('Мобильная версия изображения'),
+        text: yup.string().required().label('Контент'),
+        active: yup.boolean().required().label('Активность'),
+        link: yup.string().required().label('Ссылка'),
+        keywords: yup.string().label('Ключевые слова'),
+        description_seo: yup.string().label('Описание'),
+        title: yup.string().label('Title')
+    }),
+    initialValues: promotionData
+})
+
+const { mutate, isPending } = useUpdatePromotion()
+
+const onSubmit = handleSubmit((vals) => {
+    vals.start =
+        vals.date_range[0].getFullYear() +
+        '-' +
+        pad(vals.date_range[0].getMonth() + 1, 2) +
+        '-' +
+        pad(vals.date_range[0].getDate(), 2)
+    vals.end =
+        vals.date_range[1].getFullYear() +
+        '-' +
+        pad(vals.date_range[1].getMonth() + 1, 2) +
+        '-' +
+        pad(vals.date_range[1].getDate(), 2)
+    delete vals.date_range
+    mutate(vals)
+})
+</script>
+
 <template>
     <form @submit="onSubmit">
         <div class="mb-6 grid grid-cols-1 gap-x-4 lg:grid-cols-2">
@@ -93,68 +160,3 @@
         />
     </form>
 </template>
-
-<script setup lang="ts">
-import { inject } from 'vue'
-import MyUploadImage from '@/components/MyUploadImage.vue'
-import { useForm } from 'vee-validate'
-import * as yup from 'yup'
-
-import MyInputText from '@/components/MyInputText.vue'
-import MyEditor from '@/components/MyEditor.vue'
-
-import { usePromotion, type IPromotion, useUpdatePromotion } from './composables'
-import MyInputNumber from '@/components/MyInputNumber.vue'
-import DropdownSelect from '@/components/DropdownSelect.vue'
-import MyCalendarRange from '@/components/MyCalendarRange.vue'
-import { pad } from '@/utils'
-
-const dialogRef = inject('dialogRef') as any
-const promotion = dialogRef.value.data.promotion as IPromotion
-
-const { data: promotionData } = usePromotion(promotion.id, (v) => {
-    const obj = v as any
-    const date_range = [new Date(obj.start), new Date(obj.end)]
-
-    delete obj.start
-    delete obj.end
-    obj.date_range = date_range
-
-    return obj
-})
-
-const { handleSubmit } = useForm({
-    validationSchema: yup.object({
-        id: yup.number().required().label('ID акции'),
-        name: yup.string().required().label('Название акции'),
-        img: yup.string().required().label('Десктопная версия изображения'),
-        phone_img: yup.string().required().label('Мобильная версия изображения'),
-        text: yup.string().required().label('Контент'),
-        active: yup.boolean().required().label('Активность'),
-        link: yup.string().required().label('Ссылка'),
-        keywords: yup.string().label('Ключевые слова'),
-        description_seo: yup.string().label('Описание'),
-        title: yup.string().label('Title')
-    }),
-    initialValues: promotionData
-})
-
-const { mutate, isPending } = useUpdatePromotion()
-
-const onSubmit = handleSubmit((vals) => {
-    vals.start =
-        vals.date_range[0].getFullYear() +
-        '-' +
-        pad(vals.date_range[0].getMonth() + 1, 2) +
-        '-' +
-        pad(vals.date_range[0].getDate(), 2)
-    vals.end =
-        vals.date_range[1].getFullYear() +
-        '-' +
-        pad(vals.date_range[1].getMonth() + 1, 2) +
-        '-' +
-        pad(vals.date_range[1].getDate(), 2)
-    delete vals.date_range
-    mutate(vals)
-})
-</script>

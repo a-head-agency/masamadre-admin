@@ -1,25 +1,12 @@
-<template>
-    <div>
-        <p class="mb-8 text-lg leading-loose">
-            Вы уверены, что хотите удалить историю
-            <span
-                class="inline-block min-w-max whitespace-nowrap rounded-lg bg-indigo-100 px-4 font-bold"
-            >
-                (id: {{ story.id }})
-            </span>
-        </p>
-        <div class="flex justify-end gap-4">
-            <Button label="Нет" class="flex-1" severity="secondary" @click="dialogRef.close()" />
-            <Button label="Да" class="flex-1" severity="danger" @click="deleteRestaurant()" />
-        </div>
-    </div>
-</template>
-
 <script setup lang="ts">
-import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import { inject, reactive } from 'vue'
-import { axiosPrivate } from '@/network'
+
+import { useMutation, useQueryClient } from '@tanstack/vue-query'
+
 import { useToast } from 'primevue/usetoast'
+
+import { axiosPrivate } from '@/common/network'
+
 import type { IStoryImage, IStoryVideo } from './interfaces'
 
 const dialogRef = inject('dialogRef') as any
@@ -59,3 +46,20 @@ const deleteRestaurant = () => {
     dialogRef.value.close()
 }
 </script>
+
+<template>
+    <div>
+        <p class="mb-8 text-lg leading-loose">
+            Вы уверены, что хотите удалить историю
+            <span
+                class="inline-block min-w-max whitespace-nowrap rounded-lg bg-indigo-100 px-4 font-bold"
+            >
+                (id: {{ story.id }})
+            </span>
+        </p>
+        <div class="flex justify-end gap-4">
+            <Button label="Нет" class="flex-1" severity="secondary" @click="dialogRef.close()" />
+            <Button label="Да" class="flex-1" severity="danger" @click="deleteRestaurant()" />
+        </div>
+    </div>
+</template>

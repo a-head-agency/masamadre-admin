@@ -1,5 +1,90 @@
+<script setup lang="ts">
+import { computed } from 'vue'
+
+import { useMutation, useQueryClient } from '@tanstack/vue-query'
+import { useFieldArray, useForm } from 'vee-validate'
+import * as yup from 'yup'
+
+import { useToast } from 'primevue/usetoast'
+
+import { axiosPrivate } from '@/common/network'
+
+import DropdownSelect from '@/components/DropdownSelect.vue'
+import MyInputNumber from '@/components/MyInputNumber.vue'
+import MyInputText from '@/components/MyInputText.vue'
+import MyTextarea from '@/components/MyTextarea.vue'
+import MyUploadImage from '@/components/MyUploadImage.vue'
+
+import type { IStoryImage } from './interfaces'
+
+const props = defineProps<{
+    story: IStoryImage
+}>()
+
+const toast = useToast()
+const queryClient = useQueryClient()
+
+const { handleSubmit } = useForm({
+    validationSchema: yup.object({
+        id: yup.number().required().label('ID'),
+        active: yup.boolean().required().label('Статус'),
+        preview: yup.string().required().label('Превью'),
+        story_items: yup
+            .array()
+            .of(
+                yup.object({
+                    text: yup.string().required().label('Текст'),
+                    img: yup.string().required().label('Изображение')
+                })
+            )
+            .required()
+            .min(1, 'Нельзя создать пустую историю. Добавьте слайдов.')
+    }),
+    initialValues: computed(() => ({
+        id: props.story.id,
+        active: props.story.active,
+        preview: props.story.preview,
+        story_items: props.story.story_items.map((i) => ({
+            img: i.img,
+            text: i.text
+        }))
+    }))
+})
+
+const { push, remove, fields } = useFieldArray('story_items')
+
+const { mutate } = useMutation({
+    mutationFn: (vars: any) =>
+        axiosPrivate.put('admin/story', {
+            type: 1,
+            ...vars
+        }),
+    onSuccess() {
+        toast.add({
+            severity: 'success',
+            life: 3000,
+            summary: 'Успешно',
+            detail: `История изменена`
+        })
+        queryClient.invalidateQueries({ queryKey: ['stories'] })
+    },
+    onError(error: any) {
+        toast.add({
+            severity: 'error',
+            life: 3000,
+            summary: 'Не удалось изменить историю',
+            detail: error
+        })
+    }
+})
+
+const onSubmit = handleSubmit((vals) => {
+    mutate(vals)
+})
+</script>
+
 <template>
-    <form @submit="onSubmit" class="w-full">
+    <form class="w-full" @submit="onSubmit">
         <MyInputNumber name="id" label="ID" />
         <DropdownSelect
             class="mb-4"
@@ -108,83 +193,3 @@
         </Button>
     </form>
 </template>
-
-<script setup lang="ts">
-import MyTextarea from '@/components/MyTextarea.vue'
-import MyUploadImage from '@/components/MyUploadImage.vue'
-import DropdownSelect from '@/components/DropdownSelect.vue'
-import { useMutation, useQueryClient } from '@tanstack/vue-query'
-import { useToast } from 'primevue/usetoast'
-import { useForm, useFieldArray } from 'vee-validate'
-import * as yup from 'yup'
-import { axiosPrivate } from '@/network'
-import type { IStoryImage } from '.'
-import { computed } from 'vue'
-import MyInputNumber from '@/components/MyInputNumber.vue'
-import MyInputText from '@/components/MyInputText.vue'
-
-const props = defineProps<{
-    story: IStoryImage
-}>()
-
-const toast = useToast()
-const queryClient = useQueryClient()
-
-const { handleSubmit } = useForm({
-    validationSchema: yup.object({
-        id: yup.number().required().label('ID'),
-        active: yup.boolean().required().label('Статус'),
-        preview: yup.string().required().label('Превью'),
-        story_items: yup
-            .array()
-            .of(
-                yup.object({
-                    text: yup.string().required().label('Текст'),
-                    img: yup.string().required().label('Изображение')
-                })
-            )
-            .required()
-            .min(1, 'Нельзя создать пустую историю. Добавьте слайдов.')
-    }),
-    initialValues: computed(() => ({
-        id: props.story.id,
-        active: props.story.active,
-        preview: props.story.preview,
-        story_items: props.story.story_items.map((i) => ({
-            img: i.img,
-            text: i.text
-        }))
-    }))
-})
-
-const { push, remove, fields } = useFieldArray('story_items')
-
-const { mutate } = useMutation({
-    mutationFn: (vars: any) =>
-        axiosPrivate.put('admin/story', {
-            type: 1,
-            ...vars
-        }),
-    onSuccess() {
-        toast.add({
-            severity: 'success',
-            life: 3000,
-            summary: 'Успешно',
-            detail: `История изменена`
-        })
-        queryClient.invalidateQueries({ queryKey: ['stories'] })
-    },
-    onError(error: any) {
-        toast.add({
-            severity: 'error',
-            life: 3000,
-            summary: 'Не удалось изменить историю',
-            detail: error
-        })
-    }
-})
-
-const onSubmit = handleSubmit((vals) => {
-    mutate(vals)
-})
-</script>

@@ -1,5 +1,66 @@
+<script setup lang="ts">
+import { useMutation, useQueryClient } from '@tanstack/vue-query'
+import { useFieldValue, useForm } from 'vee-validate'
+import * as yup from 'yup'
+
+import { useToast } from 'primevue/usetoast'
+
+import { axiosPrivate } from '@/common/network'
+
+import DropdownSelect from '@/components/DropdownSelect.vue'
+import MyInputText from '@/components/MyInputText.vue'
+import MyUploadFile from '@/components/MyUploadFile.vue'
+import MyUploadImage from '@/components/MyUploadImage.vue'
+
+const toast = useToast()
+const queryClient = useQueryClient()
+
+const { handleSubmit } = useForm({
+    validationSchema: yup.object({
+        file: yup.string().required().label('Видео'),
+        preview: yup.string().required().label('Превью'),
+        link: yup.string().required().label('Ссылка'),
+        active: yup.boolean().required().label('Статус')
+    }),
+    initialValues: {
+        active: false
+    }
+})
+
+const videoSrc = useFieldValue<string>('file')
+
+const { mutate } = useMutation({
+    mutationFn: (vars: any) =>
+        axiosPrivate.post('admin/story', {
+            type: 2,
+            ...vars
+        }),
+    onSuccess() {
+        toast.add({
+            severity: 'success',
+            life: 3000,
+            summary: 'Успешно',
+            detail: `История создана`
+        })
+        queryClient.invalidateQueries({ queryKey: ['stories'] })
+    },
+    onError(error: any) {
+        toast.add({
+            severity: 'error',
+            life: 3000,
+            summary: 'Не удалось создать историю',
+            detail: error
+        })
+    }
+})
+
+const onSubmit = handleSubmit((vals) => {
+    mutate(vals)
+})
+</script>
+
 <template>
-    <form @submit="onSubmit" class="w-full">
+    <form class="w-full" @submit="onSubmit">
         <DropdownSelect
             name="active"
             label="Активна"
@@ -64,9 +125,9 @@
         <MyUploadFile
             class="mb-6"
             name="file"
-            uploadRoute="admin/upload"
-            filenamePropInRequest="file"
-            filenamePropInResponse="link"
+            upload-route="admin/upload"
+            filename-prop-in-request="file"
+            filename-prop-in-response="link"
             accept=".mp4,.mov"
         />
 
@@ -83,61 +144,3 @@
         <Button class="mt-12 flex w-full justify-center p-4" type="submit">Создать</Button>
     </form>
 </template>
-
-<script setup lang="ts">
-import DropdownSelect from '@/components/DropdownSelect.vue'
-import { useMutation, useQueryClient } from '@tanstack/vue-query'
-import { useToast } from 'primevue/usetoast'
-import { useFieldValue, useForm } from 'vee-validate'
-import * as yup from 'yup'
-import { axiosPrivate } from '@/network'
-import MyInputText from '@/components/MyInputText.vue'
-import MyUploadFile from '@/components/MyUploadFile.vue'
-import MyUploadImage from '@/components/MyUploadImage.vue'
-
-const toast = useToast()
-const queryClient = useQueryClient()
-
-const { handleSubmit } = useForm({
-    validationSchema: yup.object({
-        file: yup.string().required().label('Видео'),
-        preview: yup.string().required().label('Превью'),
-        link: yup.string().required().label('Ссылка'),
-        active: yup.boolean().required().label('Статус')
-    }),
-    initialValues: {
-        active: false
-    }
-})
-
-const videoSrc = useFieldValue<string>('file')
-
-const { mutate } = useMutation({
-    mutationFn: (vars: any) =>
-        axiosPrivate.post('admin/story', {
-            type: 2,
-            ...vars
-        }),
-    onSuccess() {
-        toast.add({
-            severity: 'success',
-            life: 3000,
-            summary: 'Успешно',
-            detail: `История создана`
-        })
-        queryClient.invalidateQueries({ queryKey: ['stories'] })
-    },
-    onError(error: any) {
-        toast.add({
-            severity: 'error',
-            life: 3000,
-            summary: 'Не удалось создать историю',
-            detail: error
-        })
-    }
-})
-
-const onSubmit = handleSubmit((vals) => {
-    mutate(vals)
-})
-</script>

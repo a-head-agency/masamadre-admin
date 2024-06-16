@@ -1,3 +1,23 @@
+<script setup lang="ts">
+import { inject } from 'vue'
+
+import { useDeleteBanner } from './composables'
+import type { IBanner } from './interfaces'
+
+const dialogRef = inject('dialogRef') as any
+const banner = dialogRef.value.data.banner as IBanner
+
+const { mutateAsync, isPending } = useDeleteBanner()
+
+const deleteCategory = () => {
+    mutateAsync({
+        id: banner.id
+    }).then(() => {
+        dialogRef.value.close()
+    })
+}
+</script>
+
 <template>
     <div>
         <p class="mb-8 text-lg leading-loose">
@@ -29,22 +49,3 @@
         </div>
     </div>
 </template>
-
-<script setup lang="ts">
-import { inject } from 'vue'
-import { useDeleteBanner } from './composables'
-import type { IBanner } from './interfaces'
-
-const dialogRef = inject('dialogRef') as any
-const banner = dialogRef.value.data.banner as IBanner
-
-const { mutateAsync, isPending } = useDeleteBanner()
-
-const deleteCategory = () => {
-    mutateAsync({
-        id: banner.id
-    }).then(() => {
-        dialogRef.value.close()
-    })
-}
-</script>

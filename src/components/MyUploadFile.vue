@@ -1,54 +1,12 @@
-<template>
-    <div
-        class="w-full rounded-lg border-2 p-4 transition-colors"
-        :class="{
-            'border-red-400': errorMessage,
-            'border-gray': !errorMessage
-        }"
-    >
-        <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-            <FileUpload
-                name="file"
-                :auto="true"
-                mode="basic"
-                customUpload
-                @uploader="fileUploader"
-                @select="onSelect"
-                :accept="props.accept"
-            />
-            <div v-if="value || errorMessage" class="order-1 w-full">
-                <small>{{ value || '&nbsp;' }}</small>
-                <small class="p-error">{{ errorMessage || '&nbsp;' }}</small>
-            </div>
-            <div class="ml-auto flex flex-col justify-between gap-2">
-                <button type="button" @click="reset()">
-                    <i class="pi pi-times-circle" style="font-size: 1rem"></i>
-                </button>
-                <div class="relative aspect-square h-4">
-                    <Transition name="fade" mode="default">
-                        <i
-                            v-if="isUploading"
-                            class="pi pi-spin pi-spinner absolute inset-0"
-                            style="font-size: 100%"
-                        ></i>
-                        <i
-                            v-else-if="isUploaded"
-                            class="pi pi-check-circle absolute inset-0 text-green-500"
-                            style="font-size: 100%"
-                        ></i>
-                    </Transition>
-                </div>
-            </div>
-        </div>
-    </div>
-</template>
-
 <script setup lang="ts">
-import { axiosPrivate } from '@/network'
+import { ref } from 'vue'
+
+import { useField } from 'vee-validate'
+
 import type { FileUploadSelectEvent, FileUploadUploaderEvent } from 'primevue/fileupload'
 import { useToast } from 'primevue/usetoast'
-import { useField } from 'vee-validate'
-import { ref } from 'vue'
+
+import { axiosPrivate } from '@/common/network'
 
 const props = defineProps<{
     name: string
@@ -120,3 +78,48 @@ const reset = () => {
     isSelected.value = false
 }
 </script>
+
+<template>
+    <div
+        class="w-full rounded-lg border-2 p-4 transition-colors"
+        :class="{
+            'border-red-400': errorMessage,
+            'border-gray': !errorMessage
+        }"
+    >
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <FileUpload
+                name="file"
+                :auto="true"
+                mode="basic"
+                custom-upload
+                :accept="props.accept"
+                @uploader="fileUploader"
+                @select="onSelect"
+            />
+            <div v-if="value || errorMessage" class="order-1 w-full">
+                <small>{{ value || '&nbsp;' }}</small>
+                <small class="p-error">{{ errorMessage || '&nbsp;' }}</small>
+            </div>
+            <div class="ml-auto flex flex-col justify-between gap-2">
+                <button type="button" @click="reset()">
+                    <i class="pi pi-times-circle" style="font-size: 1rem"></i>
+                </button>
+                <div class="relative aspect-square h-4">
+                    <Transition name="fade" mode="default">
+                        <i
+                            v-if="isUploading"
+                            class="pi pi-spin pi-spinner absolute inset-0"
+                            style="font-size: 100%"
+                        ></i>
+                        <i
+                            v-else-if="isUploaded"
+                            class="pi pi-check-circle absolute inset-0 text-green-500"
+                            style="font-size: 100%"
+                        ></i>
+                    </Transition>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

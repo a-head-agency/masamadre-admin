@@ -1,3 +1,60 @@
+<script setup lang="ts">
+import { useForm } from 'vee-validate'
+import * as yup from 'yup'
+
+import { pad } from '@/common/utils'
+
+import DropdownSelect from '@/components/DropdownSelect.vue'
+import MyCalendarRange from '@/components/MyCalendarRange.vue'
+import MyEditor from '@/components/MyEditor.vue'
+import MyInputText from '@/components/MyInputText.vue'
+import MyUploadImage from '@/components/MyUploadImage.vue'
+
+import { useCreatePromotion } from './composables'
+
+const { handleSubmit } = useForm({
+    validationSchema: yup.object({
+        name: yup.string().required().label('Название акции'),
+        img: yup.string().required().label('Десктопная версия изображения'),
+        phone_img: yup.string().required().label('Мобильная версия изображения'),
+        text: yup.string().required().label('Контент'),
+        active: yup.boolean().required().label('Активность'),
+        date_range: yup
+            .array()
+            .of(yup.date().required())
+            .min(2)
+            .required()
+            .label('Период активности'),
+        link: yup.string().required().label('Ссылка'),
+        keywords: yup.string().label('Ключевые слова'),
+        description_seo: yup.string().label('Описание'),
+        title: yup.string().label('Title')
+    }),
+    initialValues: {
+        active: false
+    }
+})
+
+const { mutate, isPending } = useCreatePromotion()
+
+const onSubmit = handleSubmit((vals: any) => {
+    vals.start =
+        vals.date_range[0].getFullYear() +
+        '-' +
+        pad(vals.date_range[0].getMonth() + 1, 2) +
+        '-' +
+        pad(vals.date_range[0].getDate(), 2)
+    vals.end =
+        vals.date_range[1].getFullYear() +
+        '-' +
+        pad(vals.date_range[1].getMonth() + 1, 2) +
+        '-' +
+        pad(vals.date_range[1].getDate(), 2)
+    delete vals.date_range
+    mutate(vals)
+})
+</script>
+
 <template>
     <form @submit="onSubmit">
         <div class="grid grid-cols-1 gap-x-4 lg:grid-cols-2">
@@ -90,58 +147,3 @@
         />
     </form>
 </template>
-
-<script setup lang="ts">
-import { useForm } from 'vee-validate'
-import * as yup from 'yup'
-
-import MyUploadImage from '@/components/MyUploadImage.vue'
-import MyInputText from '@/components/MyInputText.vue'
-import MyEditor from '@/components/MyEditor.vue'
-import DropdownSelect from '@/components/DropdownSelect.vue'
-import MyCalendarRange from '@/components/MyCalendarRange.vue'
-import { useCreatePromotion } from './composables'
-import { pad } from '@/utils'
-
-const { handleSubmit } = useForm({
-    validationSchema: yup.object({
-        name: yup.string().required().label('Название акции'),
-        img: yup.string().required().label('Десктопная версия изображения'),
-        phone_img: yup.string().required().label('Мобильная версия изображения'),
-        text: yup.string().required().label('Контент'),
-        active: yup.boolean().required().label('Активность'),
-        date_range: yup
-            .array()
-            .of(yup.date().required())
-            .min(2)
-            .required()
-            .label('Период активности'),
-        link: yup.string().required().label('Ссылка'),
-        keywords: yup.string().label('Ключевые слова'),
-        description_seo: yup.string().label('Описание'),
-        title: yup.string().label('Title')
-    }),
-    initialValues: {
-        active: false
-    }
-})
-
-const { mutate, isPending } = useCreatePromotion()
-
-const onSubmit = handleSubmit((vals: any) => {
-    vals.start =
-        vals.date_range[0].getFullYear() +
-        '-' +
-        pad(vals.date_range[0].getMonth() + 1, 2) +
-        '-' +
-        pad(vals.date_range[0].getDate(), 2)
-    vals.end =
-        vals.date_range[1].getFullYear() +
-        '-' +
-        pad(vals.date_range[1].getMonth() + 1, 2) +
-        '-' +
-        pad(vals.date_range[1].getDate(), 2)
-    delete vals.date_range
-    mutate(vals)
-})
-</script>

@@ -1,9 +1,12 @@
 import { type MaybeRef } from 'vue'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
-import type { IMod } from './interfaces'
 
-import { axiosPrivate } from '@/network'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
+
 import { useToast } from 'primevue/usetoast'
+
+import { axiosPrivate } from '@/common/network'
+
+import type { IMod } from './interfaces'
 
 interface GetModsResponse {
     list: IMod[]

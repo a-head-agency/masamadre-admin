@@ -1,8 +1,10 @@
 import { type MaybeRef } from 'vue'
-import { useQuery } from '@tanstack/vue-query'
-import type { IStoryImage, IStoryVideo } from './interfaces'
 
-import { axiosPrivate } from '@/network'
+import { useQuery } from '@tanstack/vue-query'
+
+import { axiosPrivate } from '@/common/network'
+
+import type { IStoryImage, IStoryVideo } from './interfaces'
 
 type IStory = IStoryImage | IStoryVideo
 
