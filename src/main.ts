@@ -30,6 +30,7 @@ import DataTable from 'primevue/datatable'
 import Dialog from 'primevue/dialog'
 import DialogService from 'primevue/dialogservice'
 import Dropdown from 'primevue/dropdown'
+import Fieldset from 'primevue/fieldset'
 import FileUpload from 'primevue/fileupload'
 import IconField from 'primevue/iconfield'
 import Image from 'primevue/image'
@@ -315,5 +316,6 @@ app.component('Paginator', Paginator)
 app.component('Sidebar', Sidebar)
 app.component('IconField', IconField)
 app.component('InputIcon', InputIcon)
+app.component('Fieldset', Fieldset)
 
 app.mount('#app')

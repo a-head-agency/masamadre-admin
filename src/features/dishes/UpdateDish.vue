@@ -435,49 +435,64 @@ const onSubmit = handleSubmit(async (vals: any) => {
 
         <h2 class="section-header">Модификаторы</h2>
         <div class="mb-8">
-            <fieldset
+            <Fieldset
                 v-for="(field, idx) in fieldsModGroups"
                 :key="field.key"
-                class="relative mb-2 flex flex-col gap-4 rounded-lg border-2 border-gray-200 p-4"
+                :legend="field.value.name?.trim() || 'Группа'"
+                toggleable
+                class="relative mb-2"
             >
-                <button class="absolute right-2 top-2" type="button" @click="removeModGroup(idx)">
-                    <i class="pi pi-times-circle" style="font-size: 1rem"></i>
-                </button>
-                <div class="w-full">
-                    <label class="text-900 mb-2 block font-medium">Название группы</label>
-                    <InputText v-model="field.value.name" class="w-full" />
-                </div>
+                <div class="flex flex-col gap-4">
+                    <div class="w-full">
+                        <label class="text-900 mb-2 block font-medium">Название группы</label>
+                        <InputText v-model="field.value.name" class="w-full" />
+                    </div>
 
-                <div class="w-full">
-                    <label class="text-900 mb-2 block font-medium">Тип</label>
-                    <Dropdown
-                        v-model="field.value.type"
-                        class="w-full"
-                        option-value="code"
-                        option-label="label"
-                        :options="[
-                            {
-                                code: 'options',
-                                label: 'Опции'
-                            },
-                            {
-                                code: 'additions',
-                                label: 'Добавки'
+                    <div class="w-full">
+                        <label class="text-900 mb-2 block font-medium">Тип</label>
+                        <Dropdown
+                            v-model="field.value.type"
+                            class="w-full"
+                            option-value="code"
+                            option-label="label"
+                            :options="[
+                                {
+                                    code: 'options',
+                                    label: 'Опции'
+                                },
+                                {
+                                    code: 'additions',
+                                    label: 'Добавки'
+                                }
+                            ]"
+                        />
+                    </div>
+                    <div class="w-full">
+                        <label class="text-900 mb-2 block font-medium">Модификаторы</label>
+                        <MultiSelect
+                            v-model="field.value.modificators"
+                            class="w-full"
+                            :options="possibleMods"
+                            option-value="code"
+                            option-label="label"
+                        />
+                    </div>
+                    <Button
+                        class="flex justify-center"
+                        severity="secondary"
+                        size="small"
+                        icon="pi pi-times"
+                        label="Удалить"
+                        type="button"
+                        :pt="{
+                            label: {
+                                class: 'grow-0'
                             }
-                        ]"
+                        }"
+                        @click="removeModGroup(idx)"
                     />
                 </div>
-                <div class="w-full">
-                    <label class="text-900 mb-2 block font-medium">Модификаторы</label>
-                    <MultiSelect
-                        v-model="field.value.modificators"
-                        class="w-full"
-                        :options="possibleMods"
-                        option-value="code"
-                        option-label="label"
-                    />
-                </div>
-            </fieldset>
+            </Fieldset>
             <button
                 class="group flex w-full items-center gap-4"
                 type="button"
@@ -506,19 +521,15 @@ const onSubmit = handleSubmit(async (vals: any) => {
             placeholder="Выберите рестораны"
         />
         <div class="mb-8">
-            <fieldset
+            <Fieldset
                 v-for="(field, idx) in fields"
                 :key="field.key"
-                class="relative mb-4 rounded-lg border-2 border-gray-200 p-4"
+                toggleable
+                :legend="
+                    [field.value.rest_name, field.value.rest_address].filter(Boolean).join(', ')
+                "
+                class="mb-4"
             >
-                <h3
-                    class="absolute top-0 -translate-y-1/2 bg-white px-3 font-semibold text-pv-text-color"
-                >
-                    "{{ field.value.rest_name }}"
-                    <template v-if="field.value.rest_address">
-                        - {{ field.value.rest_address }}
-                    </template>
-                </h3>
                 <div class="grid grid-cols-1 gap-x-2 md:grid-cols-2">
                     <MyInputNumber
                         class="flex-1"
@@ -542,7 +553,7 @@ const onSubmit = handleSubmit(async (vals: any) => {
                     <MyInputSwitch label="Самовывоз" :name="`vars[${idx}].can_order`" />
                     <MyInputSwitch label="В ресторане" :name="`vars[${idx}].in_rest`" />
                 </div>
-            </fieldset>
+            </Fieldset>
         </div>
 
         <Button
