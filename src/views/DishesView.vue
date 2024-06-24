@@ -2,7 +2,6 @@
 import { computed, ref, unref, watchEffect } from 'vue'
 
 import { useQuery } from '@tanstack/vue-query'
-import { useDebounce } from '@vueuse/core'
 import draggable from 'vuedraggable'
 import { z } from 'zod'
 
@@ -11,6 +10,7 @@ import { useConfirm } from 'primevue/useconfirm'
 import { useDialog } from 'primevue/usedialog'
 
 import dateFormat from '@/common/dateformat'
+import useUrlPaggination from '@/common/hooks/use-url-paggination'
 import type { QueryFnDataDynamic } from '@/common/types'
 
 import { CategoriesQueries } from '@/features/categories'
@@ -28,13 +28,10 @@ import {
 type ListedEntity = z.infer<typeof DishesSchemes.ListedDishScheme>
 
 const rowsPerPage = ref(20)
+const { debouncedSearch, limit, offset, page, search } = useUrlPaggination({ rowsPerPage })
 
-const offset = ref(0)
-const limit = rowsPerPage
-const search = ref('')
 const filterCategory = ref(0)
 const selected = ref<ListedEntity>()
-const debouncedSearch = useDebounce(search, 500)
 const reorderMode = ref(false)
 const canReorderMode = computed(() => !search.value && filterCategory.value !== 0)
 
@@ -72,6 +69,13 @@ const { data, refetch, isFetching, isError } = useQuery(
     }))
 )
 
+watchEffect(() => {
+    const total = data.value?.total || 0
+    if (total <= offset.value) {
+        page.value = 1
+    }
+})
+
 const drag = ref(false)
 const ordered = ref<ListedEntity[]>([])
 watchEffect(() => {
@@ -102,8 +106,7 @@ const cancelReorder = () => {
 }
 
 const onPage = (e: PageState) => {
-    offset.value = e.first
-    limit.value = e.rows
+    page.value = e.page + 1
 }
 
 const dialog = useDialog()
@@ -392,9 +395,10 @@ const root = ref<HTMLElement>()
 
                 <Paginator
                     v-if="!reorderMode && !canReorderMode"
-                    v-model:rows="rowsPerPage"
-                    :total-records="data.total"
+                    :total-records="data.total || 0"
                     :page-link-size="5"
+                    :first="offset"
+                    :rows="rowsPerPage"
                     :template="{
                         '640px': 'PrevPageLink CurrentPageReport NextPageLink',
                         '960px':

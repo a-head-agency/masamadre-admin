@@ -2,7 +2,6 @@
 import { computed, onMounted, ref, unref } from 'vue'
 
 import { useQuery } from '@tanstack/vue-query'
-import { useDebounce } from '@vueuse/core'
 import { z } from 'zod'
 
 import type { DataTablePageEvent, DataTableRowDoubleClickEvent } from 'primevue/datatable'
@@ -10,6 +9,7 @@ import { useConfirm } from 'primevue/useconfirm'
 import { useDialog } from 'primevue/usedialog'
 
 import dateFormat from '@/common/dateformat'
+import useUrlPaggination from '@/common/hooks/use-url-paggination'
 
 import {
     CreateMod,
@@ -23,13 +23,9 @@ import {
 type ListedEntity = z.infer<typeof ModsSchemes.ListedModScheme>
 
 const rowsPerPage = ref(20)
+const { debouncedSearch, limit, offset, page, search } = useUrlPaggination({ rowsPerPage })
 
-const offset = ref(0)
-const limit = rowsPerPage
 const selected = ref<ListedEntity>()
-
-const search = ref('')
-const debouncedSearch = useDebounce(search, 500)
 
 const { data, refetch, isFetching, isError } = useQuery(
     computed(() =>
@@ -42,8 +38,7 @@ const { data, refetch, isFetching, isError } = useQuery(
 )
 
 const onPage = (e: DataTablePageEvent) => {
-    offset.value = e.first
-    limit.value = e.rows
+    page.value = e.page + 1
 }
 
 const dialog = useDialog()
@@ -198,7 +193,7 @@ onMounted(() => {
                 :value="data?.list"
                 lazy
                 paginator
-                :first="0"
+                :first="offset"
                 :rows="rowsPerPage"
                 data-key="id"
                 table-style="min-width: 50rem"

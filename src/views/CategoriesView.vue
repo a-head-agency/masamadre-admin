@@ -2,7 +2,6 @@
 import { computed, ref, unref, watch } from 'vue'
 
 import { useQuery } from '@tanstack/vue-query'
-import { useDebounce } from '@vueuse/core'
 import draggable from 'vuedraggable'
 import { z } from 'zod'
 
@@ -10,6 +9,7 @@ import { useConfirm } from 'primevue/useconfirm'
 import { useDialog } from 'primevue/usedialog'
 
 import dateFormat from '@/common/dateformat'
+import useUrlPaggination from '@/common/hooks/use-url-paggination'
 
 import {
     CategoriesQueries,
@@ -25,9 +25,10 @@ import {
 
 type ListedEntity = z.infer<typeof CategoriesSchemes.ListedCategoryScheme>
 
+const rowsPerPage = ref(20)
+const { debouncedSearch, search } = useUrlPaggination({ rowsPerPage })
+
 const selected = ref<ListedEntity>()
-const search = ref('')
-const debouncedSearch = useDebounce(search, 500)
 const reorderMode = ref(false)
 const canReorderMode = computed(() => !search.value)
 

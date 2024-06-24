@@ -6,13 +6,14 @@ import truncate from 'truncate'
 import type { DataTablePageEvent, DataTableRowDoubleClickEvent } from 'primevue/datatable'
 import { useDialog } from 'primevue/usedialog'
 
+import useUrlPaggination from '@/common/hooks/use-url-paggination'
+
 import { RespondToReview, useReviews, type IReview } from '@/features/reviews'
 
 const rowsPerPage = ref(20)
+const { limit, offset, page } = useUrlPaggination({ rowsPerPage })
 
 const selected = ref<IReview>()
-const offset = ref(0)
-const limit = rowsPerPage
 
 const { data, isError, isFetching, refetch } = useReviews(
     {
@@ -24,8 +25,7 @@ const { data, isError, isFetching, refetch } = useReviews(
 )
 
 const onPage = (e: DataTablePageEvent) => {
-    offset.value = e.first
-    limit.value = e.rows
+    page.value = e.page + 1
 }
 
 const refresh = () => {
@@ -118,7 +118,7 @@ onMounted(() => {
                 :value="data?.list"
                 lazy
                 paginator
-                :first="0"
+                :first="offset"
                 :rows="rowsPerPage"
                 data-key="id"
                 table-style="min-width: 50rem"

@@ -5,6 +5,7 @@ import type { DataTablePageEvent, DataTableRowDoubleClickEvent } from 'primevue/
 import { useDialog } from 'primevue/usedialog'
 
 import dateformat from '@/common/dateformat'
+import useUrlPaggination from '@/common/hooks/use-url-paggination'
 
 import {
     OrderDetails,
@@ -16,9 +17,8 @@ import {
 } from '@/features/orders'
 
 const rowsPerPage = ref(20)
+const { limit, offset, page } = useUrlPaggination({ rowsPerPage })
 
-const offset = ref(0)
-const limit = rowsPerPage
 const selected = ref<IOrder>()
 
 const { data, isFetching, isError, refetch } = useOrders(
@@ -31,8 +31,7 @@ const { data, isFetching, isError, refetch } = useOrders(
 )
 
 const onPage = (e: DataTablePageEvent) => {
-    offset.value = e.first
-    limit.value = e.rows
+    page.value = e.page + 1
 }
 
 const onRowDoubleClick = (e: DataTableRowDoubleClickEvent) => {
@@ -151,7 +150,7 @@ onMounted(() => {
                 :value="data?.list"
                 lazy
                 paginator
-                :first="0"
+                :first="offset"
                 :rows="rowsPerPage"
                 data-key="id"
                 table-style="min-width: 50rem"
